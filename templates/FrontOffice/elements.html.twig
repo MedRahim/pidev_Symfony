@@ -7,19 +7,19 @@
 	<title>Web Hosting HTML-5 Template </title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+	<link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
 
- <!-- CSS here -->
-		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
-		<link rel="stylesheet" href="assets/css/owl.carousel.min.css">
-		<link rel="stylesheet" href="assets/css/slicknav.css">
-		<link rel="stylesheet" href="assets/css/animate.min.css">
-		<link rel="stylesheet" href="assets/css/magnific-popup.css">
-		<link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
-		<link rel="stylesheet" href="assets/css/themify-icons.css">
-		<link rel="stylesheet" href="assets/css/slick.css">
-		<link rel="stylesheet" href="assets/css/nice-select.css">
-		<link rel="stylesheet" href="assets/css/style.css">
+	<!-- CSS here -->
+	<link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/owl.carousel.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slicknav.css') }}">
+	<link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/animate.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/magnific-popup.css') }}">
+	<link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/fontawesome-all.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/themify-icons.css') }}">
+	<link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
+	<link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
+	<link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
 </head>
 
 <body>
@@ -53,20 +53,20 @@
                                 <div class="main-menu f-right d-none d-lg-block">
                                     <nav>
                                         <ul id="navigation">                                                                                                                                     
-                                            <li><a href="index.html">Home</a></li>
-                                            <li><a href="about.html">About</a></li>
-                                            <li><a href="catagori.html">Catagories</a></li>
-                                            <li><a href="listing.html">Listing</a></li>
+                                            <li><a href="{{ asset('FrontOffice/index.html.twig') }}">Home</a></li>
+                                            <li><a href="{{ asset('FrontOffice/about.html.twig') }}">About</a></li>
+                                            <li><a href="{{ asset('FrontOffice/categori.html.twig') }}">Categories</a></li>
+                                            <li><a href="{{ asset('FrontOffice/listing.html.twig') }}">Listing</a></li>
                                             <li><a href="#">Page</a>
                                                 <ul class="submenu">
-                                                    <li><a href="blog.html">Blog</a></li>
-                                                    <li><a href="blog_details.html">Blog Details</a></li>
-                                                    <li><a href="elements.html">Element</a></li>
-                                                    <li><a href="listing_details.html">Listing details</a></li>
+                                                    <li><a href="{{ asset('FrontOffice/blog.html.twig') }}">Blog</a></li>
+                                                    <li><a href="{{ asset('FrontOffice/blog-details.html.twig') }}">Blog Details</a></li>
+                                                    <li><a href="{{ asset('FrontOffice/elements.html.twig') }}">Element</a></li>
+                                                    <li><a href="{{ asset('FrontOffice/listing-details.html.twig') }}">Listing Details</a></li>
                                                 </ul>
                                             </li>
-                                            <li><a href="contact.html">Contact</a></li>
-                                            <li class="add-list"><a href="listing_details.html"><i class="ti-plus"></i> add Listing</a></li>
+                                            <li><a href="{{ asset('FrontOffice/contact.html.twig') }}">Contact</a></li>
+                                            <li class="add-list"><a href="{{ asset('FrontOffice/listing-details.html.twig') }}"><i class="ti-plus"></i> add Listing</a></li>
                                             <li class="login"><a href="#">
                                                 <i class="ti-user"></i> Sign in or Register</a>
                                             </li>
@@ -236,7 +236,7 @@
 					<h3 class="mb-30">Left Aligned</h3>
 					<div class="row">
 						<div class="col-md-3">
-							<img src="assets/img/elements/d.jpg" alt="" class="img-fluid">
+							<img src="{{ asset('FrontOffice/assets/img/elements/element1.jpg') }}" alt="Element Image" class="img-fluid">
 						</div>
 						<div class="col-md-9 mt-sm-20">
 							<p>Recently, the US Federal government banned online casinos from operating in America by making
@@ -737,6 +737,7 @@
 						</div>
 					</div>
 				</div>
+				<a href="{{ asset('FrontOffice/index.html.twig') }}">Back to Home</a>
 			</div>
 		</div>
 		<!-- End Align Area -->

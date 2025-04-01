@@ -22,6 +22,7 @@
         <link rel="stylesheet" href="assets/css/nice-select.css">
         <link rel="stylesheet" href="assets/css/style.css">
         <link rel="stylesheet" href="assets/css/responsive.css">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
 </head>
 
 <body>
@@ -55,19 +56,19 @@
                                 <div class="main-menu f-right d-none d-lg-block">
                                     <nav>
                                         <ul id="navigation">                                                                                                                                     
-                                            <li><a href="index.html">Home</a></li>
+                                            <li><a href="{{ asset('FrontOffice/index.html.twig') }}">Home</a></li>
                                             <li><a href="about.html">About</a></li>
                                             <li><a href="catagori.html">Catagories</a></li>
                                             <li><a href="listing.html">Listing</a></li>
                                             <li><a href="#">Page</a>
                                                 <ul class="submenu">
                                                     <li><a href="blog.html">Blog</a></li>
-                                                    <li><a href="blog_details.html">Blog Details</a></li>
+                                                    <li><a href="{{ asset('FrontOffice/blog-details.html.twig') }}">Blog Details</a></li>
                                                     <li><a href="elements.html">Element</a></li>
                                                     <li><a href="listing_details.html">Listing details</a></li>
                                                 </ul>
                                             </li>
-                                            <li><a href="contact.html">Contact</a></li>
+                                            <li><a href="{{ asset('FrontOffice/contact.html.twig') }}">Contact</a></li>
                                             <li class="add-list"><a href="listing_details.html"><i class="ti-plus"></i> add Listing</a></li>
                                             <li class="login"><a href="#">
                                                 <i class="ti-user"></i> Sign in or Register</a>
@@ -110,7 +111,7 @@
                         <div class="blog_left_sidebar">
                             <article class="blog_item">
                                 <div class="blog_item_img">
-                                    <img class="card-img rounded-0" src="assets/img/blog/single_blog_1.png" alt="">
+                                    <img class="card-img rounded-0" src="{{ asset('FrontOffice/assets/img/blog/blog2.jpg') }}" alt="Blog Image">
                                     <a href="#" class="blog_item_date">
                                         <h3>15</h3>
                                         <p>Jan</p>
@@ -118,7 +119,7 @@
                                 </div>
 
                                 <div class="blog_details">
-                                    <a class="d-inline-block" href="blog_details.html">
+                                    <a class="d-inline-block" href="{{ asset('FrontOffice/blog-details.html.twig') }}">
                                         <h2>Google inks pact for new 35-storey office</h2>
                                     </a>
                                     <p>That dominion stars lights dominion divide years for fourth have don't stars is that

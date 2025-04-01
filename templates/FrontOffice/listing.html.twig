@@ -7,7 +7,7 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="manifest" href="site.webmanifest">
-		<link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+		<link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
 
 		<!-- CSS here -->
             <link rel="stylesheet" href="assets/css/bootstrap.min.css">
@@ -21,7 +21,7 @@
             <link rel="stylesheet" href="assets/css/themify-icons.css">
             <link rel="stylesheet" href="assets/css/slick.css">
             <link rel="stylesheet" href="assets/css/nice-select.css">
-            <link rel="stylesheet" href="assets/css/style.css">
+            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
    </head>
 
    <body>
@@ -55,19 +55,19 @@
                                 <div class="main-menu f-right d-none d-lg-block">
                                     <nav>
                                         <ul id="navigation">                                                                                                                                     
-                                            <li><a href="index.html">Home</a></li>
-                                            <li><a href="about.html">About</a></li>
-                                            <li><a href="catagori.html">Catagories</a></li>
-                                            <li><a href="listing.html">Listing</a></li>
+                                            <li><a href="{{ asset('FrontOffice/index.html.twig') }}">Home</a></li>
+                                            <li><a href="{{ asset('FrontOffice/about.html.twig') }}">About</a></li>
+                                            <li><a href="{{ asset('FrontOffice/categori.html.twig') }}">Categories</a></li>
+                                            <li><a href="{{ asset('FrontOffice/listing.html.twig') }}">Listing</a></li>
                                             <li><a href="#">Page</a>
                                                 <ul class="submenu">
-                                                    <li><a href="blog.html">Blog</a></li>
-                                                    <li><a href="blog_details.html">Blog Details</a></li>
-                                                    <li><a href="elements.html">Element</a></li>
-                                                    <li><a href="listing_details.html">Listing details</a></li>
+                                                    <li><a href="{{ asset('FrontOffice/blog.html.twig') }}">Blog</a></li>
+                                                    <li><a href="{{ asset('FrontOffice/blog-details.html.twig') }}">Blog Details</a></li>
+                                                    <li><a href="{{ asset('FrontOffice/elements.html.twig') }}">Element</a></li>
+                                                    <li><a href="{{ asset('FrontOffice/listing-details.html.twig') }}">Listing Details</a></li>
                                                 </ul>
                                             </li>
-                                            <li><a href="contact.html">Contact</a></li>
+                                            <li><a href="{{ asset('FrontOffice/contact.html.twig') }}">Contact</a></li>
                                             <li class="add-list"><a href="listing_details.html"><i class="ti-plus"></i> add Listing</a></li>
                                             <li class="login"><a href="#">
                                                 <i class="ti-user"></i> Sign in or Register</a>
@@ -233,12 +233,12 @@
                                     <div class="col-lg-6 ">
                                         <div class="single-listing mb-30">
                                             <div class="list-img">
-                                                <img src="assets/img/gallery/list1.png" alt="">
+                                                <img src="{{ asset('FrontOffice/assets/img/listing/listing2.jpg') }}" alt="Listing Image">
                                                 <!-- <span>Open</span> -->
                                             </div>
                                             <div class="list-caption">
                                                 <span>Open</span>
-                                                <h3><a href="listing_details.html">Saintmartine</a></h3>
+                                                <h3><a href="{{ asset('FrontOffice/listing_details.html.twig') }}">Saintmartine</a></h3>
                                                 <p>700/D, Kings road, Green lane, 85/ London</p>
                                                 <div class="list-footer">
                                                     <ul>
