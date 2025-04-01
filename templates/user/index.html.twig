@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<title>User index</title>
+
+{% block body %}
+    <h1>User index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>CIN</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Role</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>IsActive</th>
+                <th>Pathtopic</th>
+                <th>Birthday</th>
+                <th>IsVerified</th>
+                <th>AccountCreationDate</th>
+                <th>LastLoginDate</th>
+                <th>FailedLoginAttempts</th>
+                <th>Bio</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.CIN }}</td>
+                <td>{{ user.Name }}</td>
+                <td>{{ user.Email }}</td>
+                <td>{{ user.Password }}</td>
+                <td>{{ user.Role }}</td>
+                <td>{{ user.Phone }}</td>
+                <td>{{ user.Address }}</td>
+                <td>{{ user.isActive ? 'Yes' : 'No' }}</td>
+                <td>{{ user.pathtopic }}</td>
+                <td>{{ user.birthday ? user.birthday|date('Y-m-d') : '' }}</td>
+                <td>{{ user.isVerified ? 'Yes' : 'No' }}</td>
+                <td>{{ user.accountCreationDate ? user.accountCreationDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ user.lastLoginDate ? user.lastLoginDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ user.failedLoginAttempts }}</td>
+                <td>{{ user.bio }}</td>
+                <td>{{ user.createdAt ? user.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ user.updatedAt ? user.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
+                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="19">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_new') }}">Create new</a>
+{% endblock %}
