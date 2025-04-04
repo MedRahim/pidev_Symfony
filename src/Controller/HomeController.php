@@ -5,17 +5,10 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HomeController extends AbstractController
 {
-    private $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
 
     #[Route('/', name: 'home')]
     public function index(): Response
@@ -134,17 +127,4 @@ class HomeController extends AbstractController
         return $this->redirectToRoute('home');
     }
 
-    #[Route('/add-user', name: 'add_user')]
-    public function addUser(): Response
-    {
-        $user = new User();
-        $user->setName('John Doe');
-        $user->setEmail('john.doe@example.com');
-        $user->setPassword('securepassword');
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        return new Response('User added with ID ' . $user->getId());
-    }
 }
