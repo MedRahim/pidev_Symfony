@@ -119,6 +119,25 @@ class User implements PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
+    public function __construct()
+    {
+        // Set default values directly in constructor
+        $this->isActive = false;
+        $this->isVerified = false;
+        $this->failedLoginAttempts = 0;
+        $this->Role = 'USER';
+        $this->createdAt = new \DateTimeImmutable();
+        $this->accountCreationDate = new \DateTimeImmutable();
+        $this->lastLoginDate = new \DateTimeImmutable();
+        $this->pathtopic = "taw ba3ed";
+    }
+
+    #[ORM\PrePersist]
+    public function setAutoFields(): void
+    {
+        // Only set fields that need to be updated at persist time
+        $this->updatedAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -327,10 +346,4 @@ class User implements PasswordAuthenticatedUserInterface
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
 }

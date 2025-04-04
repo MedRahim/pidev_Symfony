@@ -4,6 +4,9 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -12,32 +15,23 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('CIN')
-            ->add('Name')
-            ->add('Email')
-            ->add('Password')
-            ->add('Role')
-            ->add('Phone')
+            ->add('CIN', null, [
+                'label' => 'CIN/National ID'
+            ])
+            ->add('Name', null, [
+                'label' => 'Full Name'
+            ])
+            ->add('Email', EmailType::class)
+            ->add('Password', PasswordType::class)
+            ->add('Phone', TelType::class)
             ->add('Address')
-            ->add('isActive')
-            ->add('pathtopic')
             ->add('birthday', null, [
                 'widget' => 'single_text',
+                'label' => 'Date of Birth'
             ])
-            ->add('isVerified')
-            ->add('accountCreationDate', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('lastLoginDate', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('failedLoginAttempts')
-            ->add('bio')
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('updatedAt', null, [
-                'widget' => 'single_text',
+            ->add('bio', null, [
+                'label' => 'Biography',
+                'required' => false
             ])
         ;
     }

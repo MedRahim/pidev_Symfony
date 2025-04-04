@@ -6,9 +6,11 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/user')]
@@ -22,14 +24,49 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route(name: 'app_user_login', methods: ['GET'])]
+    public function login(UserRepository $userRepository): Response
     {
+        return $this->render('user/login.html.twig');
+    }
+
+    #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher,
+        LoggerInterface $logger
+    ): Response {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
+        $logger->debug('User entity before processing:', [
+            'role' => $user->getRole(),
+            'all_data' => $user
+        ]);
+
         if ($form->isSubmitted() && $form->isValid()) {
+            // Hash the password
+            $plainPassword = $form->get('Password')->getData();
+            if ($plainPassword) {
+                $hashedPassword = $passwordHasher->hashPassword(
+                    $user,
+                    $plainPassword
+                );
+                $user->setPassword($hashedPassword);
+            }
+
+            // Set default role if empty
+            if (empty($user->getRole())) {
+                $user->setRole('USER');
+            }
+
+            $logger->debug('User entity after form submission:', [
+                'role' => $user->getRole(),
+                'all_data' => $user
+            ]);
+
             $entityManager->persist($user);
             $entityManager->flush();
 
