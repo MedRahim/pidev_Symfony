@@ -6,9 +6,11 @@ use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+class User implements PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -169,6 +171,11 @@ class User
         $this->Password = $Password;
 
         return $this;
+    }
+
+    public function eraseCredentials(): void
+    {
+        $this->Password = null;
     }
 
     public function getRole(): ?string
