@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\LoginFormType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,12 +23,6 @@ final class UserController extends AbstractController
         return $this->render('user/index.html.twig', [
             'users' => $userRepository->findAll(),
         ]);
-    }
-
-    #[Route(name: 'app_user_login', methods: ['GET'])]
-    public function login(UserRepository $userRepository): Response
-    {
-        return $this->render('user/login.html.twig');
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
@@ -79,6 +74,39 @@ final class UserController extends AbstractController
         ]);
     }
 
+    // src/Controller/UserController.php
+    #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
+    public function login(
+        Request $request,
+        UserRepository $userRepository,
+        UserPasswordHasherInterface $passwordHasher
+    ): Response {
+        $form = $this->createForm(LoginFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $user = $userRepository->findByEmail($data['email']);
+
+            if (!$user) {
+                $this->addFlash('error', 'Invalid credentials.');
+                return $this->redirectToRoute('app_user_login');
+            }
+
+            if (!$passwordHasher->isPasswordValid($user, $data['password'])) {
+                $this->addFlash('error', 'Invalid credentials.');
+                return $this->redirectToRoute('app_user_login');
+            }
+
+            // Login successful - do something with the user
+            $this->addFlash('success', 'Login successful!');
+            return $this->redirectToRoute('app_user_index');
+        }
+
+        return $this->render('user/login.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {

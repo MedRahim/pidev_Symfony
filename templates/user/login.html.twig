@@ -1,0 +1,18 @@
+{# templates/user/login.html.twig #}
+{% extends 'user/index.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+    <h1>Login</h1>
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    {{ form_start(form) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.password) }}
+    <button type="submit" class="btn btn-primary">Login</button>
+    {{ form_end(form) }}
+{% endblock %}
