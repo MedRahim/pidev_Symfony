@@ -62,7 +62,6 @@ class HomeController extends AbstractController
         return $this->render('FrontOffice/listing_details.html.twig');
     }
 
-
     #[Route('/search', name: 'search')]
     public function search(): Response
     {
@@ -75,53 +74,54 @@ class HomeController extends AbstractController
     {
         return $this->render('security/register.html.twig');
     }
-    #[Route('/location/{city}', name: 'location')]
-public function location(string $city): Response
-{
-    // Logique pour afficher les détails d'une ville
-    return $this->render('FrontOffice/location.html.twig', [
-        'city' => $city
-    ]);
-}
 
-#[Route('/how-it-works/{step}', name: 'how_it_works')]
-public function howItWorks(int $step): Response
-{
-    // Logique pour les étapes de fonctionnement
-    return $this->render('FrontOffice/how_it_works.html.twig', [
-        'step' => $step
-    ]);
-}
+    #[Route('/location/{city}', name: 'location', requirements: ['city' => '(?!about|contact|blog)[a-zA-Z\-\s]+'])]
+    public function location(string $city): Response
+    {
+        // Logic to display city details
+        return $this->render('FrontOffice/location.html.twig', [
+            'city' => $city
+        ]);
+    }
 
-#[Route('/subscribe', name: 'subscribe')]
-public function subscribe(): Response
-{
-    // Logique d'abonnement
-    return $this->render('FrontOffice/subscribe.html.twig');
-}
+    #[Route('/how-it-works/{step}', name: 'how_it_works', requirements: ['step' => '\d+'])]
+    public function howItWorks(int $step): Response
+    {
+        // Logique pour les étapes de fonctionnement
+        return $this->render('FrontOffice/how_it_works.html.twig', [
+            'step' => $step
+        ]);
+    }
 
-#[Route('/download-app/{platform}', name: 'download_app')]
-public function downloadApp(string $platform): Response
-{
-    // Logique de téléchargement d'app
-    return $this->render('FrontOffice/download_app.html.twig', [
-        'platform' => $platform
-    ]);
-}
+    #[Route('/subscribe', name: 'subscribe')]
+    public function subscribe(): Response
+    {
+        // Logique d'abonnement
+        return $this->render('FrontOffice/subscribe.html.twig');
+    }
 
-#[Route('/social/{platform}', name: 'social')]
-public function social(string $platform): Response
-{
-    // Logique de redirection sociale
-    return $this->render('FrontOffice/social.html.twig', [
-        'platform' => $platform
-    ]);
-}
+    #[Route('/download-app/{platform}', name: 'download_app', requirements: ['platform' => 'android|ios'])]
+    public function downloadApp(string $platform): Response
+    {
+        // Logique de téléchargement d'app
+        return $this->render('FrontOffice/download_app.html.twig', [
+            'platform' => $platform
+        ]);
+    }
 
-#[Route('/back-to-top', name: 'back_to_top')]
-public function backToTop(): Response
-{
-    // Logique pour remonter en haut de page
-    return $this->redirectToRoute('home');
-}
+    #[Route('/social/{platform}', name: 'social', requirements: ['platform' => 'facebook|twitter|website|instagram'])]
+    public function social(string $platform): Response
+    {
+        // Logique de redirection sociale
+        return $this->render('FrontOffice/social.html.twig', [
+            'platform' => $platform
+        ]);
+    }
+
+    #[Route('/back-to-top', name: 'back_to_top')]
+    public function backToTop(): Response
+    {
+        // Logique pour remonter en haut de page
+        return $this->redirectToRoute('home');
+    }
 }
