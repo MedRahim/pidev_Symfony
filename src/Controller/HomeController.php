@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Form\UserType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\User;
+use Symfony\Component\HttpFoundation\Request;
 
 class HomeController extends AbstractController
 {
@@ -70,19 +74,33 @@ class HomeController extends AbstractController
         return $this->render('FrontOffice/search.html.twig');
     }
 
-    #[Route('/register', name: 'register')]
-    public function register(): Response
+    #[Route('/register', name: 'register', methods: ['GET', 'POST'])]
+    public function register(Request $request, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('security/register.html.twig');
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_user_index');
+        }
+
+        return $this->render('user/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
+
     #[Route('/location/{city}', name: 'location')]
-public function location(string $city): Response
-{
-    // Logique pour afficher les détails d'une ville
-    return $this->render('FrontOffice/location.html.twig', [
-        'city' => $city
-    ]);
-}
+    public function location(string $city): Response
+    {
+        // Logique pour afficher les détails d'une ville
+        return $this->render('FrontOffice/location.html.twig', [
+            'city' => $city
+        ]);
+    }
 
 #[Route('/how-it-works/{step}', name: 'how_it_works')]
 public function howItWorks(int $step): Response
