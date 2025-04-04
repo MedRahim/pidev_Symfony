@@ -5,39 +5,84 @@ namespace App\Repository;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @extends ServiceEntityRepository<User>
  */
 class UserRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, User::class);
+        $this->entityManager = $entityManager;
     }
 
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findAllUsers(): array
+    {
+        return $this->findAll();
+    }
 
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findById(int $id): ?User
+    {
+        return $this->find($id);
+    }
+
+    public function findByEmail(string $email): ?User
+    {
+        return $this->findOneBy(['Email' => $email]);
+    }
+
+    public function findByName(string $name): array
+    {
+        return $this->findBy(['Name' => $name]);
+    }
+    public function save(User $user, bool $flush = true): void
+    {
+        $this->entityManager->persist($user);
+        if ($flush) {
+            $this->entityManager->flush();
+        }
+    }
+
+    public function remove(User $user, bool $flush = true): void
+    {
+        $this->entityManager->remove($user);
+        if ($flush) {
+            $this->entityManager->flush();
+        }
+    }
+
+    public function updatePassword(User $user, string $newPassword, bool $flush = true): void
+    {
+        $user->setPassword($newPassword);
+        $this->entityManager->persist($user);
+        if ($flush) {
+            $this->entityManager->flush();
+        }
+    }
+
+    public function updateIsActive(User $user, bool $isActive, bool $flush = true): void
+    {
+        $user->setIsActive($isActive);
+        $this->entityManager->persist($user);
+        if ($flush) {
+            $this->entityManager->flush();
+        }
+    }
+
+    public function updateUser(User $user, bool $flush = true): void
+    {
+        $this->entityManager->persist($user);
+        if ($flush) {
+            $this->entityManager->flush();
+        }
+    }
+
+    public function flush(): void
+    {
+        $this->entityManager->flush();
+    }
 }

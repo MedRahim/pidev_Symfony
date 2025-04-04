@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User
@@ -15,24 +16,69 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'CIN cannot be blank.')]
+    #[Assert\Length(
+        min: 8,
+        max: 8,
+        exactMessage: 'CIN must be exactly {{ limit }} characters long.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[0-9]*$/',
+        message: 'CIN must contain only numbers.'
+    )]
     private ?string $CIN = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Name cannot be blank.')]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'Name must be at least {{ limit }} characters long.',
+        maxMessage: 'Name cannot be longer than {{ limit }} characters.'
+    )]
     private ?string $Name = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Email cannot be blank.')]
+    #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
     private ?string $Email = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Password cannot be blank.')]
+    #[Assert\Length(
+        min: 8,
+        max: 32,
+        minMessage: 'Password must be at least {{ limit }} characters long.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/',
+        message: 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.'
+    )]
     private ?string $Password = null;
 
     #[ORM\Column(length: 255)]
     private ?string $Role = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Phone number cannot be blank.')]
+    #[Assert\Length(
+        min: 8,
+        max: 15,
+        minMessage: 'Phone number must be at least {{ limit }} characters long.',
+        maxMessage: 'Phone number cannot be longer than {{ limit }} characters.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[0-9+]*$/',
+        message: 'Phone number must contain only numbers and +.'
+    )]
     private ?string $Phone = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Address cannot be blank.')]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Address cannot be longer than {{ limit }} characters.'
+    )]
     private ?string $Address = null;
 
     #[ORM\Column]
@@ -42,6 +88,11 @@ class User
     private ?string $pathtopic = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: 'Birthday cannot be blank.')]
+    #[Assert\LessThan(
+        value: '-18 years',
+        message: 'You must be at least 18 years old.'
+    )]
     private ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column]
@@ -57,6 +108,7 @@ class User
     private ?int $failedLoginAttempts = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Length(max: 1000)]
     private ?string $bio = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -64,6 +116,7 @@ class User
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
+
 
     public function getId(): ?int
     {
