@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\LoginFormType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,9 +19,11 @@ use Symfony\Component\Routing\Attribute\Route;
 final class UserController extends AbstractController
 {
     private UserRepository $userRepository;
+    private EmailService $emailService;
 
-    public function __construct(UserRepository $userRepository){
+    public function __construct(UserRepository $userRepository, EmailService $emailService){
         $this->userRepository = $userRepository;
+        $this->emailService = $emailService;
     }
     #[Route(name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
@@ -41,10 +44,6 @@ final class UserController extends AbstractController
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
-        $logger->debug('User entity before processing:', [
-            'role' => $user->getRole(),
-            'all_data' => $user
-        ]);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -70,8 +69,23 @@ final class UserController extends AbstractController
                 $user->setRole('USER');
             }
 
+            //verifying the information
+            $logger->debug('User entity before processing:', [
+                'role' => $user->getRole(),
+                'all_data' => $user
+            ]);
+
+            //saving the entity
             $entityManager->persist($user);
             $entityManager->flush();
+
+            //sending welcome email
+            $this->emailService->sendEmail(
+                $user->getEmail(),
+                'Welcome to Our Site!',
+                'Emails/welcome.html.twig',
+                ['user' => $user]
+            );
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
