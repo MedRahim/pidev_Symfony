@@ -17,6 +17,11 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/user')]
 final class UserController extends AbstractController
 {
+    private UserRepository $userRepository;
+
+    public function __construct(UserRepository $userRepository){
+        $this->userRepository = $userRepository;
+    }
     #[Route(name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
@@ -42,6 +47,14 @@ final class UserController extends AbstractController
         ]);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            //verify email unicity
+            $existingUser= $this->userRepository->findByEmail($user->getEmail());
+            if ($existingUser) {
+                $this->addFlash('error', 'This email address is already registered.');
+                return $this->redirectToRoute('app_user_new');
+            }
+
             // Hash the password
             $plainPassword = $form->get('Password')->getData();
             if ($plainPassword) {
@@ -52,15 +65,10 @@ final class UserController extends AbstractController
                 $user->setPassword($hashedPassword);
             }
 
-            // Set default role if empty
+            // Set role
             if (empty($user->getRole())) {
                 $user->setRole('USER');
             }
-
-            $logger->debug('User entity after form submission:', [
-                'role' => $user->getRole(),
-                'all_data' => $user
-            ]);
 
             $entityManager->persist($user);
             $entityManager->flush();
