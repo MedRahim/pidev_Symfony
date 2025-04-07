@@ -130,7 +130,7 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface
         $this->createdAt = new \DateTimeImmutable();
         $this->accountCreationDate = new \DateTimeImmutable();
         $this->lastLoginDate = new \DateTimeImmutable();
-        $this->pathtopic = "taw ba3ed";
+        $this->pathtopic = "  ";
     }
 
     #[ORM\PrePersist]

@@ -7,6 +7,7 @@ use App\Form\LoginFormType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Service\EmailService;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,7 +39,8 @@ final class UserController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        FileUploader $fileUploader
     ): Response {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -69,15 +71,29 @@ final class UserController extends AbstractController
                 $user->setRole('USER');
             }
 
+            //uploading profile picture
+            $profilePictureFile = $form->get('profilePicture')->getData();
+            if ($profilePictureFile) {
+                $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!in_array($profilePictureFile->getMimeType(), $allowedMimeTypes)) {
+                    // Add error message
+                    $this->addFlash('error', 'Invalid file type. Only JPEG, PNG and GIF are allowed.');
+                    return $this->redirectToRoute('app_user_new');
+                }
+
+                $fileName = $fileUploader->upload($profilePictureFile);
+                $logger->debug('User entity before processing:', [
+                    'role' => $fileName,
+                ]);
+                $user->setPathToPic('/uploads/profile_pictures/' . $user->getName().'-' . $fileName);
+            }
+
             //verifying the information
             $logger->debug('User entity before processing:', [
                 'role' => $user->getRole(),
-                'all_data' => $user
+                'pic' => $user->getPathToPic(),
             ]);
 
-            //saving the entity
-            $entityManager->persist($user);
-            $entityManager->flush();
 
             //sending welcome email
             $this->emailService->sendEmail(
@@ -86,6 +102,10 @@ final class UserController extends AbstractController
                 'Emails/welcome.html.twig',
                 ['user' => $user]
             );
+
+            //saving the entity
+            $entityManager->persist($user);
+            $entityManager->flush();
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
