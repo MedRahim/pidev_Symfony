@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Réservations{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-history me-2"></i>Mes Réservations</h1>
+        <a href="{{ path('app_trips_index') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Nouvelle réservation
+        </a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            {% if reservations|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Référence</th>
+                                <th>Trajet</th>
+                                <th>Date</th>
+                                <th>Sièges</th>
+                                <th>Type</th>
+                                <th>Statut</th>
+                                <th>Prix</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reservation in reservations %}
+                            <tr>
+                                <td>#{{ reservation.id }}</td>
+                                <td>
+                                    {{ reservation.trip.departure }} → {{ reservation.trip.destination }}<br>
+                                    <small>{{ reservation.trip.departureTime|date('d/m/Y H:i') }}</small>
+                                </td>
+                                <td>{{ reservation.reservationTime|date('d/m/Y') }}</td>
+                                <td>{{ reservation.seatNumber }}</td>
+                                <td>
+                                    <span class="badge bg-{{ reservation.seatType == 'Standard' ? 'info' : 'warning' }}">
+                                        {{ reservation.seatType }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ reservation.status == 'Confirmed' ? 'success' : (reservation.status == 'Annulé' ? 'secondary' : 'warning') }}">
+                                        {{ reservation.paymentStatus == 'Paid' ? 'Payé' : (reservation.status == 'Annulé' ? 'Annulé' : 'En attente') }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% set basePrice = reservation.trip.price %}
+                                    {% if reservation.seatType == 'Standard' %}
+                                        {{ (basePrice * reservation.seatNumber) + (10 * reservation.seatNumber) }} TND
+                                    {% else %}
+                                        {{ basePrice * reservation.seatNumber }} TND
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ path('app_reservations_details', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> Voir détails
+                                    </a>
+                                    <a href="{{ path('app_reservations_edit', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-warning">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </a>
+                                    {% if reservation.paymentStatus == 'Pending' %}
+                                        <a href="{{ path('app_reservations_pay_pending', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-success">
+                                            <i class="fas fa-credit-card"></i> Payer
+                                        </a>
+                                    {% endif %}
+                                    {% if reservation.status != 'Annulé' %}
+                                        <form action="{{ path('app_reservations_cancel', {'id': reservation.id}) }}" method="post" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-times-circle"></i> Annuler
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center">
+                    <p class="mb-4">Vous n'avez aucune réservation pour le moment.</p>
+                    <a href="{{ path('app_trips_index') }}" class="btn btn-primary">
+                        <i class="fas fa-route me-2"></i>Voir les voyages disponibles
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

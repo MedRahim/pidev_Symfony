@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier ma réservation{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4"><i class="fas fa-edit me-2"></i>Modifier ma réservation #{{ reservation.id }}</h1>
+    
+    {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.seatNumber) }}
+            {{ form_widget(form.seatNumber, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.seatNumber) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.seatType) }}
+            {{ form_widget(form.seatType, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.seatType) }}
+        </div>
+        {# Vous pouvez afficher le prix recalculé si besoin #}
+        {% if price is defined and price %}
+            <div class="alert alert-info">
+                <strong>Prix recalculé :</strong> {{ price }} TND
+            </div>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Enregistrer la modification</button>
+        <a href="{{ path('app_reservations_details', {'id': reservation.id}) }}" class="btn btn-secondary">Annuler</a>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

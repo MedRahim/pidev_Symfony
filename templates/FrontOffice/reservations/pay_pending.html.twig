@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payer ma réservation{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4"><i class="fas fa-credit-card me-2"></i>Payer la réservation #{{ reservation.id }}</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Trajet :</strong> {{ reservation.trip.departure }} → {{ reservation.trip.destination }}</p>
+            <p><strong>Sièges :</strong> {{ reservation.seatNumber }} - <strong>Type :</strong> {{ reservation.seatType }}</p>
+            <hr>
+            <form method="post">
+                <div class="mb-3">
+                    <label for="cardNumber" class="form-label">Numéro de carte</label>
+                    <input type="text" id="cardNumber" name="cardNumber" class="form-control" required>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="expiryDate" class="form-label">Date d'expiration</label>
+                        <input type="text" id="expiryDate" name="expiryDate" class="form-control" placeholder="MM/AA" required>
+                    </div>
+                    <div class="col">
+                        <label for="cvv" class="form-label">CVV</label>
+                        <input type="text" id="cvv" name="cvv" class="form-control" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Payer</button>
+                <a href="{{ path('app_reservations_details', {'id': reservation.id}) }}" class="btn btn-secondary">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

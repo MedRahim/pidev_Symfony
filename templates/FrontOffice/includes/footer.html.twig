@@ -1,0 +1,66 @@
+<footer>
+    <div class="footer-area">
+        <div class="container">
+            <div class="footer-top footer-padding">
+                <div class="row justify-content-between">
+                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                        <div class="single-footer-caption mb-50">
+                            <div class="single-footer-caption mb-30">
+                                <!-- logo -->
+                                <div class="footer-logo">
+                                    <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo2_footer.png') }}" alt=""></a>
+                                </div>
+                                <div class="footer-about">
+                                    <p>Nous créons des expériences de voyage inoubliables à travers le monde.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
+                        <div class="single-footer-caption mb-50">
+                            <div class="footer-tittle">
+                                <h4>Liens rapides</h4>
+                                <ul>
+                                    <li><a href="{{ path('home') }}">Accueil</a></li>
+                                    <li><a href="{{ path('trips_index') }}">Voyages</a></li>
+                                    <li><a href="{{ path('about') }}">À propos</a></li>
+                                    <li><a href="{{ path('contact') }}">Contact</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
+                        <div class="single-footer-caption mb-50">
+                            <div class="footer-tittle">
+                                <h4>Coordonnées</h4>
+                                <ul class="contact-info">
+                                    <li><i class="ti-location-pin"></i> 123 Rue des Voyages, Paris</li>
+                                    <li><i class="ti-email"></i> contact@agencevoyage.com</li>
+                                    <li><i class="ti-mobile"></i> +33 1 23 45 67 89</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="row d-flex justify-content-between align-items-center">
+                    <div class="col-xl-9 col-lg-8">
+                        <div class="footer-copy-right">
+                            <p>&copy; {{ "now"|date("Y") }} Agence de Voyage. Tous droits réservés.</p>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4">
+                        <!-- Footer Social -->
+                        <div class="footer-social f-right">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

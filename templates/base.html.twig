@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Agence de Voyage{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    {% block body %}{% endblock %}
+    
+    <script src="{{ asset('FrontOffice/assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/bootstrap.min.js') }}"></script>
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

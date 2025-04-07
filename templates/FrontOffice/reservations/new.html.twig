@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Réservation{% endblock %}
+
+{% block body %}
+    <h1>Réservez votre voyage</h1>
+    
+    {{ form_start(form) }}
+    
+    <div class="form-group">
+        {{ form_label(form.seatNumber) }}
+        {{ form_widget(form.seatNumber) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.seatType) }}
+        {{ form_widget(form.seatType) }}
+    </div>
+
+    <div class="form-group">
+        <label for="price">Prix Total : </label>
+        <span id="price">0</span> € <!-- Le prix sera mis à jour ici -->
+    </div>
+
+    <button type="submit" class="btn btn-primary">Confirmer la Réservation</button>
+    
+    {{ form_end(form) }}
+
+   <script>
+    function calculatePrice() {
+        const seatNumberEl = document.getElementById('reservation_seatNumber');
+        const seatTypeEl = document.getElementById('reservation_seatType');
+        const priceEl = document.getElementById('price');
+
+        const seatNumber = parseInt(seatNumberEl.value) || 0;
+        const seatType = seatTypeEl.value;
+
+        let pricePerSeat = 10;
+
+        if (seatType.toLowerCase().includes('premium')) {
+            pricePerSeat = 15;
+        }
+
+        const total = seatNumber * pricePerSeat;
+        priceEl.textContent = total;
+    }
+<div class="form-group">
+    <label>Prix total :</label>
+    <span id="price">0</span> TND
+</div>
+
+    document.addEventListener('DOMContentLoaded', () => {
+        calculatePrice();
+        document.getElementById('reservation_seatNumber').addEventListener('input', calculatePrice);
+        document.getElementById('reservation_seatType').addEventListener('change', calculatePrice);
+    });
+</script>
+
+{% endblock %}
