@@ -352,7 +352,7 @@ class ReservationsController extends AbstractController
         $seatType = $reservation->getSeatType();
         $basePrice = (float) $trip->getPrice();
         
-        return ($seatType === 'Standard')
+        return ($seatType === 'premuim')
             ? ($basePrice * $seatNumber) + (10 * $seatNumber)
             : $basePrice * $seatNumber;
     }
