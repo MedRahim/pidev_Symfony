@@ -26,3 +26,7 @@ services:
     App\Service\FileUploader:
         arguments:
             $targetDirectory: '%profile_pictures_directory%'
+
+    app.oauth_user_provider:
+        class: App\Security\OAuthUserProvider
+        arguments: [ '@doctrine.orm.entity_manager' ]

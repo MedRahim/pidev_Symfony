@@ -20,7 +20,26 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+            custom_authenticator: App\Security\OAuth2Authenticator
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                # target: app_any_route
 
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /
+                # by default, the feature is enabled by checking a checkbox in the
+                # login form, uncomment the following line to always enable it.
+                #always_remember_me: true
+            oauth:
+                resource_owners:
+                    google: "/connect/google/check"
+                login_path: /login
+                failure_path: /login
+                oauth_user_provider:
+                    service: app.oauth_user_provider
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 

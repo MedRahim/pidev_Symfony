@@ -85,7 +85,7 @@ final class UserController extends AbstractController
                 $logger->debug('User entity before processing:', [
                     'role' => $fileName,
                 ]);
-                $user->setPathToPic('/uploads/profile_pictures/' . $user->getName().'-' . $fileName);
+                $user->setPathToPic('/uploads/profile_pictures/' . $fileName);
             }
 
             //verifying the information

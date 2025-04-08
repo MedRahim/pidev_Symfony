@@ -11,3 +11,11 @@ app_login:
 
 app_logout:
     path: /logout
+
+connect_google:
+    path: /connect/google
+    controller: KnpU\OAuth2ClientBundle\Controller\ConnectController::connectAction
+
+connect_google_check:
+    path: /connect/google/check
+    controller: KnpU\OAuth2ClientBundle\Controller\ConnectController::connectCheckAction
