@@ -44,8 +44,8 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="badge bg-{{ reservation.status == 'Confirmed' ? 'success' : (reservation.status == 'Annulé' ? 'secondary' : 'warning') }}">
-                                        {{ reservation.paymentStatus == 'Paid' ? 'Payé' : (reservation.status == 'Annulé' ? 'Annulé' : 'En attente') }}
+                                    <span class="badge bg-{{ reservation.status == 'confirmed' ? 'success' : (reservation.status == 'cancelled' ? 'secondary' : 'warning') }}">
+                                        {{ reservation.paymentStatus == 'confirmed' ? 'Confirmé' : (reservation.status == 'cancelled' ? 'Annulé' : 'En attente') }}
                                     </span>
                                 </td>
                                 <td>
@@ -61,15 +61,23 @@
                                         <a href="{{ path('app_reservations_details', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-eye me-1"></i> Voir
                                         </a>
-                                        <a href="{{ path('app_reservations_edit', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-warning">
-                                            <i class="fas fa-edit me-1"></i> Modifier
-                                        </a>
-                                        {% if reservation.paymentStatus == 'Pending' %}
+                                        
+                                        {# Bouton Modifier - Toujours visible sauf si annulé #}
+                                        {% if reservation.status != 'cancelled' %}
+                                            <a href="{{ path('app_reservations_edit', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-warning">
+                                                <i class="fas fa-edit me-1"></i> Modifier
+                                            </a>
+                                        {% endif %}
+                                        
+                                        {# Bouton Payer - Seulement pour les réservations en attente #}
+                                        {% if reservation.paymentStatus == 'pending' and reservation.status != 'cancelled' %}
                                             <a href="{{ path('app_reservations_pay_pending', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-success">
                                                 <i class="fas fa-credit-card me-1"></i> Payer
                                             </a>
                                         {% endif %}
-                                        {% if reservation.status != 'Annulé' %}
+                                        
+                                        {# Bouton Annuler - Seulement pour les réservations non annulées #}
+                                        {% if reservation.status != 'cancelled' %}
                                             <form action="{{ path('app_reservations_cancel', {'id': reservation.id}) }}" method="post" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
                                                 <button type="submit" class="btn btn-sm btn-outline-danger">
                                                     <i class="fas fa-times-circle me-1"></i> Annuler

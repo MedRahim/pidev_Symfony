@@ -36,10 +36,10 @@
                     </p>
                     <p>
                         <strong><i class="fas fa-check-circle me-2"></i>Statut:</strong>
-                        <span class="badge bg-{{ reservation.status == 'Confirmed' ? 'success' : (reservation.status == 'Annulé' ? 'secondary' : 'warning') }}">
-                            {% if reservation.paymentStatus == 'Paid' %}
-                                Payé
-                            {% elseif reservation.status == 'Annulé' %}
+                        <span class="badge bg-{{ reservation.status == 'confirmed' ? 'success' : (reservation.status == 'cancelled' ? 'secondary' : 'warning') }}">
+                            {% if reservation.paymentStatus == 'confirmed' %}
+                                Confirmé
+                            {% elseif reservation.status == 'cancelled' %}
                                 Annulé
                             {% else %}
                                 En attente
@@ -58,17 +58,22 @@
             </div>
             
             <div class="mt-4">
-                {% if reservation.paymentStatus == 'Pending' %}
+                {# Bouton Payer - Seulement pour les réservations en attente #}
+                {% if reservation.paymentStatus == 'pending' and reservation.status != 'cancelled' %}
                     <a href="{{ path('app_reservations_pay_pending', {'id': reservation.id}) }}" class="btn btn-success">
                         <i class="fas fa-credit-card me-2"></i>Effectuer le paiement
                     </a>
                 {% endif %}
                 
-                <a href="{{ path('app_reservations_edit', {'id': reservation.id}) }}" class="btn btn-warning">
-                    <i class="fas fa-edit me-2"></i>Modifier
-                </a>
+                {# Bouton Modifier - Toujours visible sauf si annulé #}
+                {% if reservation.status != 'cancelled' %}
+                    <a href="{{ path('app_reservations_edit', {'id': reservation.id}) }}" class="btn btn-warning">
+                        <i class="fas fa-edit me-2"></i>Modifier
+                    </a>
+                {% endif %}
                 
-                {% if reservation.status != 'Annulé' %}
+                {# Bouton Annuler - Seulement pour les réservations non annulées #}
+                {% if reservation.status != 'cancelled' %}
                     <form action="{{ path('app_reservations_cancel', {'id': reservation.id}) }}" method="post" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
                         <button type="submit" class="btn btn-danger">
                             <i class="fas fa-times-circle me-2"></i>Annuler la réservation

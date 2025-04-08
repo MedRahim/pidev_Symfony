@@ -1,30 +1,137 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier ma réservation{% endblock %}
+{% block title %}Modifier Réservation #{{ reservation.id }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
-    <h1 class="mb-4"><i class="fas fa-edit me-2"></i>Modifier ma réservation #{{ reservation.id }}</h1>
-    
-    {{ form_start(form) }}
-        <div class="mb-3">
-            {{ form_label(form.seatNumber) }}
-            {{ form_widget(form.seatNumber, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.seatNumber) }}
-        </div>
-        <div class="mb-3">
-            {{ form_label(form.seatType) }}
-            {{ form_widget(form.seatType, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.seatType) }}
-        </div>
-        {# Vous pouvez afficher le prix recalculé si besoin #}
-        {% if price is defined and price %}
-            <div class="alert alert-info">
-                <strong>Prix recalculé :</strong> {{ price }} TND
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0 text-center">
+                        <i class="fas fa-edit me-2"></i>Modifier Réservation #{{ reservation.id }}
+                    </h2>
+                </div>
+                
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.seatNumber) }}
+                            {{ form_widget(form.seatNumber, {
+                                'attr': {
+                                    'class': 'form-control' ~ (form.seatNumber.vars.errors|length ? ' is-invalid' : ''),
+                                    'data-price-calculator': 'true'
+                                }
+                            }) }}
+                            {{ form_errors(form.seatNumber) }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form_label(form.seatType) }}
+                            {{ form_widget(form.seatType, {
+                                'attr': {
+                                    'class': 'form-select' ~ (form.seatType.vars.errors|length ? ' is-invalid' : ''),
+                                    'data-price-calculator': 'true'
+                                }
+                            }) }}
+                            {{ form_errors(form.seatType) }}
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h5 class="alert-heading">Détails de la réservation</h5>
+                            <ul class="mb-0">
+                                <li>Trajet: {{ reservation.trip.departure }} → {{ reservation.trip.destination }}</li>
+                                <li>Date: {{ reservation.trip.departureTime|date('d/m/Y H:i') }}</li>
+                                <li>Statut: 
+                                    <span class="badge bg-{{ reservation.status == 'confirmed' ? 'success' : 'warning' }}">
+                                        {{ reservation.status == 'confirmed' ? 'Confirmé' : 'En attente' }}
+                                    </span>
+                                </li>
+                                <li>Prix actuel: {{ originalPrice }} TND</li>
+                            </ul>
+                        </div>
+                        
+                        <div id="price-preview" class="alert alert-secondary d-none">
+                            <strong>Nouveau prix estimé:</strong> <span id="new-price">0</span> TND
+                            <div id="price-difference-container" class="mt-2"></div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('app_reservations_details', {'id': reservation.id}) }}" 
+                               class="btn btn-outline-secondary">
+                               <i class="fas fa-arrow-left me-2"></i>Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
             </div>
-        {% endif %}
-        <button type="submit" class="btn btn-primary">Enregistrer la modification</button>
-        <a href="{{ path('app_reservations_details', {'id': reservation.id}) }}" class="btn btn-secondary">Annuler</a>
-    {{ form_end(form) }}
+        </div>
+    </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const priceCalculators = document.querySelectorAll('[data-price-calculator]');
+    const pricePreview = document.getElementById('price-preview');
+    const newPriceSpan = document.getElementById('new-price');
+    const priceDiffContainer = document.getElementById('price-difference-container');
+    
+    const basePrice = {{ reservation.trip.price }};
+    
+    function calculateNewPrice() {
+        const seatNumber = parseInt(document.getElementById('{{ form.seatNumber.vars.id }}').value) || 0;
+        const seatType = document.getElementById('{{ form.seatType.vars.id }}').value;
+        
+        let newPrice = basePrice * seatNumber;
+        if (seatType === 'premium') {
+            newPrice += (10 * seatNumber);
+        }
+        
+        return newPrice;
+    }
+    
+    function updatePricePreview() {
+        const newPrice = calculateNewPrice();
+        const originalPrice = {{ originalPrice }};
+        const difference = newPrice - originalPrice;
+        
+        newPriceSpan.textContent = newPrice;
+        pricePreview.classList.remove('d-none');
+        
+        priceDiffContainer.innerHTML = '';
+        if (difference > 0) {
+            priceDiffContainer.innerHTML = `
+                <div class="alert alert-warning p-2 mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Supplément à payer: ${difference} TND
+                </div>
+            `;
+        } else if (difference < 0) {
+            priceDiffContainer.innerHTML = `
+                <div class="alert alert-success p-2 mb-0">
+                    <i class="fas fa-coins me-2"></i>
+                    Remboursement: ${-difference} TND
+                </div>
+            `;
+        } else {
+            priceDiffContainer.innerHTML = `
+                <div class="alert alert-info p-2 mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Pas de changement de prix
+                </div>
+            `;
+        }
+    }
+    
+    priceCalculators.forEach(element => {
+        element.addEventListener('change', updatePricePreview);
+    });
+    
+    // Initial calculation if values are already changed
+    updatePricePreview();
+});
+</script>
 {% endblock %}

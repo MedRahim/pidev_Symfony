@@ -1,9 +1,12 @@
 <?php
 
+// src/Entity/Reservations.php
+
 namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Reservations
@@ -27,14 +30,18 @@ class Reservations
      *
      * @ORM\Column(name="reservation_time", type="datetime", nullable=true, options={"default"="NULL"})
      */
-    private $reservationTime = 'NULL';
+    private $reservationTime = null;
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="status", type="string", length=20, nullable=true, options={"default"="'Pending'"})
+     * @Assert\Choice(
+     *     choices={"Pending", "Confirmed", "Cancelled"},
+     *     message="Statut invalide"
+     * )
      */
-    private $status = '\'Pending\'';
+    private $status = 'Pending';
 
     /**
      * @var int
@@ -47,6 +54,12 @@ class Reservations
      * @var int
      *
      * @ORM\Column(name="seat_number", type="integer", nullable=false)
+     * @Assert\NotBlank(message="Le nombre de sièges est obligatoire")
+     * @Assert\Positive(message="Le nombre de sièges doit être positif")
+     * @Assert\LessThanOrEqual(
+     *     value=10,
+     *     message="Vous ne pouvez pas réserver plus de 10 sièges"
+     * )
      */
     private $seatNumber;
 
@@ -54,15 +67,24 @@ class Reservations
      * @var string|null
      *
      * @ORM\Column(name="payment_status", type="string", length=20, nullable=true, options={"default"="'Pending'"})
+     * @Assert\Choice(
+     *     choices={"Pending", "Paid", "Cancelled", "Refunded"},
+     *     message="Statut de paiement invalide"
+     * )
      */
-    private $paymentStatus = '\'Pending\'';
+    private $paymentStatus = 'Pending';
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="seat_type", type="string", length=20, nullable=true, options={"default"="'Standard'"})
+     * @Assert\NotBlank(message="Le type de siège est obligatoire")
+     * @Assert\Choice(
+     *     choices={"Standard", "Premium"},
+     *     message="Type de siège invalide"
+     * )
      */
-    private $seatType = '\'Standard\'';
+    private $seatType = 'Standard';
 
     /**
      * @var \Trips
@@ -83,6 +105,7 @@ class Reservations
      * })
      */
     private $user;
+
 
     public function getId(): ?int
     {
