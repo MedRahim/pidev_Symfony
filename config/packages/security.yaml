@@ -14,7 +14,7 @@ security:
             security: false
 
         public:
-            pattern: ^/(public|login|connect|$)  # Add all public routes here
+            pattern: ^/ # Add all public routes here
             security: false
 
 
