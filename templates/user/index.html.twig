@@ -1,6 +1,6 @@
-<!DOCTYPE html>
+{% extends 'FrontOffice/base.html.twig' %}
 
-<title>User index</title>
+{% block title %}User Index{% endblock %}
 
 {% block body %}
     <h1>User index</h1>
@@ -67,3 +67,4 @@
     <a href="{{ path('app_user_login') }}">try login </a>
 
 {% endblock %}
+
