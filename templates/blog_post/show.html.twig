@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BlogPost{% endblock %}
+
+{% block body %}
+    <h1>BlogPost</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ blog_post.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ blog_post.title }}</td>
+            </tr>
+            <tr>
+                <th>Content</th>
+                <td>{{ blog_post.content }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ blog_post.createdAt ? blog_post.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>ImageUrl</th>
+                <td>{{ blog_post.imageUrl }}</td>
+            </tr>
+            <tr>
+                <th>Approved</th>
+                <td>{{ blog_post.approved ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Category</th>
+                <td>{{ blog_post.category }}</td>
+            </tr>
+            <tr>
+                <th>PostDate</th>
+                <td>{{ blog_post.postDate ? blog_post.postDate|date('Y-m-d') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_blog_post_index') }}">back to list</a>
+
+    <a href="{{ path('app_blog_post_edit', {'id': blog_post.id}) }}">edit</a>
+
+    {{ include('blog_post/_delete_form.html.twig') }}
+{% endblock %}

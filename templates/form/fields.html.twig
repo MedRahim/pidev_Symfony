@@ -1,0 +1,8 @@
+{# Add custom form field rendering logic here #}
+{% block form_row %}
+    <div class="form-group">
+        {{ form_label(form) }}
+        {{ form_widget(form) }}
+        {{ form_errors(form) }}
+    </div>
+{% endblock %}

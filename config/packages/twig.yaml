@@ -1,5 +1,13 @@
 twig:
     file_name_pattern: '*.twig'
+    default_path: '%kernel.project_dir%/templates'
+    paths: # Optional, if you have custom paths
+        '%kernel.project_dir%/templates': ~
+    globals: # Optional, if you need global variables
+        app_name: 'MyApp'
+
+services:
+    Twig\Extra\TwigExtraBundle\String\StringExtension: ~ # Ensure StringExtension is enabled
 
 when@test:
     twig:

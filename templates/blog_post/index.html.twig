@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BlogPost index{% endblock %}
+
+{% block body %}
+    <h1>BlogPost index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>CreatedAt</th>
+                <th>ImageUrl</th>
+                <th>Approved</th>
+                <th>Category</th>
+                <th>PostDate</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for blog_post in blog_posts %}
+            <tr>
+                <td>{{ blog_post.id }}</td>
+                <td>{{ blog_post.title }}</td>
+                <td>{{ blog_post.content }}</td>
+                <td>{{ blog_post.createdAt ? blog_post.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ blog_post.imageUrl }}</td>
+                <td>{{ blog_post.approved ? 'Yes' : 'No' }}</td>
+                <td>{{ blog_post.category }}</td>
+                <td>{{ blog_post.postDate ? blog_post.postDate|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_blog_post_show', {'id': blog_post.id}) }}">show</a>
+                    <a href="{{ path('app_blog_post_edit', {'id': blog_post.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_blog_post_new') }}">Create new</a>
+{% endblock %}

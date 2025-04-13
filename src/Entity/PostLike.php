@@ -2,22 +2,22 @@
 
 namespace App\Entity;
 
-use App\Repository\CommentRepository;
-use Doctrine\DBAL\Types\Types;
+use App\Repository\PostLikeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CommentRepository::class)]
-class Comment
+#[ORM\Entity(repositoryClass: PostLikeRepository::class)]
+class PostLike
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $content = null;
+    #[ORM\ManyToOne(targetEntity: BlogPost::class, inversedBy: 'likes')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?BlogPost $blogPost = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int
@@ -25,14 +25,14 @@ class Comment
         return $this->id;
     }
 
-    public function getContent(): ?string
+    public function getBlogPost(): ?BlogPost
     {
-        return $this->content;
+        return $this->blogPost;
     }
 
-    public function setContent(string $content): static
+    public function setBlogPost(?BlogPost $blogPost): static
     {
-        $this->content = $content;
+        $this->blogPost = $blogPost;
 
         return $this;
     }
