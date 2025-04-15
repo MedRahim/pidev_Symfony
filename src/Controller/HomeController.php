@@ -18,6 +18,12 @@ class HomeController extends AbstractController
         return $this->render('FrontOffice/indexx.html.twig');
     }
 
+    #[Route('/testing', name: 'admin')]
+    public function test(): Response
+    {
+        return $this->render('BackOffice/partials/base.html.twig');
+    }
+
     #[Route('/about', name: 'about')]
     public function about(): Response
     {

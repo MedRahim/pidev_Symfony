@@ -12,6 +12,9 @@
                         <div class="hero__caption">
                             <span>Explore the city</span>
                             <h1>Discover Great Places</h1>
+                            {% if app.user %}
+                                Welcome, {{ app.user.name }}!
+                            {% endif %}
                         </div>
                         <!--Hero form -->
                         <form action="#" class="search-box">

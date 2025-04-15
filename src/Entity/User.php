@@ -349,8 +349,22 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        // TODO: Implement getRoles() method.
+        // Start with an empty array
+        $roles = [];
+
+        // Add the main role if it exists
+        if ($this->Role !== null) {
+            $roles[] = $this->Role;
+        }
+
+        // Ensure all users have at least USER role
+        if (!in_array('USER', $roles)) {
+            $roles[] = 'USER';
+        }
+
+        return array_unique($roles);
     }
+
 
     public function getUserIdentifier(): string
     {

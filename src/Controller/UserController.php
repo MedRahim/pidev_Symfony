@@ -11,6 +11,7 @@ use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -30,6 +31,14 @@ final class UserController extends AbstractController
     public function index(UserRepository $userRepository): Response
     {
         return $this->render('user/index.html.twig', [
+            'users' => $userRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/admin/users',name: 'app_admin_Listusers', methods: ['GET'])]
+    public function users(UserRepository $userRepository): Response
+    {
+        return $this->render('BackOffice/amine/users.html.twig', [
             'users' => $userRepository->findAll(),
         ]);
     }
@@ -141,14 +150,54 @@ final class UserController extends AbstractController
             }
 
             // Login successful - do something with the user
-            $this->addFlash('success', 'Login successful!');
-            return $this->redirectToRoute('app_user_index');
+            if($user->getRole() == 'USER'){
+                $this->addFlash('success', 'Login successful!');
+                return $this->redirectToRoute('app_user_index');
+            }else{
+                $this->addFlash('success', 'Login successful!');
+                return $this->redirectToRoute('admin');
+            }
+
         }
 
         return $this->render('user/login.html.twig', [
             'form' => $form->createView(),
         ]);
     }
+//
+//            #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
+//            public function login(
+//                Request $request,
+//                UserRepository $userRepository,
+//                UserPasswordHasherInterface $passwordHasher,
+//            Security $security
+//        ): Response {
+//            // If user is already logged in, redirect them
+//            if ($security->getUser()) {
+//                return $this->redirectToRoute('app_user_index');
+//            }
+//
+//            $form = $this->createForm(LoginFormType::class);
+//            $form->handleRequest($request);
+//
+//            if ($form->isSubmitted() && $form->isValid()) {
+//                $data = $form->getData();
+//                $user = $userRepository->findByEmail($data['email']);
+//
+//                if (!$user || !$passwordHasher->isPasswordValid($user, $data['password'])) {
+//                    $this->addFlash('error', 'Invalid credentials.');
+//                    return $this->redirectToRoute('app_user_login');
+//                }
+//
+//                // Authenticate the user
+//                return $security->login($user, 'form_login', 'main');
+//            }
+//
+//            return $this->render('user/login.html.twig', [
+//                'form' => $form->createView(),
+//            ]);
+//        }
+
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
