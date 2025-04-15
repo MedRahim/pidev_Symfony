@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Form\UserType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\User;
+use Symfony\Component\HttpFoundation\Request;
 
 class HomeController extends AbstractController
 {
@@ -13,7 +16,13 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(): Response
     {
-        return $this->render('FrontOffice/index.html.twig');
+        return $this->render('FrontOffice/indexx.html.twig');
+    }
+
+    #[Route('/testing', name: 'admin')]
+    public function test(): Response
+    {
+        return $this->render('BackOffice/partials/base.html.twig');
     }
 
     #[Route('/about', name: 'about')]
@@ -64,6 +73,7 @@ class HomeController extends AbstractController
         return $this->render('FrontOffice/listing_details.html.twig');
     }
 
+
     #[Route('/search', name: 'search')]
     public function search(): Response
     {
@@ -71,16 +81,29 @@ class HomeController extends AbstractController
         return $this->render('FrontOffice/search.html.twig');
     }
 
-    #[Route('/register', name: 'register')]
-    public function register(): Response
+    #[Route('/register', name: 'register', methods: ['GET', 'POST'])]
+    public function register(Request $request, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('security/register.html.twig');
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_user_index');
+        }
+
+        return $this->render('user/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
-    #[Route('/location/{city}', name: 'location', requirements: ['city' => '(?!about|contact|blog)[a-zA-Z\-\s]+'])]
+    #[Route('/location/{city}', name: 'location')]
     public function location(string $city): Response
     {
-        // Logic to display city details
+        // Logique pour afficher les détails d'une ville
         return $this->render('FrontOffice/location.html.twig', [
             'city' => $city
         ]);

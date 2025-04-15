@@ -1,0 +1,57 @@
+<header>
+    <!-- Header Start -->
+    <div class="header-area header-transparent" style="background-color: #02044d;">
+        <div class="main-header">
+            <div class="header-bottom  header-sticky">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <!-- Logo -->
+                        <div class="col-xl-2 col-lg-2 col-md-1">
+                            <div class="logo">
+                                <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png" alt=""') }}" alt=""></a>
+                            </div>
+                        </div>
+                        <div class="col-xl-10 col-lg-10 col-md-8">
+                            <!-- Main-menu -->
+                            <div class="main-menu f-right d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation">
+                                        <li><a href="{{ path('home') }}">Home</a></li>
+                                        <li><a href="{{ path('about') }}">About</a></li>
+                                        <li><a href="{{ path('contact') }}">Contact</a></li>
+                                        <li><a href="{{ path('categori') }}">Categories</a></li>
+                                        <li><a href="{{ path('listing') }}">Listing</a></li>
+                                        <li><a href="#">Page</a>
+                                            <ul class="submenu">
+                                                <li><a href="{{ path('blog') }}">Blog</a></li>
+                                                <li><a href="{{ path('blog_details') }}">Blog Details</a></li>
+                                                <li><a href="{{ path('elements') }}">Elements</a></li>
+                                                <li><a href="{{ path('listing_details') }}">Listing Details</a></li>
+                                            </ul>
+                                        </li>
+{#                                        <li class="add-list"><a href="{{ path('register') }}"><i class="ti-plus"></i> Add Listing</a></li>#}
+                                        {% if app.session.get('user_id') %}
+                                            {% set currentUser = current_user_service.getUser() %}
+                                            <a href="{{ path('app_user_edit', {'id': currentUser.id}) }}">
+                                                {{ currentUser.name }}
+                                            </a>
+                                            <li class="register"><a href="{{ path('app_logoutuser') }}"><i class="ti-pencil"></i> Logout </a></li>
+                                        {% else %}
+                                            <li class="register"><a href="{{ path('app_user_login') }}"> Login </a></li>
+                                        {% endif %}
+
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- Mobile Menu -->
+                        <div class="col-12">
+                            <div class="mobile_menu d-block d-lg-none"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+</header>

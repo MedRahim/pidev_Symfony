@@ -68,7 +68,7 @@
                                                 </ul>
                                             </li>
                                             <li class="add-list"><a href="{{ path('listing_details') }}"><i class="ti-plus"></i> Add Listing</a></li>
-                                            {#<li class="login"><a href="{{ path('login') }}"><i class="ti-user"></i> Sign in</a></li>#}
+                                            {#  <li class="login"><a href="{{ path('login') }}"><i class="ti-user"></i> Sign in</a></li>#}
                                             <li class="register"><a href="{{ path('register') }}"><i class="ti-pencil"></i> Register</a></li>
                                         </ul>
                                     </nav>

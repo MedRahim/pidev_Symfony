@@ -1,0 +1,55 @@
+{% extends 'BackOffice/partials/base.html.twig' %}
+
+{% block title %}Users Index{% endblock %}
+
+{% block body %}
+    <div class="container-fluid p-3">
+        <h1 class="h5 mb-3">User index</h1>
+
+        <div class="table-responsive">
+            <table class="table table-sm table-striped table-bordered table-hover">
+                <thead class="small">
+                <tr>
+                    <th class="p-1">Name</th>
+                    <th class="p-1 text-truncate" style="max-width: 120px;">Email</th>
+                    <th class="p-1">Role</th>
+                    <th class="p-1">Active</th>
+                    <th class="p-1">Verified</th>
+                    <th class="p-1">Last Login</th>
+                    <th class="p-1">Created</th>
+                    <th class="p-1">Updated</th>
+                    <th class="p-1">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td class="p-1 align-middle">{{ user.Name }}</td>
+                        <td class="p-1 align-middle text-truncate" style="max-width: 120px;">{{ user.Email }}</td>
+                        <td class="p-1 align-middle">{{ user.Role }}</td>
+                        <td class="p-1 align-middle">{{ user.isActive ? 'Yes' : 'No' }}</td>
+                        <td class="p-1 align-middle">{{ user.isVerified ? 'Yes' : 'No' }}</td>
+                        <td class="p-1 align-middle small">{{ user.lastLoginDate ? user.lastLoginDate|date('Y-m-d H:i') : '' }}</td>
+                        <td class="p-1 align-middle small">{{ user.createdAt ? user.createdAt|date('Y-m-d') : '' }}</td>
+                        <td class="p-1 align-middle small">{{ user.updatedAt ? user.updatedAt|date('Y-m-d') : '' }}</td>
+                        <td class="p-1 align-middle">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-outline-primary btn-sm px-2">Show</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="9" class="p-1 text-center small">No records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+{#        <div class="d-flex gap-2 mt-2">#}
+{#            <a href="{{ path('app_user_new') }}" class="btn btn-success btn-sm">Create new</a>#}
+{#            <a href="{{ path('app_user_login') }}" class="btn btn-outline-info btn-sm">Try login</a>#}
+{#        </div>#}
+    </div>
+{% endblock %}
