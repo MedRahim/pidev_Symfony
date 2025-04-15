@@ -32,8 +32,14 @@
                 <td>{{ product.stock }}</td>
             </tr>
             <tr>
-                <th>ImagePath</th>
-                <td>{{ product.imagePath }}</td>
+                <th>Image</th>
+                <td>
+                    {% if product.imagePath is not null %}
+                        <img src="{{ asset(product.imagePath) }}" alt="{{ product.name }}" style="max-width: 200px;">
+                    {% else %}
+                        No image available
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>Sold</th>

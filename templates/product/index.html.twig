@@ -29,7 +29,13 @@
                 <td>{{ product.price }}</td>
                 <td>{{ product.stockLimit }}</td>
                 <td>{{ product.stock }}</td>
-                <td>{{ product.imagePath }}</td>
+                <td>
+                    {% if product.imagePath %}
+                        <img src="{{ asset(product.imagePath) }}" alt="{{ product.name }}" style="max-width: 100px;">
+                    {% else %}
+                        No image
+                    {% endif %}
+                </td>
                 <td>{{ product.sold }}</td>
                 <td>{{ product.description }}</td>
                 <td>

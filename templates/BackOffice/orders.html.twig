@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="{{ asset('BackOffice/assets/') }}"
+  data-template="vertical-menu-template-free"
+>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+  <title>Orders Management</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="{{ asset('BackOffice/assets/img/favicon/favicon.ico') }}" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/fonts/boxicons.css') }}" />
+  <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/css/core.css') }}" />
+  <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/css/theme-default.css') }}" />
+  <link rel="stylesheet" href="{{ asset('BackOffice/assets/css/demo.css') }}" />
+
+  <!-- Vendors CSS -->
+  <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+  <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/libs/apex-charts/apex-charts.css') }}" />
+
+  <!-- Helpers -->
+  <script src="{{ asset('BackOffice/assets/vendor/js/helpers.js') }}"></script>
+  <script src="{{ asset('BackOffice/assets/js/config.js') }}"></script>
+</head>
+
+<body>
+  <div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+      <!-- Sidebar -->
+      <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+        <div class="app-brand demo">
+          <a href="{{ path('orders_page') }}" class="app-brand-link">
+            <span class="app-brand-logo demo">
+              <!-- Add your logo SVG here -->
+            </span>
+            <span class="app-brand-text demo menu-text fw-bolder ms-2">Admin Panel</span>
+          </a>
+        </div>
+
+        <div class="menu-inner-shadow"></div>
+
+        <ul class="menu-inner py-1">
+          <li class="menu-item active">
+            <a href="{{ path('orders_page') }}" class="menu-link">
+              <i class="menu-icon tf-icons bx bx-package"></i>
+              <div>Orders</div>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="{{ path('products_page') }}" class="menu-link">
+              <i class="menu-icon tf-icons bx bx-cube"></i>
+              <div>Products</div>
+            </a>
+          </li>
+        </ul>
+      </aside>
+      <!-- /Sidebar -->
+
+      <div class="layout-page">
+        <!-- Navbar -->
+        <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme">
+          <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+            <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+              <i class="bx bx-menu bx-sm"></i>
+            </a>
+          </div>
+
+          <div class="navbar-nav-right d-flex align-items-center">
+            <div class="navbar-nav align-items-center">
+              <div class="nav-item d-flex align-items-center">
+                <i class="bx bx-search fs-4 lh-0"></i>
+                <input
+                  type="text"
+                  class="form-control border-0 shadow-none"
+                  placeholder="Search orders..."
+                />
+              </div>
+            </div>
+          </div>
+        </nav>
+        <!-- /Navbar -->
+
+        <!-- Content -->
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <h4 class="fw-bold py-3 mb-4">Orders List</h4>
+
+            <!-- Confirm Order Modal -->
+            <div class="modal fade" id="confirmOrderModal" tabindex="-1" aria-labelledby="confirmOrderModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="confirmOrderModalLabel">Confirm Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    Are you sure you want to confirm this order?
+                  </div>
+                  <div class="modal-footer">
+                    <form id="confirmOrderForm" method="post">
+                      <input type="hidden" name="_token" id="confirmOrderToken" value="">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <button type="submit" class="btn btn-primary">Confirm</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Delete Order Modal -->
+            <div class="modal fade" id="deleteOrderModal" tabindex="-1" aria-labelledby="deleteOrderModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="deleteOrderModalLabel">Delete Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    Are you sure you want to delete this order? This action cannot be undone.
+                  </div>
+                  <div class="modal-footer">
+                    <form id="deleteOrderForm" method="post">
+                      <input type="hidden" name="_token" id="deleteOrderToken" value="">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Order Details Modal -->
+            <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="orderDetailsModalLabel">Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body" id="orderDetailsModalBody">
+                    <!-- Content will be loaded dynamically via AJAX -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="table-responsive text-nowrap">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th>Product</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="table-border-bottom-0">
+                    {% for order in orders %}
+                    <tr>
+                      <td><strong>#{{ order.id }}</strong></td>
+                      <td>{{ order.date|date('Y-m-d H:i') }}</td>
+                      <td>
+                        <span class="badge bg-{{ order.status == 'delivered' ? 'success' : 'warning' }}">
+                          {{ order.status|capitalize }}
+                        </span>
+                      </td>
+                      <td>{{ order.product.name }}</td>
+                      <td>
+                        <button type="button" 
+                                class="btn btn-info btn-sm details-order-btn" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#orderDetailsModal"
+                                data-order-id="{{ order.id }}">
+                          Details
+                        </button>
+                        <button type="button" 
+                                class="btn btn-success btn-sm confirm-order-btn" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#confirmOrderModal"
+                                data-order-id="{{ order.id }}"
+                                data-csrf-token="{{ csrf_token('confirm' ~ order.id) }}">
+                          Confirm
+                        </button>
+                        <form method="post" action="{{ path('app_order_delete', {'id': order.id}) }}" style="display:inline-block;" onsubmit="return confirm('Are you sure?');">
+                          <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ order.id) }}">
+                          <button class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                      </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                      <td colspan="5" class="text-center py-4">No orders found</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <footer class="content-footer footer bg-footer-theme">
+            <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+              <div class="mb-2 mb-md-0">
+                © <script>document.write(new Date().getFullYear());</script>
+                Made with ❤️ by Your Company
+              </div>
+            </div>
+          </footer>
+          <!-- /Footer -->
+        </div>
+        <!-- /Content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Core JS -->
+  <script src="{{ asset('BackOffice/assets/vendor/libs/jquery/jquery.js') }}"></script>
+  <script src="{{ asset('BackOffice/assets/vendor/libs/popper/popper.js') }}"></script>
+  <script src="{{ asset('BackOffice/assets/vendor/js/bootstrap.js') }}"></script>
+  <script src="{{ asset('BackOffice/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+  <script src="{{ asset('BackOffice/assets/vendor/js/menu.js') }}"></script>
+
+  <!-- Main JS -->
+  <script src="{{ asset('BackOffice/assets/js/main.js') }}"></script>
+
+  <!-- Page JS -->
+  <script src="{{ asset('BackOffice/assets/js/dashboards-analytics.js') }}"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const confirmButtons = document.querySelectorAll('.confirm-order-btn');
+
+    confirmButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const orderId = button.getAttribute('data-order-id');
+            const csrfToken = button.getAttribute('data-csrf-token');
+            const form = document.getElementById('confirmOrderForm');
+            form.action = `/order/${orderId}/confirm`;
+            document.getElementById('confirmOrderToken').value = csrfToken;
+        });
+    });
+
+    const confirmForm = document.getElementById('confirmOrderForm');
+    confirmForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(confirmForm);
+
+        fetch(confirmForm.action, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message); // Show success message in a popup
+                location.reload(); // Reload the page to reflect changes
+            } else {
+                alert(data.message); // Show error message
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while confirming the order.');
+        });
+    });
+
+    const detailsButtons = document.querySelectorAll('.details-order-btn');
+
+    detailsButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const orderId = button.getAttribute('data-order-id');
+            const modalBody = document.getElementById('orderDetailsModalBody');
+
+            fetch(`/order/${orderId}/details`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                modalBody.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error loading order details:', error);
+                modalBody.innerHTML = '<p class="text-danger">Failed to load order details.</p>';
+            });
+        });
+    });
+  });
+  </script>
+</body>
+</html>

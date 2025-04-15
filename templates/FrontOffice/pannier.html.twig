@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pannier</title>
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Pannier</h1>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+        {% if orders is defined and orders is not empty %}
+            <form method="post" action="{{ path('app_order_pannier_pay') }}">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Order ID</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Total Price</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="order_ids[]" value="{{ order.id }}">
+                                </td>
+                                <td>#{{ order.id }}</td>
+                                <td>{{ order.product.name }}</td>
+                                <td>
+                                    {% for item in order.orderItems %}
+                                        {{ item.quantity }}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for item in order.orderItems %}
+                                        {{ item.priceTotal }}
+                                    {% endfor %}
+                                </td>
+                                <td>{{ order.date|date('Y-m-d H:i') }}</td>
+                                <td>
+                                    <form method="post" action="{{ path('app_order_delete', {'id': order.id}) }}" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to delete this order?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ order.id) }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary">Pay Selected Orders</button>
+            </form>
+        {% else %}
+            <p>No confirmed orders in your pannier.</p>
+        {% endif %}
+    </div>
+    <script src="{{ asset('FrontOffice/assets/js/bootstrap.min.js') }}"></script>
+</body>
+</html>

@@ -576,28 +576,191 @@
           <div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
-              <div class="row">
-                <!-- Products Card -->
-                <div class="col-lg-6 mb-4">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title">Products</h5>
-                      <p class="card-text">Manage your products here. Add, edit, or delete products as needed.</p>
-                      <a href="{{ path('products_page') }}" class="btn btn-primary">View Products</a>
+              <div class="mb-4">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                  Add New Product
+                </button>
+              </div>
+
+              <!-- Add Product Modal -->
+              <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                  </div>
-                </div>
-                <!-- Orders Card -->
-                <div class="col-lg-6 mb-4">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title">Orders</h5>
-                      <p class="card-text">Track and manage customer orders efficiently.</p>
-                      <a href="{{ path('orders_page') }}" class="btn btn-primary">View Orders</a>
+                    <div class="modal-body">
+                      {{ form_start(form, { 'attr': {'id': 'addProductForm', 'enctype': 'multipart/form-data'} }) }}
+                      {{ form_widget(form) }}
+                      <button type="submit" class="btn btn-primary">Save</button>
+                      {{ form_end(form) }}
                     </div>
                   </div>
                 </div>
               </div>
+
+              <script>
+              document.addEventListener('DOMContentLoaded', function () {
+                const form = document.getElementById('addProductForm');
+                form.addEventListener('submit', function (event) {
+                  event.preventDefault();
+                  const formData = new FormData(form);
+
+                  fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                  })
+                    .then(response => {
+                      if (response.ok) {
+                        location.reload(); // Reload the page to show the new product
+                      } else {
+                        return response.text().then(text => { throw new Error(text) });
+                      }
+                    })
+                    .catch(error => {
+                      console.error('Error:', error);
+                      alert('Error saving product: ' + error.message);
+                    });
+                });
+              });
+              </script>
+
+              <!-- Edit Product Modal -->
+              <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="editProductModalBody">
+                      <!-- Content will be loaded dynamically via AJAX -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <script>
+              document.addEventListener('DOMContentLoaded', function () {
+                const editButtons = document.querySelectorAll('.edit-product-btn');
+                editButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        const productId = button.getAttribute('data-product-id');
+                        const modalBody = document.getElementById('editProductModalBody');
+                        fetch(`/product/${productId}/edit`, {
+                            method: 'GET',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            modalBody.innerHTML = html;
+                            const form = modalBody.querySelector('form');
+                            form.addEventListener('submit', function (event) {
+                                event.preventDefault();
+                                const formData = new FormData(form);
+                                fetch(form.action, {
+                                    method: 'POST',
+                                    body: formData,
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest' // Ensure this header is set
+                                    }
+                                })
+                                .then(response => {
+                                    if (response.ok) {
+                                        location.reload(); // Reload to reflect changes
+                                    } else {
+                                        throw new Error('Network response was not ok.');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    alert('Error updating product: ' + error.message);
+                                });
+                            });
+                        })
+                        .catch(error => console.error('Error loading edit form:', error));
+                    });
+                });
+              });
+              </script>
+
+              <div class="row">
+                {% if products is defined and products is not empty %}
+                  {% for product in products %}
+                    <div class="col-lg-4 mb-4">
+                      <div class="card">
+                        <img
+                          src="{{ product.imagePath ? asset(product.imagePath) : asset('BackOffice/assets/img/default-product.jpg') }}"
+                          class="card-img-top"
+                          alt="{{ product.name }}"
+                        />
+                        <div class="card-body">
+                          <h5 class="card-title">{{ product.name }}</h5>
+                          <p class="card-text">{{ product.description }}</p>
+                          <p class="card-text"><strong>Price:</strong> {{ product.price }} USD</p>
+                          <p class="card-text"><strong>Stock:</strong> {{ product.stock }}</p>
+                          <button type="button" 
+                                  class="btn btn-primary edit-product-btn" 
+                                  data-bs-toggle="modal" 
+                                  data-bs-target="#editProductModal"
+                                  data-product-id="{{ product.id }}">
+                            Edit
+                          </button>
+                          <button type="button" 
+                                  class="btn btn-danger" 
+                                  data-bs-toggle="modal" 
+                                  data-bs-target="#deleteModal"
+                                  data-delete-url="{{ path('app_product_delete', {'id': product.id}) }}"
+                                  data-csrf-token="{{ csrf_token('delete' ~ product.id) }}">
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <p>No products available.</p>
+                {% endif %}
+              </div>
+
+              <!-- Delete Confirmation Modal -->
+              <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Are you sure you want to delete this product?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <form id="deleteForm" method="post">
+                        <input type="hidden" name="_token" id="csrfToken">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                const deleteModal = document.getElementById('deleteModal');
+                deleteModal.addEventListener('show.bs.modal', function(event) {
+                  const button = event.relatedTarget;
+                  const deleteUrl = button.getAttribute('data-delete-url');
+                  const csrfToken = button.getAttribute('data-csrf-token');
+                  
+                  document.getElementById('deleteForm').action = deleteUrl;
+                  document.getElementById('csrfToken').value = csrfToken;
+                });
+              });
+              </script>
             </div>
             <!-- / Content -->
 
