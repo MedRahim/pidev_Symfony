@@ -10,8 +10,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 
+
 class HomeController extends AbstractController
 {
+
     #[Route('/', name: 'home')]
     public function index(): Response
     {
@@ -71,7 +73,6 @@ class HomeController extends AbstractController
     {
         return $this->render('FrontOffice/listing_details.html.twig');
     }
-
 
     #[Route('/search', name: 'search')]
     public function search(): Response
