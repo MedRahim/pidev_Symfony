@@ -1,14 +1,12 @@
-{% extends 'BackOffice/partials/base.html.twig' %}
+{% extends 'FrontOffice/base.html.twig' %}
 
 {% block title %}Edit {{ user.Name }}{% endblock %}
 
 {% block body %}
-    <div class="container-fluid p-3">
+    <div class="container-fluid p-3 mt-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1 class="h4 mb-0 fw-bold">Edit User: {{ user.Name }}</h1>
-            <a href="{{ path('app_user_index') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left me-1"></i> Back to list
-            </a>
+
         </div>
 
         <div class="card shadow-sm mb-4">
@@ -77,12 +75,10 @@
 
                 <div class="d-flex justify-content-between mt-4">
                     <button type="submit" class="btn btn-primary fw-bold">
-                        <i class="bi bi-check-circle me-1"></i> Update User
+                        <i class="bi bi-check-circle me-1"></i> Update Profile
                     </button>
 
-                    <button type="button" class="btn btn-outline-danger fw-bold" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        <i class="bi bi-trash-fill me-1"></i> Delete User
-                    </button>
+
                 </div>
                 {{ form_end(form) }}
             </div>
