@@ -110,40 +110,65 @@
                         <div class="add-post-form mb-50">
                             <div class="card">
                                 <div class="card-body">
-                                    {{ form_start(form, {'attr': {'class': 'form-contact contact_form'}}) }}
+                                    {{ form_start(form, {'attr': {'class': 'form-contact contact_form', 'novalidate': 'novalidate'}}) }}
+                                    
+                                    {# Champ Title avec gestion d'erreur #}
                                     <div class="form-group">
+                                        {{ form_label(form.title) }}
                                         {{ form_widget(form.title, {
                                             'attr': {
-                                                'class': 'form-control fb-input',
+                                                'class': 'form-control' ~ (form.title.vars.errors|length ? ' is-invalid'),
                                                 'placeholder': 'What\'s on your mind?'
                                             }
                                         }) }}
+                                        <div class="invalid-feedback">
+                                            {{ form_errors(form.title) }}
+                                        </div>
                                     </div>
+
+                                    {# Champ Content avec gestion d'erreur #}
                                     <div class="form-group">
+                                        {{ form_label(form.content) }}
                                         {{ form_widget(form.content, {
                                             'attr': {
-                                                'class': 'form-control fb-textarea',
+                                                'class': 'form-control' ~ (form.content.vars.errors|length ? ' is-invalid'),
                                                 'placeholder': 'Write something here...',
                                                 'rows': 5
                                             }
                                         }) }}
+                                        <div class="invalid-feedback">
+                                            {{ form_errors(form.content) }}
+                                        </div>
                                     </div>
+
+                                    {# Champ Category avec gestion d'erreur #}
                                     <div class="form-group">
+                                        {{ form_label(form.category) }}
                                         {{ form_widget(form.category, {
                                             'attr': {
-                                                'class': 'form-control fb-select',
+                                                'class': 'form-control' ~ (form.category.vars.errors|length ? ' is-invalid'),
                                                 'placeholder': 'Select Category'
                                             }
                                         }) }}
+                                        <div class="invalid-feedback">
+                                            {{ form_errors(form.category) }}
+                                        </div>
                                     </div>
+
+                                    {# Champ ImageFile avec gestion d'erreur #}
                                     <div class="form-group">
+                                        {{ form_label(form.imageFile) }}
                                         {{ form_widget(form.imageFile, {
                                             'attr': {
-                                                'class': 'form-control fb-input',
+                                                'class': 'form-control' ~ (form.imageFile.vars.errors|length ? ' is-invalid'),
                                                 'placeholder': 'Upload Image'
                                             }
                                         }) }}
+                                        <div class="invalid-feedback">
+                                            {{ form_errors(form.imageFile) }}
+                                        </div>
                                     </div>
+
                                     <button type="submit" class="btn btn-primary">
                                         Post <i class="ti-arrow-right"></i>
                                     </button>

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PostLikeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PostLikeRepository::class)]
 class PostLike
@@ -18,6 +19,7 @@ class PostLike
     private ?BlogPost $blogPost = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Assert\NotNull(message: "The created date cannot be null.")]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'comments')]
@@ -14,9 +15,11 @@ class Comment
     private ?int $id = null;
 
     #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank(message: "The comment content cannot be blank.")]
     private ?string $content = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Assert\NotNull(message: "The created date cannot be null.")]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(targetEntity: BlogPost::class, inversedBy: 'comments')]

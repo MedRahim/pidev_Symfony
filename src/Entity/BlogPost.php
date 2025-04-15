@@ -20,9 +20,21 @@ class BlogPost
     private int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: "The title cannot be blank.")]
+    #[Assert\Length(
+        min: 5,
+        max: 255,
+        minMessage: "The title must exceed {{ limit }} characters.",
+        maxMessage: "The title cannot exceed {{ limit }} characters."
+    )]
     private string $title;
 
     #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank(message: "The content cannot be blank.")]
+    #[Assert\Length(
+        min: 10,
+        minMessage: "The title must exceed {{ limit }} characters."
+    )]
     private string $content;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -35,9 +47,17 @@ class BlogPost
     private bool $approved;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "The image URL cannot exceed {{ limit }} characters."
+    )]
     private ?string $imageUrl = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "The category cannot exceed {{ limit }} characters."
+    )]
     private ?string $category = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
@@ -51,7 +71,6 @@ class BlogPost
 
     public function __construct()
     {
-        // Set the automatically managed fields
         $this->createdAt = new \DateTimeImmutable();
         $this->postDate  = new \DateTime();
         $this->approved  = false;

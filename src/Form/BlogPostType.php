@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class BlogPostType extends AbstractType
 {
@@ -15,12 +16,21 @@ class BlogPostType extends AbstractType
         $builder
             ->add('title')
             ->add('content')
-            ->add('category')
+            ->add('category', ChoiceType::class, [
+                'choices' => [
+                    'Technology' => 'technology',
+                    'Health' => 'health',
+                    'Lifestyle' => 'lifestyle',
+                    'Education' => 'education',
+                    'Travel' => 'travel',
+                ],
+                'placeholder' => 'Select Category',
+                'required' => true,
+            ])
             // Use a file upload field that is not mapped directly to the entity
             ->add('imageFile', FileType::class, [
                 'label'    => 'Upload Image',
                 'mapped'   => false,
-                'required' => false,
             ]);
     }
 

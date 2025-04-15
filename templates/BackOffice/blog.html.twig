@@ -609,11 +609,16 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                       </div>
                                       <div class="modal-body">
-                                        <img src="{{ asset('uploads/' ~ blog.imageUrl) }}" alt="{{ blog.title }}" class="img-fluid mb-3">
+                                        <!-- Display the image without validation -->
+                                        <img src="{{ asset('uploads/images/' ~ blog.imageUrl) }}" alt="{{ blog.title }}" class="img-fluid mb-3">
+                                        
+                                        <!-- Display other blog details -->
                                         <p><strong>Category:</strong> {{ blog.category }}</p>
                                         <p><strong>Created At:</strong> {{ blog.createdAt|date('Y-m-d H:i') }}</p>
                                         <p><strong>Content:</strong> {{ blog.content }}</p>
                                         <hr>
+                                        
+                                        <!-- Comments Section -->
                                         <h6>Comments</h6>
                                         <ul>
                                           {% for comment in blog.comments %}
@@ -623,9 +628,12 @@
                                           {% endfor %}
                                         </ul>
                                         <hr>
+                                        
+                                        <!-- Likes -->
                                         <p><strong>Likes:</strong> {{ blog.likes|length }}</p>
                                       </div>
                                       <div class="modal-footer">
+                                        <!-- Delete Blog Form -->
                                         <form method="post" action="{{ path('app_blog_post_delete', {'id': blog.id}) }}" onsubmit="return confirm('Are you sure you want to delete this blog?');">
                                           <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ blog.id) }}">
                                           <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -696,14 +704,7 @@
     </div>
     <!-- / Layout wrapper -->
 
-    <div class="buy-now">
-      <a
-        href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
-        target="_blank"
-        class="btn btn-danger btn-buy-now"
-        >Upgrade to Pro</a
-      >
-    </div>
+  
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
