@@ -1,18 +1,39 @@
-{# templates/user/login.html.twig #}
 {% extends 'FrontOffice/base.html.twig' %}
 
 {% block title %}Login{% endblock %}
 
 {% block body %}
-    <h1>Login</h1>
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h1 class="h3 mb-4 text-center">Login</h1>
 
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">{{ message }}</div>
-    {% endfor %}
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% endfor %}
 
-    {{ form_start(form) }}
-    {{ form_row(form.email) }}
-    {{ form_row(form.password) }}
-    <button type="submit" class="btn btn-primary">Login</button>
-    {{ form_end(form) }}
+                        {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_row(form.email, {
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_row(form.password, {
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+
+                        <div class="d-grid gap-2 text-center">
+                            <button type="submit" class="btn btn-primary">LOGIN</button>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

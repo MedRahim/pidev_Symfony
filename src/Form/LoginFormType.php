@@ -17,7 +17,8 @@ class LoginFormType extends AbstractType
             'attr' => ['placeholder' => 'your@email.com']
         ])
         ->add('password', PasswordType::class, [
-            'label' => 'Password'
+            'label' => 'Password',
+            'attr' => ['placeholder' => 'your Password']
         ]);
     }
 }
