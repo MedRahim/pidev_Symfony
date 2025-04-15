@@ -8,7 +8,6 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-
 /**
  * @extends ServiceEntityRepository<User>
  */
@@ -17,12 +16,24 @@ class UserRepository extends ServiceEntityRepository
     private EntityManagerInterface $entityManager;
     private UserPasswordHasherInterface $passwordHasher;
 
-    public function __construct(ManagerRegistry $registry, EntityManagerInterface $entityManager,UserPasswordHasherInterface $passwordHasher)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher
+    ) {
         parent::__construct($registry, User::class);
         $this->entityManager = $entityManager;
         $this->passwordHasher = $passwordHasher;
+    }
+    
+    public function setEntityManager(EntityManagerInterface $entityManager): void
+    {
+        $this->entityManager = $entityManager;
+    }
 
+    public function setPasswordHasher(UserPasswordHasherInterface $passwordHasher): void
+    {
+        $this->passwordHasher = $passwordHasher;
     }
 
     public function findAllUsers(): array
@@ -44,6 +55,7 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->findBy(['Name' => $name]);
     }
+
     public function save(User $user, bool $flush = true): void
     {
         if ($user->getPassword()) {
@@ -70,7 +82,6 @@ class UserRepository extends ServiceEntityRepository
 
     public function updatePassword(User $user, string $newPassword, bool $flush = true): void
     {
-
         $hashedPassword = $this->passwordHasher->hashPassword(
             $user,
             $newPassword

@@ -16,6 +16,7 @@ services:
     App\Service\FileUploader:
         arguments:
             $targetDirectory: '%profile_pictures_directory%'
+            $slugger: '@slugger'
 
     app.oauth_user_provider:
         class: App\Security\OAuthUserProvider
@@ -29,10 +30,49 @@ services:
     App\Twig\AppExtension:
             arguments: [ '@App\Service\CurrentUserService' ]
             tags: [ 'twig.extension' ]
-            resource: '../src/*'
-            exclude: '../src/{DependencyInjection,Entity,Tests,Kernel.php}'
-            autowire: true
-            autoconfigure: true
 
-    # You can add more service definitions here if needed
+    App\Security\GoogleAuthenticator:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    App\Repository\UserRepository:
+        arguments:
+            - '@doctrine'
+            - '@doctrine.orm.entity_manager'
+            - '@security.user_password_hasher'
+        tags: ['doctrine.repository_service']
+
+    App\Controller\HomeController:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    App\Controller\BlogPostController:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    App\Repository\BlogPostRepository:
+        class: App\Repository\BlogPostRepository
+        arguments:
+            - '@doctrine'
+
+    App\Controller\UserController:
+        autowire: true
+        autoconfigure: true
+        public: true
+        tags: ['controller.service_arguments']
+
+    App\Service\EmailService:
+        arguments:
+            $mailer: '@mailer'
+            $logger: '@logger'
+            $twig: '@twig'
+
+    App\Controller\BaseController:
+        autowire: true
+        autoconfigure: true
+        public: true
+        tags: ['controller.service_arguments']
 

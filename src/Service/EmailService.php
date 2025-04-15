@@ -8,14 +8,17 @@ use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use Psr\Log\LoggerInterface;
 
 class EmailService
 {
     private MailerInterface $mailer;
+    private LoggerInterface $logger;
 
-    public function __construct(MailerInterface $mailer,private Environment $twig)
+    public function __construct(MailerInterface $mailer, LoggerInterface $logger, private Environment $twig)
     {
         $this->mailer = $mailer;
+        $this->logger = $logger;
     }
 
     public function sendEmail(
