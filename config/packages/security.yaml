@@ -36,6 +36,7 @@ security:
             logout:
                 path: app_logout
                 target: app_home
+                invalidate_session: true
 
             remember_me:
                 secret: '%kernel.secret%'
@@ -46,3 +47,5 @@ security:
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/connect, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: ROLE_USER }
+        - { path: ^/logout, roles: USER }
+

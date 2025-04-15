@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\amine;
+namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\LoginFormType;
@@ -11,8 +11,10 @@ use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -29,7 +31,7 @@ final class UserController extends AbstractController
     #[Route(name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
-        return $this->render('user/index.html.twig', [
+        return $this->render('FrontOffice/home.html.twig', [
             'users' => $userRepository->findAll(),
         ]);
     }
@@ -124,12 +126,12 @@ final class UserController extends AbstractController
         ]);
     }
 
-    // src/Controller/UserController.php
     #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
     public function login(
         Request $request,
         UserRepository $userRepository,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
+        SessionInterface $session
     ): Response {
         $form = $this->createForm(LoginFormType::class);
         $form->handleRequest($request);
@@ -149,6 +151,8 @@ final class UserController extends AbstractController
             }
 
             // Login successful - do something with the user
+            $session->set('user_id', $user->getId());
+
             if($user->getRole() == 'USER'){
                 $this->addFlash('success', 'Login successful!');
                 return $this->redirectToRoute('app_user_index');
@@ -158,49 +162,30 @@ final class UserController extends AbstractController
             }
 
         }
-
         return $this->render('user/login.html.twig', [
             'form' => $form->createView(),
         ]);
     }
-//
-//            #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
-//            public function login(
-//                Request $request,
-//                UserRepository $userRepository,
-//                UserPasswordHasherInterface $passwordHasher,
-//            Security $security
-//        ): Response {
-//            // If user is already logged in, redirect them
-//            if ($security->getUser()) {
-//                return $this->redirectToRoute('app_user_index');
-//            }
-//
-//            $form = $this->createForm(LoginFormType::class);
-//            $form->handleRequest($request);
-//
-//            if ($form->isSubmitted() && $form->isValid()) {
-//                $data = $form->getData();
-//                $user = $userRepository->findByEmail($data['email']);
-//
-//                if (!$user || !$passwordHasher->isPasswordValid($user, $data['password'])) {
-//                    $this->addFlash('error', 'Invalid credentials.');
-//                    return $this->redirectToRoute('app_user_login');
-//                }
-//
-//                // Authenticate the user
-//                return $security->login($user, 'form_login', 'main');
-//            }
-//
-//            return $this->render('user/login.html.twig', [
-//                'form' => $form->createView(),
-//            ]);
-//        }
+
+    #[Route('/logoutuser', name: 'app_logoutuser')]
+    public function logout(SessionInterface $session): RedirectResponse
+    {
+
+        // Clear the session manually
+        $session->remove('user_id');  // Remove specific session data
+        $session->invalidate();
+
+        // Optionally, you can add a flash message
+        $this->addFlash('success', 'You have been logged out.');
+
+        // Redirect to the home page or any other page after logout
+        return $this->redirectToRoute('app_user_index');
+    }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
-        return $this->render('user/show.html.twig', [
+        return $this->render('BackOffice/amine/showUser.html.twig', [
             'user' => $user,
         ]);
     }
