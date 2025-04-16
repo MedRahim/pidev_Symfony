@@ -2,95 +2,83 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Trips
- *
- * @ORM\Table(name="trips", uniqueConstraints={@ORM\UniqueConstraint(name="id", columns={"id"})}, indexes={@ORM\Index(name="trips_ibfk_1", columns={"transport_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\TripsRepository")
+ * @ORM\Table(name="trips")
  */
 class Trips
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="departure", type="string", length=100, nullable=false)
+     * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=2, max=100)
      */
     private $departure;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="destination", type="string", length=100, nullable=false)
+     * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=2, max=100)
      */
     private $destination;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="departure_time", type="datetime", nullable=false)
+     * @ORM\Column(type="datetime")
+     * @Assert\NotBlank()
+     * @Assert\GreaterThan("now")
      */
     private $departureTime;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="arrival_time", type="datetime", nullable=false)
+     * @ORM\Column(type="datetime")
+     * @Assert\NotBlank()
+     * @Assert\GreaterThan(propertyPath="departureTime")
      */
     private $arrivalTime;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="price", type="decimal", precision=10, scale=2, nullable=false)
+     * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @Assert\NotBlank()
+     * @Assert\Positive()
      */
     private $price;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="transport_name", type="string", length=255, nullable=true, options={"default"="NULL"})
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $transportName = null;
+    private $transportName;
 
     /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="date", type="date", nullable=true, options={"default"="NULL"})
+     * @ORM\Column(type="date", nullable=true)
      */
-    private $date = null;
+    private $date;
 
     /**
-     * @var float
-     *
-     * @ORM\Column(name="distance", type="float", precision=10, scale=0, nullable=false)
+     * @ORM\Column(type="float")
+     * @Assert\PositiveOrZero()
      */
-    private float $distance = 0.0;
+    private $distance = 0.0;
+
     /**
-     * @var int
-     *
-     * @ORM\Column(name="capacity", type="integer", nullable=false, options={"default"="50"})
+     * @ORM\Column(type="integer", options={"default"=50})
+     * @Assert\NotBlank()
+     * @Assert\Positive()
      */
     private $capacity = 50;
 
     /**
-     * @var \TransportTypes
-     *
      * @ORM\ManyToOne(targetEntity="TransportTypes")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="transport_id", referencedColumnName="transport_id")
-     * })
+     * @ORM\JoinColumn(name="transport_id", referencedColumnName="transport_id")
      */
     private $transport;
 
@@ -131,9 +119,9 @@ class Trips
     public function setDepartureTime(\DateTimeInterface $departureTime): static
     {
         $this->departureTime = $departureTime;
-
         return $this;
     }
+    
 
     public function getArrivalTime(): ?\DateTimeInterface
     {
@@ -143,7 +131,6 @@ class Trips
     public function setArrivalTime(\DateTimeInterface $arrivalTime): static
     {
         $this->arrivalTime = $arrivalTime;
-
         return $this;
     }
 

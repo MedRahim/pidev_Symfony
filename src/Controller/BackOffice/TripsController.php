@@ -3,14 +3,10 @@
 namespace App\Controller\BackOffice;
 
 use App\Entity\Trips;
+use App\Form\TripsType;
 use App\Repository\TripsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,43 +36,7 @@ class TripsController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $trip = new Trips();
-        
-        $form = $this->createFormBuilder($trip)
-            ->add('departure', TextType::class, [
-                'attr' => ['class' => 'form-control'],
-                'label' => 'Lieu de départ'
-            ])
-            ->add('destination', TextType::class, [
-                'attr' => ['class' => 'form-control'],
-                'label' => 'Destination'
-            ])
-            ->add('departureTime', DateTimeType::class, [
-                'widget' => 'single_text',
-                'attr' => ['class' => 'form-control datetimepicker'],
-                'label' => 'Heure de départ'
-            ])
-            ->add('arrivalTime', DateTimeType::class, [
-                'widget' => 'single_text',
-                'attr' => ['class' => 'form-control datetimepicker'],
-                'label' => 'Heure d\'arrivée'
-            ])
-            ->add('capacity', IntegerType::class, [
-                'attr' => ['class' => 'form-control'],
-                'label' => 'Nombre de places'
-            ])
-            ->add('price', NumberType::class, [
-                'scale' => 2,
-                'attr' => [
-                    'class' => 'form-control',
-                    'step' => '0.01'
-                ],
-                'label' => 'Prix (€)'
-            ])
-            ->add('save', SubmitType::class, [
-                'label' => 'Créer le trajet',
-                'attr' => ['class' => 'btn btn-primary']
-            ])
-            ->getForm();
+        $form = $this->createForm(TripsType::class, $trip);
     
         $form->handleRequest($request);
     
@@ -96,48 +56,7 @@ class TripsController extends AbstractController
     #[Route('/{id}/edit', name: 'app_admin_trips_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, Trips $trip, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createFormBuilder($trip)
-            ->add('departure', TextType::class, [
-                'attr' => ['class' => 'form-control'],
-                'label' => 'Lieu de départ'
-            ])
-            ->add('destination', TextType::class, [
-                'attr' => ['class' => 'form-control'],
-                'label' => 'Destination'
-            ])
-            ->add('departureTime', DateTimeType::class, [
-                'widget' => 'single_text',
-                'attr' => ['class' => 'form-control datetimepicker'],
-                'label' => 'Heure de départ',
-                'required' => true
-              
-
-            ])
-            ->add('arrivalTime', DateTimeType::class, [
-                'widget' => 'single_text',
-                'attr' => ['class' => 'form-control datetimepicker'],
-                'label' => 'Heure d\'arrivée',
-                'required' => true
-              
-
-            ])
-            ->add('capacity', IntegerType::class, [
-                'attr' => ['class' => 'form-control'],
-                'label' => 'Nombre de places'
-            ])
-            ->add('price', NumberType::class, [
-                'scale' => 2,
-                'attr' => [
-                    'class' => 'form-control',
-                    'step' => '0.01'
-                ],
-                'label' => 'Prix (€)'
-            ])
-            ->add('save', SubmitType::class, [
-                'label' => 'Mettre à jour',
-                'attr' => ['class' => 'btn btn-primary mt-3']
-            ])
-            ->getForm();
+        $form = $this->createForm(TripsType::class, $trip);
 
         $form->handleRequest($request);
 

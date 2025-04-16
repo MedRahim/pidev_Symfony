@@ -1,17 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Agence de Voyage{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
+    <!-- Header/Navbar -->
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="{{ path('home') }}">
+                    <img src="{{ asset('FrontOffice/assets/img/logo.png') }}" alt="Logo Agence" height="40" class="me-2">
+                    <span class="fw-bold">VoyagePro</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('home') }}">Accueil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('category') }}">Destinations</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('about') }}">À propos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('blog') }}">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('contact') }}">Contact</a>
+                        </li>
+                    </ul>
+                    
+                    <div class="d-flex">
+                        {% if app.user %}
+                            <div class="dropdown">
+                                <a class="btn btn-light dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-circle me-1"></i> Mon compte
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="#">Profil</a></li>
+                                    <li><a class="dropdown-item" href="#">Mes réservations</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}">Déconnexion</a></li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <a href="{{ path('app_login') }}" class="btn btn-light me-2">
+                                <i class="fas fa-sign-in-alt me-1"></i> Connexion
+                            </a>
+                            <a href="{{ path('app_register') }}" class="btn btn-outline-light">
+                                <i class="fas fa-user-plus me-1"></i> Inscription
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
     {% block body %}{% endblock %}
     
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>VoyagePro</h5>
+                    <p>Votre agence de voyage préférée pour des trajets exceptionnels.</p>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h5>Liens</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ path('home') }}" class="text-white">Accueil</a></li>
+                        <li><a href="{{ path('about') }}" class="text-white">À propos</a></li>
+                        <li><a href="{{ path('contact') }}" class="text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Contact</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Rue des Voyages, Paris</li>
+                        <li><i class="fas fa-phone me-2"></i> +33 1 23 45 67 89</li>
+                        <li><i class="fas fa-envelope me-2"></i> contact@voyagepro.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-light">
+            <div class="text-center">
+                <p>&copy; {{ "now"|date("Y") }} VoyagePro. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
     <script src="{{ asset('FrontOffice/assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
-    <script src="{{ asset('FrontOffice/assets/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/bootstrap.bundle.min.js') }}"></script>
     {% block javascripts %}{% endblock %}
 </body>
 </html>
