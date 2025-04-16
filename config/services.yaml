@@ -57,6 +57,7 @@ services:
         class: App\Repository\BlogPostRepository
         arguments:
             - '@doctrine'
+        tags: ['doctrine.repository_service']
 
     App\Controller\UserController:
         autowire: true

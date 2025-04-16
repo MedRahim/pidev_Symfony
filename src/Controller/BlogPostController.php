@@ -51,11 +51,21 @@ final class BlogPostController extends AbstractController
         // Fetch recent posts
         $recentPosts = $blogPostRepository->findBy([], ['postDate' => 'DESC'], 5);
 
+        // Fetch all blog posts
+        $blogPosts = $blogPostRepository->findAll();
+
+        // Create edit forms for each post
+        $editForms = [];
+        foreach ($blogPosts as $post) {
+            $editForms[$post->getId()] = $this->createForm(BlogPostType::class, $post)->createView();
+        }
+
         return $this->render('FrontOffice/blog.html.twig', [
             'form' => $form->createView(),
-            'blog_posts' => $blogPostRepository->findBy([], ['postDate' => 'DESC']),
+            'blog_posts' => $blogPosts,
             'categories' => array_column($categories, 'category'),
             'recent_posts' => $recentPosts,
+            'editForms' => $editForms,
         ]);
     }
 
@@ -127,6 +137,27 @@ final class BlogPostController extends AbstractController
 
         return $this->json([
             'likes' => $blogPost->getLikes()->count(),
+        ]);
+    }
+
+    #[Route('/edit/{id}', name: 'app_blog_post_edit', methods: ['POST'])]
+    public function edit(
+        BlogPost $blogPost,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $form = $this->createForm(BlogPostType::class, $blogPost);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Post updated successfully!');
+            return $this->redirectToRoute('app_blog_post_index');
+        }
+
+        return $this->redirectToRoute('app_blog_post_index', [
+            'error' => 'Failed to update the post.',
         ]);
     }
 
