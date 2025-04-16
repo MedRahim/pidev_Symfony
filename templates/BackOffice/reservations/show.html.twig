@@ -1,0 +1,161 @@
+{% extends 'BackOffice/base.html.twig' %}
+
+{% block title %}Détails réservation #{{ reservation.id }}{% endblock %}
+
+{% block body %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Admin / Réservations /</span> Détails #{{ reservation.id }}
+    </h4>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Détails de la réservation</h5>
+                    <div class="d-flex">
+                        <a href="{{ path('app_admin_reservations_edit', {'id': reservation.id}) }}" class="btn btn-primary me-2">
+                            <i class="bx bx-edit me-1"></i> Modifier
+                        </a>
+                        <a href="{{ path('app_admin_reservations_index') }}" class="btn btn-secondary">
+                            <i class="bx bx-arrow-back me-1"></i> Retour
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Utilisateur</th>
+                                    <th>Trajet</th>
+                                    <th>Date réservation</th>
+                                    <th>Sièges</th>
+                                    <th>Type</th>
+                                    <th>Statut</th>
+                                    <th>Paiement</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reservation in reservations %}
+                                <tr>
+                                    <td><strong>{{ reservation.id }}</strong></td>
+                                    <td>
+                                        {% if reservation.user %}
+                                            {{ reservation.user.email }}
+                                        {% else %}
+                                            <span class="text-muted">Utilisateur inconnu</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if reservation.trip %}
+                                            {{ reservation.trip.departure }} → {{ reservation.trip.destination }}<br>
+                                            <small>{{ reservation.trip.departureTime|date('d/m/Y H:i') }}</small>
+                                        {% else %}
+                                            <span class="text-danger">Trajet supprimé</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ reservation.reservationTime|date('d/m/Y H:i') }}</td>
+                                    <td>{{ reservation.seatNumber }}</td>
+                                    <td>
+                                        <span class="badge bg-label-{{ reservation.seatType == 'Premium' ? 'warning' : 'primary' }}">
+                                            {{ reservation.seatType }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 
+                                            reservation.status == 'Confirmed' ? 'success' : 
+                                            (reservation.status == 'Cancelled' ? 'danger' : 'warning') 
+                                        }}">
+                                            {{ reservation.status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 
+                                            reservation.paymentStatus == 'Paid' ? 'success' : 
+                                            (reservation.paymentStatus == 'Cancelled' ? 'danger' : 
+                                            (reservation.paymentStatus == 'Refunded' ? 'info' : 'warning')) 
+                                        }}">
+                                            {{ reservation.paymentStatus }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <a href="{{ path('app_admin_reservations_show', {'id': reservation.id}) }}" 
+                                               class="btn btn-primary btn-sm">
+                                                <i class="bx bx-show me-1"></i>
+                                            </a>
+                                            <a href="{{ path('app_admin_reservations_edit', {'id': reservation.id}) }}" 
+                                               class="btn btn-secondary btn-sm">
+                                                <i class="bx bx-edit me-1"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="9" class="text-center py-4">Aucune réservation trouvée</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        {% if reservation.status == 'Pending' %}
+                            <a href="{{ path('app_admin_reservations_confirm', {'id': reservation.id}) }}" 
+                               class="btn btn-success">
+                                <i class="bx bx-check-circle me-1"></i> Confirmer
+                            </a>
+                            <a href="{{ path('app_admin_reservations_cancel', {'id': reservation.id}) }}" 
+                               class="btn btn-danger">
+                                <i class="bx bx-x-circle me-1"></i> Annuler
+                            </a>
+                        {% elseif reservation.status == 'Confirmed' %}
+                            <a href="{{ path('app_admin_reservations_cancel', {'id': reservation.id}) }}" 
+                               class="btn btn-danger">
+                                <i class="bx bx-x-circle me-1"></i> Annuler
+                            </a>
+                        {% endif %}
+                        
+                        {% if reservation.paymentStatus == 'Pending' and reservation.status == 'Confirmed' %}
+                            <a href="{{ path('app_admin_reservations_mark_paid', {'id': reservation.id}) }}" 
+                               class="btn btn-success mt-2">
+                                <i class="bx bx-credit-card me-1"></i> Marquer comme payé
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5>Informations</h5>
+                </div>
+                <div class="card-body">
+                    <p>Transport ID: {{ reservation.transportId }}</p>
+                    <p>Créé le: {{ reservation.reservationTime|date('d/m/Y H:i') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends 'BackOffice/base.html.twig' %}
+
+{% block title %}Gestion des réservations{% endblock %}
+
+{% block body %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <!-- ... en-tête et messages flash ... -->
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Utilisateur</th>
+                            <th>Trajet</th>
+                            <th>Date réservation</th>
+                            <th>Sièges</th>
+                            <th>Type</th>
+                            <th>Statut</th>
+                            <th>Paiement</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in reservations %}
+                        <tr>
+                            <td><strong>{{ reservation.id }}</strong></td>
+                            <td>
+                                {% if reservation.user %}
+                                    {{ reservation.user.email }}
+                                {% else %}
+                                    <span class="text-muted">Utilisateur inconnu</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if reservation.trip %}
+                                    {{ reservation.trip.departure }} → {{ reservation.trip.destination }}<br>
+                                    <small>{{ reservation.trip.departureTime|date('d/m/Y H:i') }}</small>
+                                {% else %}
+                                    <span class="text-muted">Trajet supprimé</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ reservation.reservationTime|date('d/m/Y H:i') }}</td>
+                            <td>{{ reservation.seatNumber }}</td>
+                            <td>
+                                <span class="badge bg-label-{{ reservation.seatType == 'Premium' ? 'warning' : 'primary' }}">
+                                    {{ reservation.seatType }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ 
+                                    reservation.status == 'Confirmed' ? 'success' : 
+                                    (reservation.status == 'Cancelled' ? 'danger' : 'warning') 
+                                }}">
+                                    {{ reservation.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ 
+                                    reservation.paymentStatus == 'Paid' ? 'success' : 
+                                    (reservation.paymentStatus == 'Cancelled' ? 'danger' : 
+                                    (reservation.paymentStatus == 'Refunded' ? 'info' : 'warning')) 
+                                }}">
+                                    {{ reservation.paymentStatus }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ path('app_admin_reservations_show', {'id': reservation.id}) }}" 
+                                       class="btn btn-primary btn-sm">
+                                        <i class="bx bx-show me-1"></i>
+                                    </a>
+                                    <a href="{{ path('app_admin_reservations_edit', {'id': reservation.id}) }}" 
+                                       class="btn btn-secondary btn-sm">
+                                        <i class="bx bx-edit me-1"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center py-4">Aucune réservation trouvée</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if total_pages > 1 %}
+            <nav class="mt-4" aria-label="Pagination">
+                <ul class="pagination justify-content-center">
+                    {% if current_page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_reservations_index', {'page': current_page - 1}) }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for i in 1..total_pages %}
+                        <li class="page-item {% if i == current_page %}active{% endif %}">
+                            <a class="page-link" href="{{ path('app_admin_reservations_index', {'page': i}) }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                    
+                    {% if current_page < total_pages %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_reservations_index', {'page': current_page + 1}) }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

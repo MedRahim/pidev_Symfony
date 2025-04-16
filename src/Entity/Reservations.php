@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="reservations", indexes={@ORM\Index(name="fk_reservation_trip", columns={"trip_id"}), @ORM\Index(name="transport_id", columns={"transport_id"}), @ORM\Index(name="reservations_fk_users", columns={"user_id"})})
  * @ORM\Entity
+ *@ORM\Entity(repositoryClass="App\Repository\ReservationsRepository")
  */
 class Reservations
 {
@@ -91,7 +92,7 @@ class Reservations
      *
      * @ORM\ManyToOne(targetEntity="Trips")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="trip_id", referencedColumnName="id")
+     *  @ORM\JoinColumn(name="trip_id", referencedColumnName="id", nullable=true)
      * })
      */
     private $trip;
@@ -101,7 +102,7 @@ class Reservations
      *
      * @ORM\ManyToOne(targetEntity="Users")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
      * })
      */
     private $user;
