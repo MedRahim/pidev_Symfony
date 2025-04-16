@@ -14,7 +14,7 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        
+
         main:
             lazy: true
             provider: app_user_provider
@@ -29,7 +29,12 @@ security:
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
-        - { path: ^/admin, roles: ROLE_ADMIN }
+
+        # ⛔ Supprimer la restriction ROLE_ADMIN sur le back office
+        # ✅ Autoriser TOUTES les URLs sous /admin aux anonymes
+        - { path: ^/admin, roles: PUBLIC_ACCESS }
+
+        # Tu peux garder la restriction ici si tu veux protéger /profile ou les trajets
         - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/trips/new, roles: ROLE_USER }
 
