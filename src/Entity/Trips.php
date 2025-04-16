@@ -62,22 +62,21 @@ class Trips
      *
      * @ORM\Column(name="transport_name", type="string", length=255, nullable=true, options={"default"="NULL"})
      */
-    private $transportName = 'NULL';
+    private $transportName = null;
 
     /**
      * @var \DateTime|null
      *
      * @ORM\Column(name="date", type="date", nullable=true, options={"default"="NULL"})
      */
-    private $date = 'NULL';
+    private $date = null;
 
     /**
      * @var float
      *
      * @ORM\Column(name="distance", type="float", precision=10, scale=0, nullable=false)
      */
-    private $distance = '0';
-
+    private float $distance = 0.0;
     /**
      * @var int
      *
