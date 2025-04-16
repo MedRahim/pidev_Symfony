@@ -74,7 +74,7 @@ class Trips
      * @Assert\NotBlank()
      * @Assert\Positive()
      */
-    private $capacity = 50;
+    private $capacity = 54;
 
     /**
      * @ORM\ManyToOne(targetEntity="TransportTypes")
