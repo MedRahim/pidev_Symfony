@@ -2,9 +2,84 @@
 
 {% block title %}Gestion des réservations{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Styles pour les boutons d'action */
+        .btn-action {
+            padding: 0.375rem 0.5rem;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-action i {
+            font-size: 1.1rem;
+            margin-right: 0.25rem;
+        }
+        /* Amélioration du tableau */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        /* Styles des badges */
+        .badge {
+            font-size: 0.85em;
+            font-weight: 500;
+            padding: 0.35em 0.65em;
+        }
+        .bg-label-primary {
+            background-color: rgba(105, 108, 255, 0.1);
+            color: #696cff;
+        }
+        .bg-label-warning {
+            background-color: rgba(255, 171, 0, 0.1);
+            color: #ffab00;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 <div class="container-xxl flex-grow-1 container-p-y">
-    <!-- ... en-tête et messages flash ... -->
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Admin /</span> Gestion des réservations
+    </h4>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="btn-group" role="group">
+                <a href="{{ path('app_admin_trips_index') }}" class="btn btn-outline-primary">
+                    <i class="bx bx-trip me-1"></i> Trajets
+                </a>
+                <a href="{{ path('app_admin_reservations_index') }}" class="btn btn-primary active">
+                    <i class="bx bx-calendar-check me-1"></i> Réservations
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="bx bx-filter-alt me-1"></i> Filtres
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ path('app_admin_reservations_index', {'status': 'Pending'}) }}">En attente</a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_admin_reservations_index', {'status': 'Confirmed'}) }}">Confirmées</a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_admin_reservations_index', {'status': 'Cancelled'}) }}">Annulées</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ path('app_admin_reservations_index') }}">Toutes</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
     <div class="card">
         <div class="card-body">
@@ -69,12 +144,12 @@
                             <td>
                                 <div class="d-flex gap-2">
                                     <a href="{{ path('app_admin_reservations_show', {'id': reservation.id}) }}" 
-                                       class="btn btn-primary btn-sm">
-                                        <i class="bx bx-show me-1"></i>
+                                       class="btn btn-primary btn-action" title="Voir">
+                                        <i class="bx bx-show"></i>
                                     </a>
                                     <a href="{{ path('app_admin_reservations_edit', {'id': reservation.id}) }}" 
-                                       class="btn btn-secondary btn-sm">
-                                        <i class="bx bx-edit me-1"></i>
+                                       class="btn btn-secondary btn-action" title="Modifier">
+                                        <i class="bx bx-edit"></i>
                                     </a>
                                 </div>
                             </td>

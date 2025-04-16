@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
@@ -43,6 +44,30 @@ class ReservationsType extends AbstractType
                 ],
                 'attr' => ['class' => 'form-select'],
                 'placeholder' => 'Choisissez un type de siège'
+            ])
+            ->add('status', ChoiceType::class, [
+                'label' => 'Statut',
+                'choices' => [
+                    'En attente' => 'Pending',
+                    'Confirmée' => 'Confirmed',
+                    'Annulée' => 'Cancelled'
+                ],
+                'attr' => ['class' => 'form-select']
+            ])
+            ->add('paymentStatus', ChoiceType::class, [
+                'label' => 'Statut de paiement',
+                'choices' => [
+                    'En attente' => 'Pending',
+                    'Payé' => 'Paid',
+                    'Annulé' => 'Cancelled',
+                    'Remboursé' => 'Refunded'
+                ],
+                'attr' => ['class' => 'form-select']
+            ])
+            ->add('reservationTime', DateTimeType::class, [
+                'label' => 'Date de réservation',
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control']
             ]);
     }
 
@@ -52,5 +77,4 @@ class ReservationsType extends AbstractType
             'data_class' => Reservations::class,
         ]);
     }
-
 }

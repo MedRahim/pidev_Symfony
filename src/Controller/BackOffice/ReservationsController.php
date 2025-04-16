@@ -2,7 +2,7 @@
 // src/Controller/BackOffice/ReservationsController.php
 
 namespace App\Controller\BackOffice;
-
+use App\Form\ReservationsType;
 use App\Entity\Reservations;
 use App\Repository\ReservationsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,11 +40,6 @@ class ReservationsController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_admin_reservations_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Reservations $reservation, EntityManagerInterface $entityManager): Response
-    {
-        // Implémentez la logique d'édition ici
-    }
 
     #[Route('/{id}/confirm', name: 'app_admin_reservations_confirm', methods: ['POST'])]
     public function confirm(Request $request, Reservations $reservation, EntityManagerInterface $entityManager): Response
@@ -59,6 +54,23 @@ class ReservationsController extends AbstractController
         return $this->redirectToRoute('app_admin_reservations_show', ['id' => $reservation->getId()]);
     }
 
-    // Ajoutez d'autres méthodes selon vos besoins
-}
+    #[Route('/{id}/edit', name: 'app_admin_reservations_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Reservations $reservation, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(ReservationsType::class, $reservation);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+    
+            $this->addFlash('success', 'La réservation #' . $reservation->getId() . ' a été mise à jour avec succès');
+            return $this->redirectToRoute('app_admin_reservations_index');
+        }
+    
+        return $this->render('backoffice/reservations/edit.html.twig', [
+            'reservation' => $reservation,
+            'form' => $form->createView(),
+        ]);
+    }
 
+}
