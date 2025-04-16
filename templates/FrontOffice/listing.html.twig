@@ -10,17 +10,17 @@
 		<link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
 
 		<!-- CSS here -->
-            <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-            <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
-            <link rel="stylesheet" href="assets/css/slicknav.css">
-            <link rel="stylesheet" href="assets/css/flaticon.css">
-            <link rel="stylesheet" href="assets/css/price_rangs.css">
-            <link rel="stylesheet" href="assets/css/animate.min.css">
-            <link rel="stylesheet" href="assets/css/magnific-popup.css">
-            <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
-            <link rel="stylesheet" href="assets/css/themify-icons.css">
-            <link rel="stylesheet" href="assets/css/slick.css">
-            <link rel="stylesheet" href="assets/css/nice-select.css">
+            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/owl.carousel.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slicknav.css') }}">
+            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/flaticon.css') }}">
+            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/price_rangs.css') }}">
+            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/animate.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/magnific-popup.css') }}">
+            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/fontawesome-all.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/themify-icons.css') }}">
+            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
+            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
             <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
    </head>
 
@@ -31,7 +31,7 @@
             <div class="preloader-inner position-relative">
                 <div class="preloader-circle"></div>
                 <div class="preloader-img pere-text">
-                    <img src="assets/img/logo/loder.jpg" alt="">
+                    <img src="{{ asset('FrontOffice/assets/img/logo/loder.jpg') }}" alt="">
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
                             <!-- Logo -->
                             <div class="col-xl-2 col-lg-2 col-md-1">
                                 <div class="logo">
-                                  <a href="index.html"><img src="assets/img/logo/logo.png" alt=""></a>
+                                  <a href="index.html"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt=""></a>
                                 </div>
                             </div>
                             <div class="col-xl-10 col-lg-10 col-md-8">
@@ -68,6 +68,7 @@
                                                 </ul>
                                             </li>
                                             <li><a href="{{ asset('FrontOffice/contact.html.twig') }}">Contact</a></li>
+                                            <li><a href="{{ path('app_order_pannier') }}">Pannier</a></li>
                                             <li class="add-list"><a href="listing_details.html"><i class="ti-plus"></i> add Listing</a></li>
                                             <li class="login"><a href="#">
                                                 <i class="ti-user"></i> Sign in or Register</a>
@@ -230,120 +231,44 @@
                         <div class="listing-details-area">
                             <div class="container">
                                 <div class="row">
-                                    <div class="col-lg-6 ">
-                                        <div class="single-listing mb-30">
-                                            <div class="list-img">
-                                                <img src="{{ asset('FrontOffice/assets/img/listing/listing2.jpg') }}" alt="Listing Image">
-                                                <!-- <span>Open</span> -->
-                                            </div>
-                                            <div class="list-caption">
-                                                <span>Open</span>
-                                                <h3><a href="{{ asset('FrontOffice/listing_details.html.twig') }}">Saintmartine</a></h3>
-                                                <p>700/D, Kings road, Green lane, 85/ London</p>
-                                                <div class="list-footer">
-                                                    <ul>
-                                                        <li>+10 278 367 9823</li>
-                                                        <li>contact@midnight.com</li>
-                                                    </ul>
+                                    {% if products is defined and products is not empty %}
+                                        {% for product in products %}
+                                            <div class="col-lg-6">
+                                                <div class="single-listing mb-30">
+                                                    <div class="list-img">
+                                                        <img src="{{ product.imagePath ? asset(product.imagePath) : asset('FrontOffice/assets/img/default-product.jpg') }}" alt="{{ product.name }}">
+                                                    </div>
+                                                    <div class="list-caption">
+                                                        <h3>{{ product.name }}</h3>
+                                                        <p>{{ product.description }}</p>
+                                                        <p><strong>Price:</strong> {{ product.price }} USD</p>
+                                                        <p><strong>Stock:</strong> {{ product.stock }}</p>
+                                                        <div class="d-flex align-items-center">
+                                                            <input
+                                                                type="number"
+                                                                class="form-control me-2"
+                                                                style="width: 80px;"
+                                                                min="1"
+                                                                max="{{ product.stock }}"
+                                                                value="1"
+                                                                id="quantity-{{ product.id }}"
+                                                            />
+                                                            <button
+                                                                class="btn btn-primary buy-btn"
+                                                                data-product-id="{{ product.id }}"
+                                                                data-toggle="modal"
+                                                                data-target="#orderModal"
+                                                            >
+                                                                Buy
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 ">
-                                        <div class="single-listing mb-30">
-                                            <div class="list-img">
-                                                <img src="assets/img/gallery/list2.png" alt="">
-                                                <!-- <span>Open</span> -->
-                                            </div>
-                                            <div class="list-caption">
-                                                <span>Open</span>
-                                                 <h3><a href="listing_details.html">Saintmartine</a></h3>
-                                                <p>700/D, Kings road, Green lane, 85/ London</p>
-                                                <div class="list-footer">
-                                                    <ul>
-                                                        <li>+10 278 367 9823</li>
-                                                        <li>contact@midnight.com</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 ">
-                                        <div class="single-listing mb-30">
-                                            <div class="list-img">
-                                                <img src="assets/img/gallery/list3.png" alt="">
-                                                <!-- <span>Open</span> -->
-                                            </div>
-                                            <div class="list-caption">
-                                                <span>Open</span>
-                                                 <h3><a href="listing_details.html">Saintmartine</a></h3>
-                                                <p>700/D, Kings road, Green lane, 85/ London</p>
-                                                <div class="list-footer">
-                                                    <ul>
-                                                        <li>+10 278 367 9823</li>
-                                                        <li>contact@midnight.com</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 ">
-                                        <div class="single-listing mb-30">
-                                            <div class="list-img">
-                                                <img src="assets/img/gallery/list4.png" alt="">
-                                                <!-- <span>Open</span> -->
-                                            </div>
-                                            <div class="list-caption">
-                                                <span>Open</span>
-                                                 <h3><a href="listing_details.html">Saintmartine</a></h3>
-                                                <p>700/D, Kings road, Green lane, 85/ London</p>
-                                                <div class="list-footer">
-                                                    <ul>
-                                                        <li>+10 278 367 9823</li>
-                                                        <li>contact@midnight.com</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 ">
-                                        <div class="single-listing mb-30">
-                                            <div class="list-img">
-                                                <img src="assets/img/gallery/list5.png" alt="">
-                                                <!-- <span>Open</span> -->
-                                            </div>
-                                            <div class="list-caption">
-                                                <span>Open</span>
-                                                 <h3><a href="listing_details.html">Saintmartine</a></h3>
-                                                <p>700/D, Kings road, Green lane, 85/ London</p>
-                                                <div class="list-footer">
-                                                    <ul>
-                                                        <li>+10 278 367 9823</li>
-                                                        <li>contact@midnight.com</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 ">
-                                        <div class="single-listing mb-30">
-                                            <div class="list-img">
-                                                <img src="assets/img/gallery/list6.png" alt="">
-                                                <!-- <span>Open</span> -->
-                                            </div>
-                                            <div class="list-caption">
-                                                <span>Open</span>
-                                                 <h3><a href="listing_details.html">Saintmartine</a></h3>
-                                                <p>700/D, Kings road, Green lane, 85/ London</p>
-                                                <div class="list-footer">
-                                                    <ul>
-                                                        <li>+10 278 367 9823</li>
-                                                        <li>contact@midnight.com</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p>No products available.</p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -386,7 +311,7 @@
                                 <div class="single-footer-caption mb-30">
                                     <!-- logo -->
                                     <div class="footer-logo">
-                                        <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""></a>
+                                        <a href="index.html"><img src="{{ asset('FrontOffice/assets/img/logo/logo2_footer.png') }}" alt=""></a>
                                     </div>
                                 </div>
                             </div>
@@ -422,8 +347,8 @@
                                 <div class="footer-tittle">
                                     <h4>Download App</h4>
                                     <ul>
-                                        <li class="app-log"><a href="#"><img src="assets/img/gallery/app-logo.png" alt=""></a></li>
-                                        <li><a href="#"><img src="assets/img/gallery/app-logo2.png" alt=""></a></li>
+                                        <li class="app-log"><a href="#"><img src="{{ asset('FrontOffice/assets/img/gallery/app-logo.png') }}" alt=""></a></li>
+                                        <li><a href="#"><img src="{{ asset('FrontOffice/assets/img/gallery/app-logo2.png') }}" alt=""></a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -462,37 +387,89 @@
 
     <!-- JS here -->
 		<!-- All JS Custom Plugins Link Here here -->
-        <script src="./assets/js/vendor/modernizr-3.5.0.min.js"></script>
+        <script src="{{ asset('FrontOffice/assets/js/vendor/modernizr-3.5.0.min.js') }}"></script>
 		<!-- Jquery, Popper, Bootstrap -->
-		<script src="./assets/js/vendor/jquery-1.12.4.min.js"></script>
-        <script src="./assets/js/popper.min.js"></script>
-        <script src="./assets/js/bootstrap.min.js"></script>
+		<script src="{{ asset('FrontOffice/assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/popper.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/bootstrap.min.js') }}"></script>
 	    <!-- Jquery Mobile Menu -->
-        <script src="./assets/js/jquery.slicknav.min.js"></script>
+        <script src="{{ asset('FrontOffice/assets/js/jquery.slicknav.min.js') }}"></script>
 
 		<!-- Jquery Slick , Owl-Carousel Plugins -->
-        <script src="./assets/js/owl.carousel.min.js"></script>
-        <script src="./assets/js/slick.min.js"></script>
+        <script src="{{ asset('FrontOffice/assets/js/owl.carousel.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/slick.min.js') }}"></script>
 		<!-- One Page, Animated-HeadLin -->
-        <script src="./assets/js/wow.min.js"></script>
-        <script src="./assets/js/price-range.js"></script>
-		<script src="./assets/js/animated.headline.js"></script>
-        <script src="./assets/js/jquery.magnific-popup.js"></script>
+        <script src="{{ asset('FrontOffice/assets/js/wow.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/price-range.js') }}"></script>
+		<script src="{{ asset('FrontOffice/assets/js/animated.headline.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/jquery.magnific-popup.js') }}"></script>
 
 		<!-- Nice-select, sticky -->
-        <script src="./assets/js/jquery.nice-select.min.js"></script>
-		<script src="./assets/js/jquery.sticky.js"></script>
+        <script src="{{ asset('FrontOffice/assets/js/jquery.nice-select.min.js') }}"></script>
+		<script src="{{ asset('FrontOffice/assets/js/jquery.sticky.js') }}"></script>
         
         <!-- contact js -->
-        <script src="./assets/js/contact.js"></script>
-        <script src="./assets/js/jquery.form.js"></script>
-        <script src="./assets/js/jquery.validate.min.js"></script>
-        <script src="./assets/js/mail-script.js"></script>
-        <script src="./assets/js/jquery.ajaxchimp.min.js"></script>
+        <script src="{{ asset('FrontOffice/assets/js/contact.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/jquery.form.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/jquery.validate.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/mail-script.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/jquery.ajaxchimp.min.js') }}"></script>
         
 		<!-- Jquery Plugins, main Jquery -->	
-        <script src="./assets/js/plugins.js"></script>
-        <script src="./assets/js/main.js"></script>
+        <script src="{{ asset('FrontOffice/assets/js/plugins.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/main.js') }}"></script>
         
-    </body>
+    <!-- Order Confirmation Modal -->
+    <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="orderModalLabel">Order Received</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Your order has been placed! Please await confirmation.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function(){
+        $('.buy-btn').on('click', function(e){
+          e.preventDefault();
+
+          const productId = $(this).data('product-id');
+          const quantity = $('#quantity-' + productId).val(); // Get quantity value
+          const csrfToken = '{{ csrf_token("order") }}'; // Fetch CSRF token
+
+          const url = '{{ path("order_create") }}';
+
+          $.ajax({
+            url: url,
+            method: 'POST',
+            data: JSON.stringify({ productId: productId, quantity: quantity, _csrf_token: csrfToken }),
+            contentType: 'application/json',
+            success: function(response) {
+              if (response.success) {
+                alert('Order created successfully. Awaiting admin approval.');
+              } else {
+                alert('Error placing order: ' + response.error);
+              }
+            },
+            error: function(xhr) {
+              alert('Request failed: ' + xhr.statusText);
+            }
+          });
+        });
+      });
+    </script>
+</body>
 </html>

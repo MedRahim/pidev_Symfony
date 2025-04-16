@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\ProductRepository;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -62,9 +63,13 @@ class HomeController extends AbstractController
     }
 
     #[Route('/listing', name: 'listing')]
-    public function listing(): Response
+    public function listing(ProductRepository $productRepo): Response
     {
-        return $this->render('FrontOffice/listing.html.twig');
+        $products = $productRepo->findAll();
+
+        return $this->render('FrontOffice/listing.html.twig', [
+            'products' => $products,
+        ]);
     }
 
     #[Route('/listing-details', name: 'listing_details')]

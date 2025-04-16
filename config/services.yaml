@@ -2,6 +2,7 @@ parameters:
     profile_pictures_directory: '%kernel.project_dir%/public/uploads/profile_pictures'
     images_directory: '%kernel.project_dir%/public/uploads/images'
 
+    
 services:
     # Default configuration for services in the `src/` directory
     App\:
@@ -10,6 +11,7 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

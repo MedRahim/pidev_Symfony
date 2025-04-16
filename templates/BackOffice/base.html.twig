@@ -13,6 +13,12 @@
  -->
 <!-- beautify ignore:start -->
 <html
+  lang="en"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="{{ asset('BackOffice/assets/') }}"
+  data-template="vertical-menu-template-free"
         lang="en"
         class="light-style layout-menu-fixed"
         dir="ltr"
@@ -33,6 +39,7 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('BackOffice/assets/img/favicon/favicon.ico') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('BackOffice/assets/img/favicon/favicon.ico') }}" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -44,8 +51,13 @@
 
     <!-- Icons -->
     <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/fonts/boxicons.css') }}" />
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/fonts/boxicons.css') }}" />
 
     <!-- Core CSS -->
+    <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{{ asset('BackOffice/assets/css/demo.css') }}" />
     <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
     <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
     <link rel="stylesheet" href="{{ asset('BackOffice/assets/css/demo.css') }}" />
@@ -53,8 +65,18 @@
     <!-- Vendors CSS -->
     <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
     <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/libs/apex-charts/apex-charts.css') }}" />
+    <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+
+    <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/libs/apex-charts/apex-charts.css') }}" />
+
+    <!-- Page CSS -->
 
     <!-- Helpers -->
+    <script src="{{ asset('BackOffice/assets/vendor/js/helpers.js') }}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{{ asset('BackOffice/assets/js/config.js') }}"></script>
     <script src="{{ asset('BackOffice/assets/vendor/js/helpers.js') }}"></script>
     <script src="{{ asset('BackOffice/assets/js/config.js') }}"></script>
   </head>
@@ -506,6 +528,7 @@
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
                       <img src="{{ asset('BackOffice/assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
+                      <img src="{{ asset('BackOffice/assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -514,6 +537,7 @@
                         <div class="d-flex">
                           <div class="flex-shrink-0 me-3">
                             <div class="avatar avatar-online">
+                              <img src="{{ asset('BackOffice/assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
                               <img src="{{ asset('BackOffice/assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
                             </div>
                           </div>
@@ -571,6 +595,27 @@
         <!-- Content -->
 
             <div class="container-xxl flex-grow-1 container-p-y">
+              <div class="row">
+                <!-- Products Card -->
+                <div class="col-lg-6 mb-4">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Products</h5>
+                      <p class="card-text">Manage your products here. Add, edit, or delete products as needed.</p>
+                      <a href="{{ path('products_page') }}" class="btn btn-primary">View Products</a>
+                    </div>
+                  </div>
+                </div>
+                <!-- Orders Card -->
+                <div class="col-lg-6 mb-4">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Orders</h5>
+                      <p class="card-text">Track and manage customer orders efficiently.</p>
+                      <a href="{{ path('orders_page') }}" class="btn btn-primary">View Orders</a>
+                    </div>
+                  </div>
+                </div>
               <div class="row justify-content-center">
                 <!-- Blog Card -->
                 <div class="col-lg-4 col-md-6 mb-4">
@@ -649,17 +694,25 @@
     <script src="{{ asset('BackOffice/assets/vendor/libs/popper/popper.js') }}"></script>
     <script src="{{ asset('BackOffice/assets/vendor/js/bootstrap.js') }}"></script>
     <script src="{{ asset('BackOffice/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+    <script src="{{ asset('BackOffice/assets/vendor/libs/jquery/jquery.js') }}"></script>
+    <script src="{{ asset('BackOffice/assets/vendor/libs/popper/popper.js') }}"></script>
+    <script src="{{ asset('BackOffice/assets/vendor/js/bootstrap.js') }}"></script>
+    <script src="{{ asset('BackOffice/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
 
+    <script src="{{ asset('BackOffice/assets/vendor/js/menu.js') }}"></script>
     <script src="{{ asset('BackOffice/assets/vendor/js/menu.js') }}"></script>
     <!-- endbuild -->
 
     <!-- Vendors JS -->
     <script src="{{ asset('BackOffice/assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
+    <script src="{{ asset('BackOffice/assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
 
     <!-- Main JS -->
     <script src="{{ asset('BackOffice/assets/js/main.js') }}"></script>
+    <script src="{{ asset('BackOffice/assets/js/main.js') }}"></script>
 
     <!-- Page JS -->
+    <script src="{{ asset('BackOffice/assets/js/dashboards-analytics.js') }}"></script>
     <script src="{{ asset('BackOffice/assets/js/dashboards-analytics.js') }}"></script>
 
 <!-- Place this tag in your head or just before your close body tag. -->
