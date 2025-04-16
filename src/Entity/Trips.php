@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TripsRepository")
  * @ORM\Table(name="trips")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Trips
 {
@@ -20,36 +21,64 @@ class Trips
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Assert\NotBlank()
-     * @Assert\Length(min=2, max=100)
+     * @Assert\NotBlank(message="Le lieu de départ est obligatoire")
+     * @Assert\Length(
+     *      min=2,
+     *      max=100,
+     *      minMessage="Le lieu de départ doit faire au moins {{ limit }} caractères",
+     *      maxMessage="Le lieu de départ ne peut pas dépasser {{ limit }} caractères"
+     * )
+     * @Assert\Regex(
+     *     pattern="/^[a-zA-ZÀ-ÿ\s\-\']+$/u",
+     *     message="Le lieu ne doit contenir que des lettres, espaces et tirets"
+     * )
      */
     private $departure;
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Assert\NotBlank()
-     * @Assert\Length(min=2, max=100)
+     * @Assert\NotBlank(message="La destination est obligatoire")
+     * @Assert\Length(
+     *      min=2,
+     *      max=100,
+     *      minMessage="La destination doit faire au moins {{ limit }} caractères",
+     *      maxMessage="La destination ne peut pas dépasser {{ limit }} caractères"
+     * )
+     * @Assert\Regex(
+     *     pattern="/^[a-zA-ZÀ-ÿ\s\-\']+$/u",
+     *     message="La destination ne doit contenir que des lettres, espaces et tirets"
+     * )
      */
     private $destination;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Assert\NotBlank()
-     * @Assert\GreaterThan("now")
+     * @Assert\NotBlank(message="L'heure de départ est obligatoire")
+     * @Assert\GreaterThan(
+     *     value="now",
+     *     message="La date de départ doit être dans le futur"
+     * )
      */
     private $departureTime;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Assert\NotBlank()
-     * @Assert\GreaterThan(propertyPath="departureTime")
+     * @Assert\NotBlank(message="L'heure d'arrivée est obligatoire")
+     * @Assert\GreaterThan(
+     *     propertyPath="departureTime",
+     *     message="L'heure d'arrivée doit être après l'heure de départ"
+     * )
      */
     private $arrivalTime;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2)
-     * @Assert\NotBlank()
-     * @Assert\Positive()
+     * @Assert\NotBlank(message="Le prix est obligatoire")
+     * @Assert\Positive(message="Le prix doit être positif")
+     * @Assert\LessThanOrEqual(
+     *     value=10000,
+     *     message="Le prix ne peut pas dépasser {{ compared_value }}€"
+     * )
      */
     private $price;
 
@@ -59,28 +88,56 @@ class Trips
     private $transportName;
 
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="datetime")
      */
-    private $date;
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
 
     /**
      * @ORM\Column(type="float")
-     * @Assert\PositiveOrZero()
+     * @Assert\PositiveOrZero(message="La distance doit être positive")
      */
     private $distance = 0.0;
 
     /**
-     * @ORM\Column(type="integer", options={"default"=50})
-     * @Assert\NotBlank()
-     * @Assert\Positive()
+     * @ORM\Column(type="integer", options={"default": 50})
+     * @Assert\NotBlank(message="La capacité est obligatoire")
+     * @Assert\Positive(message="La capacité doit être positive")
+     * @Assert\LessThanOrEqual(
+     *     value=200,
+     *     message="La capacité ne peut pas dépasser {{ compared_value }} places"
+     * )
      */
-    private $capacity = 54;
+    private $capacity = 50;
 
     /**
      * @ORM\ManyToOne(targetEntity="TransportTypes")
      * @ORM\JoinColumn(name="transport_id", referencedColumnName="transport_id")
      */
     private $transport;
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setTimestamps(): void
+    {
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function setUpdatedAtValue(): void
+    {
+        $this->updatedAt = new \DateTime();
+    }
+
+    // Getters et Setters...
 
     public function getId(): ?int
     {
@@ -95,7 +152,6 @@ class Trips
     public function setDeparture(string $departure): static
     {
         $this->departure = $departure;
-
         return $this;
     }
 
@@ -107,7 +163,6 @@ class Trips
     public function setDestination(string $destination): static
     {
         $this->destination = $destination;
-
         return $this;
     }
 
@@ -121,7 +176,6 @@ class Trips
         $this->departureTime = $departureTime;
         return $this;
     }
-    
 
     public function getArrivalTime(): ?\DateTimeInterface
     {
@@ -142,7 +196,6 @@ class Trips
     public function setPrice(string $price): static
     {
         $this->price = $price;
-
         return $this;
     }
 
@@ -154,20 +207,17 @@ class Trips
     public function setTransportName(?string $transportName): static
     {
         $this->transportName = $transportName;
-
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->date;
+        return $this->createdAt;
     }
 
-    public function setDate(?\DateTimeInterface $date): static
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
-        $this->date = $date;
-
-        return $this;
+        return $this->updatedAt;
     }
 
     public function getDistance(): ?float
@@ -178,7 +228,6 @@ class Trips
     public function setDistance(float $distance): static
     {
         $this->distance = $distance;
-
         return $this;
     }
 
@@ -190,7 +239,6 @@ class Trips
     public function setCapacity(int $capacity): static
     {
         $this->capacity = $capacity;
-
         return $this;
     }
 
@@ -202,13 +250,11 @@ class Trips
     public function setTransport(?TransportTypes $transport): static
     {
         $this->transport = $transport;
-
         return $this;
     }
 
-// Dans App\Entity\Trips.php
-public function getTransportId(): ?int
-{
-    return $this->getTransport() ? $this->getTransport()->getTransportId() : null;
-}
+    public function getTransportId(): ?int
+    {
+        return $this->getTransport() ? $this->getTransport()->getTransportId() : null;
+    }
 }

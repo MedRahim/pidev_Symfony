@@ -82,8 +82,8 @@
                     <h5>Statistiques</h5>
                 </div>
                 <div class="card-body">
-                    <p class="mb-3">Date de création : {{ trip.date ? trip.date|date('d/m/Y') : 'N/A' }}</p>
-                    <p>Dernière modification : {{ trip.date ? trip.date|date('d/m/Y H:i') : 'N/A' }}</p>
+                    <p class="mb-3">Date de création : {{ trip.createdAt ? trip.createdAt|date('d/m/Y') : 'N/A' }}</p>
+                    <p>Dernière modification : {{ trip.updatedAt ? trip.updatedAt|date('d/m/Y H:i') : 'N/A' }}</p>
                 </div>
             </div>
         </div>
