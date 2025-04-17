@@ -19,3 +19,17 @@ connect_google:
 connect_google_check:
     path: /connect/google/check
     controller: KnpU\OAuth2ClientBundle\Controller\ConnectController::connectCheckAction
+    
+app_trips_index:
+    path: /voyages
+    controller: App\Controller\TripsController::index
+
+app_trips_show:
+    path: /voyage/{id}
+    controller: App\Controller\TripsController::show
+    requirements:
+        id: '\d+'
+
+app_trips_search:
+    path: /recherche
+    controller: App\Controller\TripsController::search

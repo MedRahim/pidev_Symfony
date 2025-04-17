@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation de modification - Réservation #{{ reservation.id }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0 text-center">
+                <i class="fas fa-check-circle me-2"></i>Confirmation de modification
+            </h2>
+        </div>
+        
+        <div class="card-body">
+            <div class="alert alert-info">
+                <h4 class="alert-heading">Résumé des modifications</h4>
+                <p>Vous êtes sur le point de modifier votre réservation #{{ reservation.id }}</p>
+                <hr>
+                <p class="mb-0">
+                    <strong>Ancien prix:</strong> {{ originalPrice }} TND<br>
+                    <strong>Nouveau prix:</strong> {{ newPrice }} TND<br>
+                    <strong>Différence:</strong> 
+                    <span class="fw-bold {{ priceDifference > 0 ? 'text-success' : 'text-danger' }}">
+                        {{ priceDifference }} TND
+                    </span>
+                </p>
+            </div>
+            
+            {% if priceDifference > 0 %}
+                <div class="alert alert-warning">
+                    <p>Votre modification entraîne un supplément de {{ priceDifference }} TND à payer.</p>
+                </div>
+            {% elseif priceDifference < 0 %}
+                <div class="alert alert-success">
+                    <p>Votre modification entraîne un remboursement de {{ (-1 * priceDifference) }} TND.</p>
+                </div>
+            {% endif %}
+            
+            <form method="post" action="{{ path('app_reservations_edit_process', {'id': reservation.id}) }}">
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_reservations_edit', {'id': reservation.id}) }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Retour
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check me-2"></i>Confirmer les modifications
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

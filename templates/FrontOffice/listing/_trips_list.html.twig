@@ -1,0 +1,54 @@
+{% for trip in trips %}
+    <div class="col-md-6 mb-4 trip-item">
+        <div class="card trip-card">
+            {% if trip.capacity < 10 %}
+                <span class="trip-badge">Plus que {{ trip.capacity }} places!</span>
+            {% elseif trip.capacity < 20 %}
+                <span class="trip-badge bg-warning">Dernières places</span>
+            {% endif %}
+            <img src="{{ asset('FrontOffice/assets/img/listing/' ~ 
+                (trip.transportName == 'Bus' ? 'bus.jpg' : (trip.transportName == 'Train' ? 'train.jpg' : (trip.transportName == 'Metro' ? 'metro.jpg' : 'default-transport.jpg'))) ) }}" 
+                class="card-img-top" alt="{{ trip.transportName }}">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{{ path('app_trips_show', {'id': trip.id}) }}" class="stretched-link text-dark">
+                        {{ trip.departure }} → {{ trip.destination }}
+                    </a>
+                </h5>
+                <p class="card-text small text-muted">
+                    <i class="far fa-calendar-alt me-1"></i> {{ trip.departureTime|date('d/m/Y') }}
+                </p>
+                <p class="card-text small text-muted">
+                    <i class="fas fa-clock me-1"></i> {{ trip.departureTime|date('H:i') }} - {{ trip.arrivalTime|date('H:i') }}
+                </p>
+                <div class="d-flex align-items-center mt-2">
+                    <div class="me-2">
+                        {% if trip.transportName == 'Bus' %}
+                            <i class="fas fa-bus transport-icon"></i>
+                        {% elseif trip.transportName == 'Train' %}
+                            <i class="fas fa-train transport-icon"></i>
+                        {% elseif trip.transportName == 'Metro' %}
+                            <i class="fas fa-subway transport-icon"></i>
+                        {% else %}
+                            <i class="fas fa-car transport-icon"></i>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="fw-bold">{{ trip.transportName|default('Transport') }}</div>
+                        <small class="text-muted">{{ trip.distance }} km • {{ trip.capacity }} places</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-end">
+                <a href="{{ path('app_trips_show', {'id': trip.id}) }}" class="btn btn-outline-primary btn-sm me-1">Détails</a>
+                <a href="{{ path('app_reservations_new', {'tripId': trip.id}) }}" class="btn btn-success btn-sm">
+                    <i class="fas fa-ticket-alt me-1"></i>Réserver
+                </a>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="col-12">
+        <div class="alert alert-info text-center">Aucun trajet ne correspond à vos critères. Essayez de modifier vos filtres.</div>
+    </div>
+{% endfor %}

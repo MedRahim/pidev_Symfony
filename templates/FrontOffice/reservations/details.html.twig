@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la réservation #{{ reservation.id }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-info-circle me-2"></i>Détails de la réservation #{{ reservation.id }}</h1>
+        <a href="{{ path('app_reservations_list') }}" class="btn btn-primary">
+            <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+        </a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="text-primary"><i class="fas fa-route me-2"></i>Détails du trajet</h4>
+                    <hr>
+                    <p><strong><i class="fas fa-map-marker-alt me-2"></i>Départ:</strong> {{ reservation.trip.departure }}</p>
+                    <p><strong><i class="fas fa-map-marker me-2"></i>Destination:</strong> {{ reservation.trip.destination }}</p>
+                    <p><strong><i class="fas fa-calendar-alt me-2"></i>Date de départ:</strong> {{ reservation.trip.departureTime|date('d/m/Y H:i') }}</p>
+                    <p><strong><i class="fas fa-tag me-2"></i>Prix unitaire:</strong> {{ reservation.trip.price }} TND</p>
+                </div>
+                
+                <div class="col-md-6">
+                    <h4 class="text-primary"><i class="fas fa-receipt me-2"></i>Détails de la réservation</h4>
+                    <hr>
+                    <p><strong><i class="fas fa-calendar me-2"></i>Date de réservation:</strong> {{ reservation.reservationTime|date('d/m/Y H:i') }}</p>
+                    <p><strong><i class="fas fa-chair me-2"></i>Nombre de sièges:</strong> {{ reservation.seatNumber }}</p>
+                    <p>
+                        <strong><i class="fas fa-star me-2"></i>Type de siège:</strong>
+                        <span class="badge bg-{{ reservation.seatType == 'Standard' ? 'info' : 'warning' }}">
+                            {{ reservation.seatType }}
+                        </span>
+                    </p>
+                    <p>
+                        <strong><i class="fas fa-check-circle me-2"></i>Statut:</strong>
+                        <span class="badge bg-{{ reservation.status == 'confirmed' ? 'success' : (reservation.status == 'cancelled' ? 'secondary' : 'warning') }}">
+                            {% if reservation.paymentStatus == 'confirmed' %}
+                                Confirmé
+                            {% elseif reservation.status == 'cancelled' %}
+                                Annulé
+                            {% else %}
+                                En attente
+                            {% endif %}
+                        </span>
+                    </p>
+                    <p>
+                        <strong><i class="fas fa-money-bill-wave me-2"></i>Prix total:</strong>
+                        {% if reservation.seatType == 'Standard' %}
+                            {{ (reservation.trip.price * reservation.seatNumber) + (10 * reservation.seatNumber) }} TND
+                        {% else %}
+                            {{ reservation.trip.price * reservation.seatNumber }} TND
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                {# Bouton Payer - Seulement pour les réservations en attente #}
+                {% if reservation.paymentStatus == 'pending' and reservation.status != 'cancelled' %}
+                    <a href="{{ path('app_reservations_pay_pending', {'id': reservation.id}) }}" class="btn btn-success">
+                        <i class="fas fa-credit-card me-2"></i>Effectuer le paiement
+                    </a>
+                {% endif %}
+                
+                {# Bouton Modifier - Toujours visible sauf si annulé #}
+                {% if reservation.status != 'cancelled' %}
+                    <a href="{{ path('app_reservations_edit', {'id': reservation.id}) }}" class="btn btn-warning">
+                        <i class="fas fa-edit me-2"></i>Modifier
+                    </a>
+                {% endif %}
+                
+                {# Bouton Annuler - Seulement pour les réservations non annulées #}
+                {% if reservation.status != 'cancelled' %}
+                    <form action="{{ path('app_reservations_cancel', {'id': reservation.id}) }}" method="post" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-times-circle me-2"></i>Annuler la réservation
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

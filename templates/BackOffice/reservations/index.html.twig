@@ -1,0 +1,204 @@
+{% extends 'BackOffice/base.html.twig' %}
+
+{% block title %}Gestion des réservations{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Styles pour les boutons d'action */
+        .btn-action {
+            padding: 0.375rem 0.5rem;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-action i {
+            font-size: 1.1rem;
+            margin-right: 0.25rem;
+        }
+        /* Amélioration du tableau */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        /* Styles des badges */
+        .badge {
+            font-size: 0.85em;
+            font-weight: 500;
+            padding: 0.35em 0.65em;
+        }
+        .bg-label-primary {
+            background-color: rgba(105, 108, 255, 0.1);
+            color: #696cff;
+        }
+        .bg-label-warning {
+            background-color: rgba(255, 171, 0, 0.1);
+            color: #ffab00;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Admin /</span> Gestion des réservations
+    </h4>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="btn-group" role="group">
+                <a href="{{ path('app_admin_trips_index') }}" class="btn btn-outline-primary">
+                    <i class="bx bx-trip me-1"></i> Trajets
+                </a>
+                <a href="{{ path('app_admin_reservations_index') }}" class="btn btn-primary active">
+                    <i class="bx bx-calendar-check me-1"></i> Réservations
+                </a>
+            </div>
+
+        </div>
+                     <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">Liste des réservations</h5>
+    <a href="{{ path('app_admin_reservations_new') }}" class="btn btn-primary">
+        <i class="bx bx-plus me-1"></i> Nouvelle réservation
+    </a>
+</div>
+        <div class="col-md-6 text-end">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="bx bx-filter-alt me-1"></i> Filtres
+                </button>
+   
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ path('app_admin_reservations_index', {'status': 'Pending'}) }}">En attente</a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_admin_reservations_index', {'status': 'Confirmed'}) }}">Confirmées</a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_admin_reservations_index', {'status': 'Cancelled'}) }}">Annulées</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ path('app_admin_reservations_index') }}">Toutes</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Utilisateur</th>
+                            <th>Trajet</th>
+                            <th>Date réservation</th>
+                            <th>Sièges</th>
+                            <th>Type</th>
+                            <th>Statut</th>
+                            <th>Paiement</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in reservations %}
+                        <tr>
+                            <td><strong>{{ reservation.id }}</strong></td>
+                            <td>
+                                {% if reservation.user %}
+                                    {{ reservation.user.email }}
+                                {% else %}
+                                    <span class="text-muted">Utilisateur inconnu</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if reservation.trip %}
+                                    {{ reservation.trip.departure }} → {{ reservation.trip.destination }}<br>
+                                    <small>{{ reservation.trip.departureTime|date('d/m/Y H:i') }}</small>
+                                {% else %}
+                                    <span class="text-muted">Trajet supprimé</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ reservation.reservationTime|date('d/m/Y H:i') }}</td>
+                            <td>{{ reservation.seatNumber }}</td>
+                            <td>
+                                <span class="badge bg-label-{{ reservation.seatType == 'Premium' ? 'warning' : 'primary' }}">
+                                    {{ reservation.seatType }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ 
+                                    reservation.status == 'Confirmed' ? 'success' : 
+                                    (reservation.status == 'Cancelled' ? 'danger' : 'warning') 
+                                }}">
+                                    {{ reservation.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ 
+                                    reservation.paymentStatus == 'Paid' ? 'success' : 
+                                    (reservation.paymentStatus == 'Cancelled' ? 'danger' : 
+                                    (reservation.paymentStatus == 'Refunded' ? 'info' : 'warning')) 
+                                }}">
+                                    {{ reservation.paymentStatus }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ path('app_admin_reservations_show', {'id': reservation.id}) }}" 
+                                       class="btn btn-primary btn-action" title="Voir">
+                                        <i class="bx bx-show"></i>
+                                    </a>
+                                    <a href="{{ path('app_admin_reservations_edit', {'id': reservation.id}) }}" 
+                                       class="btn btn-secondary btn-action" title="Modifier">
+                                        <i class="bx bx-edit"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center py-4">Aucune réservation trouvée</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if total_pages > 1 %}
+            <nav class="mt-4" aria-label="Pagination">
+                <ul class="pagination justify-content-center">
+                    {% if current_page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_reservations_index', {'page': current_page - 1}) }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for i in 1..total_pages %}
+                        <li class="page-item {% if i == current_page %}active{% endif %}">
+                            <a class="page-link" href="{{ path('app_admin_reservations_index', {'page': i}) }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                    
+                    {% if current_page < total_pages %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_admin_reservations_index', {'page': current_page + 1}) }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

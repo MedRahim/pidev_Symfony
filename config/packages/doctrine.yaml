@@ -8,6 +8,8 @@ doctrine:
         types:
             enum: Doctrine\DBAL\Types\StringType       # ✅ Define custom types under DBAL
 
+        mapping_types:
+            enum: string
     orm:
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore

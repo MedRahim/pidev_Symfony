@@ -5,3 +5,25 @@
 
 
 >>>>>>> origin/ines2
+/* Style pour les réservations */
+.table-reservations {
+    font-size: 0.9rem;
+}
+.table-reservations th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+.reservation-badge {
+    font-size: 0.8rem;
+    padding: 0.35em 0.65em;
+}
+.reservation-card {
+    border-radius: 10px;
+    overflow: hidden;
+}
+.reservation-card .card-header {
+    padding: 1.5rem;
+}
+.reservation-actions .btn {
+    min-width: 100px;
+}

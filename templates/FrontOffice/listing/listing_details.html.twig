@@ -1,0 +1,90 @@
+{# templates/FrontOffice/listing/listing_details.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du Trajet - {{ trip.departure }} → {{ trip.destination }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1 class="mb-4">Détails du Trajet</h1>
+            <div class="d-flex justify-content-center">
+                <a href="{{ path('app_trips_index') }}" class="btn btn-outline-secondary me-2">
+                    <i class="fas fa-arrow-left me-1"></i> Retour aux trajets
+                </a>
+                {# Nouveau lien vers la création de réservation #}
+               <a href="{{ path('app_reservations_new', {'tripId': trip.id}) }}" class="btn btn-success">
+    <i class="fas fa-ticket-alt me-1"></i> Réserver ce trajet
+</a>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Colonne Image -->
+        <div class="col-md-6 mb-4">
+            {% if trip.transportName == 'Bus' %}
+                <img src="{{ asset('FrontOffice/assets/img/listing/bus.jpg') }}" class="img-fluid rounded" alt="Bus" style="height: 300px; object-fit: cover;">
+            {% elseif trip.transportName == 'Train' %}
+                <img src="{{ asset('FrontOffice/assets/img/listing/train.jpg') }}" class="img-fluid rounded" alt="Train" style="height: 300px; object-fit: cover;">
+            {% else %}
+                <img src="{{ asset('FrontOffice/assets/img/listing/default-transport.jpg') }}" class="img-fluid rounded" alt="Transport" style="height: 300px; object-fit: cover;">
+            {% endif %}
+        </div>
+        <!-- Colonne Informations -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title mb-4"><i class="fas fa-info-circle me-2"></i>Informations du Trajet</h4>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>ID</th>
+                                <td>{{ trip.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Départ</th>
+                                <td>{{ trip.departure }}</td>
+                            </tr>
+                            <tr>
+                                <th>Destination</th>
+                                <td>{{ trip.destination }}</td>
+                            </tr>
+                            <tr>
+                                <th>Heure de départ</th>
+                                <td>{{ trip.departureTime|date('d/m/Y H:i') }}</td>
+                            </tr>
+                            <tr>
+                                <th>Heure d'arrivée</th>
+                                <td>{{ trip.arrivalTime|date('d/m/Y H:i') }}</td>
+                            </tr>
+                            <tr>
+                                <th>Prix</th>
+                                <td>{{ trip.price }} €</td>
+                            </tr>
+                            <tr>
+                                <th>Distance</th>
+                                <td>{{ trip.distance }} km</td>
+                            </tr>
+                            <tr>
+                                <th>Capacité</th>
+                                <td>{{ trip.capacity }} places</td>
+                            </tr>
+                            <tr>
+                                <th>Transport</th>
+                                <td>{{ trip.transportName ? trip.transportName : 'Non spécifié' }}</td>
+                            </tr>
+                            {% if trip.date %}
+                            <tr>
+                                <th>Date</th>
+                                <td>{{ trip.date|date('d/m/Y') }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
