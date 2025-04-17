@@ -596,6 +596,42 @@
 
             <div class="container-xxl flex-grow-1 container-p-y">
               <div class="row">
+               <!-- Rendez-vous Card -->
+      <div class="col-lg-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Rendez-vous</h5>
+            <p class="card-text">Gérez les rendez-vous des patients ici.</p>
+          <a href="{{ path('backoffice_rendezvous_list') }}" class="btn btn-primary">Voir les Rendez-vous</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Médecins Card -->
+      <div class="col-lg-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Médecins</h5>
+            <p class="card-text">Consultez et gérez les médecins de l’hôpital.</p>
+            <a href="{{ path('backoffice_medecin_list') }}" class="btn btn-primary">Voir les Médecins</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services hospitaliers Card -->
+      <div class="col-lg-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Services hospitaliers</h5>
+            <p class="card-text">Liste des services disponibles dans l’établissement.</p>
+            <a href="{{ path('backoffice_service_list') }}" class="btn btn-primary">Voir les Services</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- / Content -->
+</div>
                 <!-- Products Card -->
                 <div class="col-lg-6 mb-4">
                   <div class="card">

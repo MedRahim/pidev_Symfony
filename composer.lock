@@ -56,6 +56,9 @@
             "time": "2022-03-30T09:27:43+00:00"
         },
         {
+    "content-hash": "61759990c261cc5adde9eb93beaeec03",
+    "packages": [
+        {
             "name": "composer/semver",
             "version": "3.4.3",
             "source": {
@@ -10794,7 +10797,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -10802,6 +10805,9 @@
         "ext-ctype": "*",
         "ext-iconv": "*"
     },
-    "platform-dev": [],
+
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
+    
 }
+    

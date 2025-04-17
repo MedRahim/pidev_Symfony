@@ -1,0 +1,135 @@
+/* Exemple de code CSS personnalisé */
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.rendez-vous-btn {
+    transition: all 0.3s ease-in-out;
+}
+
+.rendez-vous-btn:hover {
+    transform: scale(1.1);
+    background-color: #007bff;
+    color: white;
+}
+
+/* Effet de survol sur le bloc contenant les médecins */
+.single-cat {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.single-cat:hover {
+    transform: scale(1.05); /* Agrandissement léger du bloc */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Ombre portée pour un effet flottant */
+    background-color: #f8f9fa; /* Changer la couleur de fond au survol */
+}
+
+/* FORMULAIRE MODERNE */
+.modern-form {
+    background: #fff;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 1s ease;
+    max-width: 600px; /* Limiter la largeur du formulaire */
+    margin: 0 auto; /* Centrer le formulaire */
+}
+
+/* Améliorer l'espacement entre les labels et les champs */
+.modern-form label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Espacement entre les champs du formulaire */
+.modern-form .form-group {
+    margin-bottom: 20px;
+}
+
+/* Style des champs de formulaire */
+.modern-form .form-control {
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease-in-out;
+    padding: 12px;
+    font-size: 16px;
+}
+
+.modern-form .form-control:focus {
+    border-color: #00B8A9;
+    box-shadow: 0 0 10px rgba(0, 184, 169, 0.3);
+}
+
+/* Bouton de confirmation centré */
+.btn-confirm {
+    background-color: #1d3557;
+    color: #fff;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    display: block;
+    width: 100%; /* Le bouton prend toute la largeur */
+    margin-top: 20px; /* Espacement au-dessus du bouton */
+}
+
+.btn-confirm:hover {
+    background-color: #457b9d;
+}
+
+/* Pour les éléments qui sont centrés, ajout d'une classe utilitaire */
+.text-center {
+    text-align: center;
+}
+
+/* Améliorer l'apparence des champs de formulaire */
+.modern-form .form-group .form-control {
+    margin-bottom: 12px; /* Espacement entre les champs */
+}
+
+.btn-success {
+    display: block;      /* Cela permet au bouton de se comporter comme un bloc */
+    width: 50%;          /* Ici, tu choisis la largeur du bouton, par exemple 50% de la largeur totale */
+    margin: 20px auto;   /* Cela centre le bouton avec une marge de 20px en haut et en bas */
+    padding: 12px 30px;  /* Cela ajoute de l'espace autour du texte du bouton */
+    font-size: 16px;     /* C'est la taille du texte sur le bouton */
+    border-radius: 30px; /* Cela rend les coins du bouton arrondis */
+    transition: background-color 0.3s ease; /* Ajoute une animation de couleur quand tu survoles le bouton */
+}
+
+.btn-success:hover {
+    background-color: #457b9d; /* Cela change la couleur du bouton lorsque tu survoles */
+}
+
+
+.container {
+    min-height: 100vh; /* S'assure que le conteneur prend toute la hauteur de la fenêtre */
+}
+
+h1.text-success {
+    font-size: 2.5rem; /* Augmente la taille du titre */
+    font-weight: bold;
+}
+
+p.lead {
+    font-size: 1.2rem; /* Augmente légèrement la taille du texte */
+    color: #555; /* Couleur de texte plus douce */
+}
+
+.btn-primary {
+    padding: 10px 25px; /* Augmente la taille du bouton */
+    font-size: 16px; /* Taille du texte dans le bouton */
+    border-radius: 30px; /* Arrondir les coins du bouton */
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Change la couleur au survol */
+}
+

@@ -27,4 +27,13 @@ class BackOfficeController extends AbstractController
         // Replace with your logic for displaying orders
         return $this->render('BackOffice/orders.html.twig');
     }
+
+   
+
+
+
+
+
+
+    
 }
