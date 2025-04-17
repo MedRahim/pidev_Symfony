@@ -130,7 +130,7 @@ final class OrderController extends AbstractController
     {
         $products = $productRepository->findAll();
 
-        return $this->render('FrontOffice/listing.html.twig', [
+        return $this->render('FrontOffice/market.html.twig', [
             'products' => $products,
         ]);
     }

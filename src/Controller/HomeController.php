@@ -62,12 +62,12 @@ class HomeController extends AbstractController
         return $this->render('FrontOffice/elements.html.twig');
     }
 
-    #[Route('/listing', name: 'listing')]
+    #[Route('/market', name: 'market')]
     public function listing(ProductRepository $productRepo): Response
     {
         $products = $productRepo->findAll();
 
-        return $this->render('FrontOffice/listing.html.twig', [
+        return $this->render('FrontOffice/market.html.twig', [
             'products' => $products,
         ]);
     }
