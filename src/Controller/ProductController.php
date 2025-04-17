@@ -99,11 +99,40 @@ final class ProductController extends AbstractController
 
         $products = $productRepository->findByNameAndPriceRange($searchName, $minPrice, $maxPrice);
 
-        return $this->render('FrontOffice/listing.html.twig', [
+        return $this->render('FrontOffice/market.html.twig', [
             'products' => $products,
             'searchName' => $searchName,
             'minPrice' => $minPrice,
             'maxPrice' => $maxPrice,
+        ]);
+    }
+
+    #[Route('/market', name: 'app_product_market', methods: ['GET'])]
+    public function listProducts(Request $request): Response
+    {
+        $name = $request->query->get('name', '');
+        $priceRange = $request->query->get('price-range', '');
+
+        $queryBuilder = $this->getDoctrine()->getRepository(Product::class)->createQueryBuilder('p');
+
+        if ($name) {
+            $queryBuilder->andWhere('p.name LIKE :name')
+                         ->setParameter('name', '%' . $name . '%');
+        }
+
+        if ($priceRange) {
+            [$minPrice, $maxPrice] = explode('-', $priceRange);
+            $queryBuilder->andWhere('p.price BETWEEN :minPrice AND :maxPrice')
+                         ->setParameter('minPrice', $minPrice)
+                         ->setParameter('maxPrice', $maxPrice);
+        }
+
+        $products = $queryBuilder->getQuery()->getResult();
+
+        return $this->render('FrontOffice/market.html.twig', [
+            'products' => $products,
+            'searchName' => $name,
+            'selectedPriceRange' => $priceRange,
         ]);
     }
 

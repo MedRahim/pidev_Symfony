@@ -63,12 +63,22 @@ class HomeController extends AbstractController
     }
 
     #[Route('/market', name: 'market')]
-    public function listing(ProductRepository $productRepo): Response
+    public function listing(ProductRepository $productRepository, Request $request): Response
     {
-        $products = $productRepo->findAll();
+        $name = $request->query->get('name', '');
+
+        $queryBuilder = $productRepository->createQueryBuilder('p');
+
+        if ($name) {
+            $queryBuilder->andWhere('p.name LIKE :name')
+                         ->setParameter('name', '%' . $name . '%');
+        }
+
+        $products = $queryBuilder->getQuery()->getResult();
 
         return $this->render('FrontOffice/market.html.twig', [
             'products' => $products,
+            'searchName' => $name,
         ]);
     }
 
