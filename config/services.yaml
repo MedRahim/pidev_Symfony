@@ -61,7 +61,31 @@ services:
             - '@doctrine'
         tags: ['doctrine.repository_service']
 
+    App\Repository\ProductRepository:
+        class: App\Repository\ProductRepository
+        arguments:
+            - '@doctrine'
+        tags: ['doctrine.repository_service']
+
+    App\Repository\OrderRepository:
+        class: App\Repository\OrderRepository
+        arguments:
+            - '@doctrine'
+        tags: ['doctrine.repository_service']
+
     App\Controller\UserController:
+        autowire: true
+        autoconfigure: true
+        public: true
+        tags: ['controller.service_arguments']
+
+    App\Controller\ProductController:
+        autowire: true
+        autoconfigure: true
+        public: true
+        tags: ['controller.service_arguments']
+
+    App\Controller\OrderController:
         autowire: true
         autoconfigure: true
         public: true

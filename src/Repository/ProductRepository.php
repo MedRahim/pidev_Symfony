@@ -17,4 +17,33 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     // Add custom query methods here if needed
+
+    public function findByNameLike(string $name): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('LOWER(p.name) LIKE LOWER(:name)')
+            ->setParameter('name', '%' . $name . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByNameAndPriceRange(?string $name, ?float $minPrice, ?float $maxPrice): array
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        if ($name) {
+            $qb->andWhere('LOWER(p.name) LIKE LOWER(:name)')
+               ->setParameter('name', '%' . $name . '%');
+        }
+        if ($minPrice !== null) {
+            $qb->andWhere('p.price >= :minPrice')
+               ->setParameter('minPrice', $minPrice);
+        }
+        if ($maxPrice !== null) {
+            $qb->andWhere('p.price <= :maxPrice')
+               ->setParameter('maxPrice', $maxPrice);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

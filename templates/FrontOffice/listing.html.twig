@@ -68,7 +68,6 @@
                                                 </ul>
                                             </li>
                                             <li><a href="{{ asset('FrontOffice/contact.html.twig') }}">Contact</a></li>
-                                            <li><a href="{{ path('app_order_pannier') }}">Pannier</a></li>
                                             <li class="add-list"><a href="listing_details.html"><i class="ti-plus"></i> add Listing</a></li>
                                             <li class="login"><a href="#">
                                                 <i class="ti-user"></i> Sign in or Register</a>
@@ -142,78 +141,43 @@
                             <!-- single one -->
                             <div class="single-listing">
                                 <!-- input -->
-                                <div class="input-form">
-                                    <input type="text" placeholder="What are you finding?">
-                                </div>
-                                <!-- Select job items start -->
-                                <div class="select-job-items1">
-                                    <select name="select1">
-                                        <option value="">Choose categories</option>
-                                        <option value="">Category 1</option>
-                                        <option value="">Category 2</option>
-                                        <option value="">Category 3</option>
-                                    </select>
-                                </div>
-                                <!--  Select job items End-->
-                                <!-- Select job items start -->
-                                <div class="select-job-items2">
-                                    <select name="select2">
-                                        <option value="">Location</option>
-                                        <option value="">Dhaka</option>
-                                        <option value="">Mirpur</option>
-                                        <option value="">Dannondi</option>
-                                    </select>
-                                </div>
-                                <!--  Select job items End-->
-                                <!-- select-Categories start -->
-                                <div class="select-Categories pt-140 pb-20">
-                                    <label class="container">Full Time
-                                        <input type="checkbox" >
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class="container">Ratings
-                                        <input type="checkbox" checked="checked active">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                                <!-- select-Categories End -->
-                                <!-- Select job items start -->
-                                <div class="select-job-items2">
-                                    <select name="select2">
-                                        <option value="">Area (km)</option>
-                                        <option value="">Dhaka- 1km</option>
-                                        <option value="">Dinajpur- 2km</option>
-                                        <option value="">Chittagong - 3km</option>
-                                    </select>
-                                </div>
-                                <!--  Select job items End-->
-                            </div>
-
-                            <div class="single-listing">
-                                <!-- Range Slider Start -->
-                                <aside class="left_widgets p_filter_widgets price_rangs_aside sidebar_box_shadow">
-                                    <div class="small-section-tittle2">
-                                        <h4>Price range</h4>
+                                <form method="get" action="{{ path('app_product_listing') }}" id="product-filter-form">
+                                    <div class="input-form">
+                                        <input type="text" name="name" placeholder="What are you finding?" value="{{ searchName|default('') }}">
                                     </div>
-                                    <div class="widgets_inner">
-                                        <div class="range_item">
-                                            <!-- <div id="slider-range"></div> -->
-                                            <input type="text" class="js-range-slider" value="" />
-                                            <div class="d-flex align-items-center">
-                                                <div class="price_text">
-                                                    <p>Price :</p>
-                                                </div>
-                                                <div class="price_value d-flex justify-content-center">
-                                                    <input type="text" class="js-input-from" id="amount" readonly />
-                                                    <span>to</span>
-                                                    <input type="text" class="js-input-to" id="amount" readonly />
+                                    <!-- Price Range Slider Start -->
+                                    <aside class="left_widgets p_filter_widgets price_rangs_aside sidebar_box_shadow" style="margin-top: 20px;">
+                                        <div class="small-section-tittle2">
+                                            <h4>Price range</h4>
+                                        </div>
+                                        <div class="widgets_inner">
+                                            <div class="range_item">
+                                                <input type="text" class="js-range-slider" value="" />
+                                                <div class="d-flex align-items-center">
+                                                    <div class="price_text">
+                                                        <p>Price :</p>
+                                                    </div>
+                                                    <div class="price_value d-flex justify-content-center">
+                                                        <input type="text" class="js-input-from" id="amount-from" readonly style="width:60px;" />
+                                                        <span>to</span>
+                                                        <input type="text" class="js-input-to" id="amount-to" readonly style="width:60px;" />
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <!-- Hidden fields for min/max price -->
+                                            <input type="hidden" name="min_price" id="min_price" value="{{ minPrice is defined and minPrice is not null ? minPrice : 0 }}">
+                                            <input type="hidden" name="max_price" id="max_price" value="{{ maxPrice is defined and maxPrice is not null ? maxPrice : 1000 }}">
                                         </div>
-                                    </div>
-                                </aside>
-                              <!-- Range Slider End -->
-                                 <a href="#" class="btn list-btn mt-20">Reset</a>
+                                    </aside>
+                                    <!-- Price Range Slider End -->
+                                    <button type="submit" class="btn list-btn mt-20">Search</button>
+                                </form>
+                                <!-- Select job items start -->
+                                <!--  Select job items End-->
+                                <!-- select-Categories start -->
+                                <!-- select-Categories End -->
+                                <!-- Select job items start -->
+                                <!--  Select job items End-->
                             </div>
                         </div>
                         <!-- Job Category Listing End -->
@@ -221,10 +185,14 @@
                     <!-- Right content -->
                     <div class="col-xl-8 col-lg-8 col-md-6">
                         <div class="row">
-                            <div class="col-lg-12">
-                                <div class="count mb-35">
+                            <div class="col-lg-12 d-flex justify-content-between align-items-center mb-3">
+                                <div class="count mb-0">
                                     <span>5432 Listings are available</span>
                                 </div>
+                                <!-- Pannier Button -->
+                                <a href="{{ path('app_order_pannier') }}" class="btn btn-warning btn-lg" style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa fa-shopping-cart"></i> Pannier
+                                </a>
                             </div>
                         </div>
                         <!-- listing Details Stat-->
@@ -441,8 +409,41 @@
       </div>
     </div>
 
+    {% set sliderMin = 0 %}
+    {% set sliderMax = 1000 %}
+    {% set sliderFrom = minPrice is defined and minPrice is not null ? minPrice : sliderMin %}
+    {% set sliderTo = maxPrice is defined and maxPrice is not null ? maxPrice : sliderMax %}
+
     <script>
-      $(document).ready(function(){
+      $(function(){
+        var $slider = $('.js-range-slider');
+        if ($slider.length && typeof $.fn.ionRangeSlider === 'function') {
+          var sliderInstance = $slider.ionRangeSlider({
+            type: 'double',
+            min: {{ sliderMin }},
+            max: {{ sliderMax }},
+            from: {{ sliderFrom }},
+            to: {{ sliderTo }},
+            prefix: "$",
+            onStart: updateInputs,
+            onChange: updateInputs,
+            onFinish: updateInputs
+          }).data("ionRangeSlider");
+
+          // Ensure hidden fields are updated on page load
+          $('#amount-from').val({{ sliderFrom }});
+          $('#amount-to').val({{ sliderTo }});
+          $('#min_price').val({{ sliderFrom }});
+          $('#max_price').val({{ sliderTo }});
+        }
+
+        function updateInputs(data) {
+          $('#amount-from').val(data.from);
+          $('#amount-to').val(data.to);
+          $('#min_price').val(data.from);
+          $('#max_price').val(data.to);
+        }
+
         $('.buy-btn').on('click', function(e){
           e.preventDefault();
 
@@ -471,5 +472,21 @@
         });
       });
     </script>
+
+    <style>
+    /* Add custom style for the Pannier button */
+    .btn.btn-warning.btn-lg {
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 30px;
+        padding: 10px 28px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: background 0.2s;
+    }
+    .btn.btn-warning.btn-lg:hover {
+        background: #ffae00;
+        color: #fff;
+    }
+    </style>
 </body>
 </html>

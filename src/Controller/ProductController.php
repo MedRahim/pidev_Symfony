@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/product')]
 final class ProductController extends AbstractController
@@ -85,7 +87,83 @@ final class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_product_show', methods: ['GET'])]
+    #[Route('/listing', name: 'app_product_listing', methods: ['GET'])]
+    public function listing(ProductRepository $productRepository, Request $request): Response
+    {
+        $searchName = $request->query->get('name');
+        $minPrice = $request->query->get('min_price');
+        $maxPrice = $request->query->get('max_price');
+
+        $minPrice = $minPrice !== null && $minPrice !== '' ? (float)$minPrice : null;
+        $maxPrice = $maxPrice !== null && $maxPrice !== '' ? (float)$maxPrice : null;
+
+        $products = $productRepository->findByNameAndPriceRange($searchName, $minPrice, $maxPrice);
+
+        return $this->render('FrontOffice/listing.html.twig', [
+            'products' => $products,
+            'searchName' => $searchName,
+            'minPrice' => $minPrice,
+            'maxPrice' => $maxPrice,
+        ]);
+    }
+
+    #[Route('/edit-modal/{id}', name: 'app_product_edit_modal', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function editModal(Product $product): Response
+    {
+        $form = $this->createForm(ProductType::class, $product);
+
+        // Render only the <form> markup (no layout, no menus, etc)
+        return $this->render('product/_edit_modal_form.html.twig', [
+            'form' => $form->createView(),
+            'product' => $product,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    public function edit(
+        Request $request,
+        Product $product,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger
+    ): Response {
+        $form = $this->createForm(ProductType::class, $product, [
+            'attr' => ['enctype' => 'multipart/form-data']
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Handle file upload if any
+            $imageFile = $form->get('imagePath')->getData();
+            if ($imageFile) {
+                $safeName = $slugger->slug(pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME));
+                $filename = $safeName . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                $imageFile->move($this->getParameter('images_directory'), $filename);
+                $product->setImagePath('uploads/images/' . $filename);
+            }
+
+            // No need to persist, just flush
+            $em->flush();
+
+            // Return updated card HTML for AJAX
+            if ($request->isXmlHttpRequest()) {
+                return $this->json([
+                    'success' => true,
+                    'html' => $this->renderView('BackOffice/_product_card.html.twig', ['product' => $product]),
+                ]);
+            }
+
+            // Redirect or return JSON
+            return $this->redirectToRoute('app_product_index');
+        }
+
+        // Render the form for GET requests
+        return $this->render('product/_edit_modal_form.html.twig', [
+            'form' => $form->createView(),
+            'product' => $product,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_product_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Product $product): Response
     {
         return $this->render('product/show.html.twig', [
@@ -93,41 +171,7 @@ final class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(ProductType::class, $product);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Handle image upload
-            $imageFile = $form->get('imagePath')->getData();
-            if ($imageFile) {
-                $newFilename = uniqid().'.'.$imageFile->guessExtension();
-                $imageFile->move(
-                    $this->getParameter('kernel.project_dir').'/public/uploads/products',
-                    $newFilename
-                );
-                $product->setImagePath('/uploads/products/'.$newFilename);
-            }
-
-            $entityManager->flush(); // Save changes to the existing product
-
-            return new Response('Product updated successfully', Response::HTTP_OK);
-        }
-
-        // Render the edit form for AJAX requests
-        if ($request->isXmlHttpRequest() && $request->isMethod('GET')) {
-            return $this->render('BackOffice/edit_product_modal.html.twig', [
-                'form' => $form->createView(),
-                'product' => $product,
-            ]);
-        }
-
-        return $this->redirectToRoute('products_page');
-    }
-
-    #[Route('/{id}', name: 'app_product_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_product_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
@@ -136,15 +180,5 @@ final class ProductController extends AbstractController
         }
 
         return $this->redirectToRoute('products_page', [], Response::HTTP_SEE_OTHER);
-    }
-
-    #[Route('/listing', name: 'app_product_listing', methods: ['GET'])]
-    public function listing(ProductRepository $productRepository): Response
-    {
-        $products = $productRepository->findAll(); // Fetch all products from the database
-
-        return $this->render('FrontOffice/listing.html.twig', [
-            'products' => $products, // Pass the products to the template
-        ]);
     }
 }

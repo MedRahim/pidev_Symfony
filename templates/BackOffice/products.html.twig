@@ -24,7 +24,7 @@
     <meta charset="utf-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
     <title>Dashboard - Analytics | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
@@ -592,39 +592,61 @@
                     </div>
                     <div class="modal-body">
                       {{ form_start(form, { 'attr': {'id': 'addProductForm', 'enctype': 'multipart/form-data'} }) }}
-                      {{ form_widget(form) }}
+                      
+                      <div class="mb-3">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name, { 'attr': {'class': 'form-control'} }) }}
+                        {{ form_errors(form.name) }}
+                      </div>
+
+                      <div class="mb-3">
+                        {{ form_label(form.reference) }}
+                        {{ form_widget(form.reference, { 'attr': {'class': 'form-control'} }) }}
+                        {{ form_errors(form.reference) }}
+                      </div>
+
+                      <div class="mb-3">
+                        {{ form_label(form.price) }}
+                        {{ form_widget(form.price, { 'attr': {'class': 'form-control'} }) }}
+                        {{ form_errors(form.price) }}
+                      </div>
+
+                      <div class="mb-3">
+                        {{ form_label(form.stockLimit) }}
+                        {{ form_widget(form.stockLimit, { 'attr': {'class': 'form-control'} }) }}
+                        {{ form_errors(form.stockLimit) }}
+                      </div>
+
+                      <div class="mb-3">
+                        {{ form_label(form.stock) }}
+                        {{ form_widget(form.stock, { 'attr': {'class': 'form-control'} }) }}
+                        {{ form_errors(form.stock) }}
+                      </div>
+
+                      <div class="mb-3">
+                        {{ form_label(form.imagePath) }}
+                        {{ form_widget(form.imagePath, { 'attr': {'class': 'form-control'} }) }}
+                        {{ form_errors(form.imagePath) }}
+                      </div>
+
+                      <div class="mb-3">
+                        {{ form_label(form.sold) }}
+                        {{ form_widget(form.sold, { 'attr': {'class': 'form-control'} }) }}
+                        {{ form_errors(form.sold) }}
+                      </div>
+
+                      <div class="mb-3">
+                        {{ form_label(form.description) }}
+                        {{ form_widget(form.description, { 'attr': {'class': 'form-control'} }) }}
+                        {{ form_errors(form.description) }}
+                      </div>
+
                       <button type="submit" class="btn btn-primary">Save</button>
                       {{ form_end(form) }}
                     </div>
                   </div>
                 </div>
               </div>
-
-              <script>
-              document.addEventListener('DOMContentLoaded', function () {
-                const form = document.getElementById('addProductForm');
-                form.addEventListener('submit', function (event) {
-                  event.preventDefault();
-                  const formData = new FormData(form);
-
-                  fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                  })
-                    .then(response => {
-                      if (response.ok) {
-                        location.reload(); // Reload the page to show the new product
-                      } else {
-                        return response.text().then(text => { throw new Error(text) });
-                      }
-                    })
-                    .catch(error => {
-                      console.error('Error:', error);
-                      alert('Error saving product: ' + error.message);
-                    });
-                });
-              });
-              </script>
 
               <!-- Edit Product Modal -->
               <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
@@ -641,56 +663,10 @@
                 </div>
               </div>
 
-              <script>
-              document.addEventListener('DOMContentLoaded', function () {
-                const editButtons = document.querySelectorAll('.edit-product-btn');
-                editButtons.forEach(button => {
-                    button.addEventListener('click', function () {
-                        const productId = button.getAttribute('data-product-id');
-                        const modalBody = document.getElementById('editProductModalBody');
-                        fetch(`/product/${productId}/edit`, {
-                            method: 'GET',
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
-                        .then(response => response.text())
-                        .then(html => {
-                            modalBody.innerHTML = html;
-                            const form = modalBody.querySelector('form');
-                            form.addEventListener('submit', function (event) {
-                                event.preventDefault();
-                                const formData = new FormData(form);
-                                fetch(form.action, {
-                                    method: 'POST',
-                                    body: formData,
-                                    headers: {
-                                        'X-Requested-With': 'XMLHttpRequest' // Ensure this header is set
-                                    }
-                                })
-                                .then(response => {
-                                    if (response.ok) {
-                                        location.reload(); // Reload to reflect changes
-                                    } else {
-                                        throw new Error('Network response was not ok.');
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                    alert('Error updating product: ' + error.message);
-                                });
-                            });
-                        })
-                        .catch(error => console.error('Error loading edit form:', error));
-                    });
-                });
-              });
-              </script>
-
               <div class="row">
                 {% if products is defined and products is not empty %}
                   {% for product in products %}
-                    <div class="col-lg-4 mb-4">
+                    <div class="col-lg-4 mb-4" id="product-card-{{ product.id }}">
                       <div class="card">
                         <img
                           src="{{ product.imagePath ? asset(product.imagePath) : asset('BackOffice/assets/img/default-product.jpg') }}"
@@ -702,11 +678,13 @@
                           <p class="card-text">{{ product.description }}</p>
                           <p class="card-text"><strong>Price:</strong> {{ product.price }} USD</p>
                           <p class="card-text"><strong>Stock:</strong> {{ product.stock }}</p>
-                          <button type="button" 
-                                  class="btn btn-primary edit-product-btn" 
-                                  data-bs-toggle="modal" 
-                                  data-bs-target="#editProductModal"
-                                  data-product-id="{{ product.id }}">
+                          <button
+                            type="button"
+                            class="btn btn-primary edit-product-btn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editProductModal"
+                            data-edit-url="{{ path('app_product_edit_modal', { id: product.id }) }}"
+                          >
                             Edit
                           </button>
                           <button type="button" 
@@ -749,17 +727,79 @@
               </div>
 
               <script>
-              document.addEventListener('DOMContentLoaded', function() {
-                const deleteModal = document.getElementById('deleteModal');
-                deleteModal.addEventListener('show.bs.modal', function(event) {
-                  const button = event.relatedTarget;
-                  const deleteUrl = button.getAttribute('data-delete-url');
-                  const csrfToken = button.getAttribute('data-csrf-token');
-                  
-                  document.getElementById('deleteForm').action = deleteUrl;
-                  document.getElementById('csrfToken').value = csrfToken;
+                document.addEventListener('DOMContentLoaded', () => {
+                  const deleteModal = document.getElementById('deleteModal');
+                  const deleteForm = document.getElementById('deleteForm');
+                  const csrfTokenInput = document.getElementById('csrfToken');
+
+                  deleteModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget; // Button that triggered the modal
+                    const deleteUrl = button.getAttribute('data-delete-url');
+                    const csrfToken = button.getAttribute('data-csrf-token');
+
+                    // Set the form action and CSRF token
+                    deleteForm.setAttribute('action', deleteUrl);
+                    csrfTokenInput.value = csrfToken;
+                  });
+
+                  const editModal = document.getElementById('editProductModal');
+                  const modalBody = editModal.querySelector('.modal-body');
+
+                  editModal.addEventListener('show.bs.modal', event => {
+                    const button = event.relatedTarget;
+                    const url = button.getAttribute('data-edit-url');
+
+                    // Clear previous content / show spinner
+                    modalBody.innerHTML = '<p class="text-center">Loading…</p>';
+
+                    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                      .then(resp => {
+                        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                        return resp.text();
+                      })
+                      .then(html => {
+                        modalBody.innerHTML = html;
+                      })
+                      .catch(err => {
+                        console.error('Error loading edit form:', err);
+                        modalBody.innerHTML = '<div class="alert alert-danger">Failed to load form.</div>';
+                      });
+                  });
+
+                  document.addEventListener('submit', function(e) {
+                    if (
+                      e.target.closest('#editProductModal') &&
+                      e.target.matches('form')
+                    ) {
+                      e.preventDefault();
+                      const form = e.target;
+                      const productId = form.querySelector('[name="product[id]"]')?.value ||
+                                        form.dataset.productId ||
+                                        form.action.match(/\/product\/(\d+)\//)?.[1];
+
+                      fetch(form.action, {
+                        method: form.method,
+                        body: new FormData(form),
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                      })
+                      .then(async res => {
+                        if (res.headers.get('content-type')?.includes('application/json')) {
+                          const data = await res.json();
+                          if (data.success && productId) {
+                            const card = document.getElementById(`product-card-${productId}`);
+                            if (card) card.outerHTML = data.html;
+                            bootstrap.Modal.getInstance(document.getElementById('editProductModal')).hide();
+                          }
+                        } else if (res.status === 422) {
+                          // Validation error: replace modal body with returned HTML
+                          const html = await res.text();
+                          document.getElementById('editProductModalBody').innerHTML = html;
+                        }
+                      })
+                      .catch(console.error);
+                    }
+                  });
                 });
-              });
               </script>
             </div>
             <!-- / Content -->
