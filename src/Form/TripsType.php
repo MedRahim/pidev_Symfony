@@ -14,6 +14,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+
 
 class TripsType extends AbstractType
 {
@@ -84,8 +87,24 @@ class TripsType extends AbstractType
         ])
     ]
 ])
+->add('image', FileType::class, [
+    'label' => 'Trip Image',
+    'mapped' => false,
+    'required' => false,
+    'constraints' => [
+        new File([
+            'maxSize' => '1024k',
+            'mimeTypes' => [
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+            ],
+            'mimeTypesMessage' => 'Please upload a valid image file',
+        ])
+    ],
+])
             ->add('price', NumberType::class, [
-                'label' => 'Prix (€)',
+                'label' => 'Prix (DT)',
                 'scale' => 2,
                 'attr' => [
                     'class' => 'form-control',

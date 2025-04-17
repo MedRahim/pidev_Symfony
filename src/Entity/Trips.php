@@ -120,14 +120,20 @@ class Trips
      */
     private $transport;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
+    
     /**
-     * @ORM\PrePersist
-     */
-    public function setTimestamps(): void
-    {
-        $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
-    }
+ * @ORM\PrePersist
+ */
+public function setTimestamps(): void
+{
+    $this->createdAt = new \DateTime();
+    $this->updatedAt = new \DateTime();
+}
+
+  
 
     /**
      * @ORM\PreUpdate
@@ -257,4 +263,15 @@ class Trips
     {
         return $this->getTransport() ? $this->getTransport()->getTransportId() : null;
     }
+
+    public function getImage(): ?string
+{
+    return $this->image;
+}
+
+public function setImage(?string $image): self
+{
+    $this->image = $image;
+    return $this;
+}
 }

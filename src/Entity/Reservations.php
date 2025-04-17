@@ -17,6 +17,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Reservations
 {
+    public const STATUS_CONFIRMED = 'confirmed';
+    public const STATUS_PENDING   = 'pending';
+    public const STATUS_CANCELED  = 'canceled';
+
+    public const PAYMENT_PAID     = 'paid';
+    public const PAYMENT_PENDING  = 'pending';
+    public const PAYMENT_FAILED   = 'failed';
     /**
      * @var int
      *

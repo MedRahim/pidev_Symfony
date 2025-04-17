@@ -2,7 +2,11 @@
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Entity\Trips;
+use App\Entity\Users;
 use App\Form\TripsType;
 use App\Repository\TripsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,6 +18,24 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/trips')]
 class TripsController extends AbstractController
 {
+    private const FIXED_USER_ID = 7;
+
+    private $slugger;
+
+    public function __construct(SluggerInterface $slugger)
+    {
+        $this->slugger = $slugger;
+    }
+
+    private function getFixedUser(EntityManagerInterface $em): Users
+    {
+        $user = $em->getRepository(Users::class)->find(self::FIXED_USER_ID);
+        if (!$user) {
+            throw new \Exception('Fixed user not found. Check that user ID 7 exists.');
+        }
+        return $user;
+    }
+
     #[Route('/', name: 'app_trips_index', methods: ['GET'])]
     public function index(Request $request, TripsRepository $tripsRepository): Response
     {
@@ -104,6 +126,26 @@ class TripsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $imageFile */
+            $imageFile = $form->get('image')->getData();
+
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $this->slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('trips_images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // Gérer l'erreur si nécessaire
+                }
+
+                $trip->setImage($newFilename);
+            }
+
             $entityManager->persist($trip);
             $entityManager->flush();
 
@@ -125,29 +167,14 @@ class TripsController extends AbstractController
     }
 
     #[Route('/{id}/reserve', name: 'app_trips_reserve', methods: ['GET', 'POST'])]
-    public function reserve(Trips $trip, Request $request, EntityManagerInterface $entityManager): Response
+    public function reserve(
+        Trips $trip, 
+        Request $request, 
+        EntityManagerInterface $entityManager
+    ): Response
     {
-        if (!$this->getUser()) {
-            $this->addFlash('warning', 'Veuillez vous connecter pour réserver ce trajet.');
-            return $this->redirectToRoute('app_login');
-        }
-
-        // Ici, vous pouvez intégrer la logique de réservation.
-        // Par exemple, si vous avez une entité "Reservation", vous pourriez procéder comme suit :
-        //
-        // $reservation = new Reservation();
-        // $reservation->setUser($this->getUser());
-        // $reservation->setTrip($trip);
-        // $reservation->setReservedAt(new \DateTime());
-        // $entityManager->persist($reservation);
-        // $entityManager->flush();
-        // $this->addFlash('success', 'Votre réservation a été enregistrée.');
-        // return $this->redirectToRoute('app_trips_show', ['id' => $trip->getId()]);
-        //
-        // Pour cet exemple, nous simulons simplement une réservation réussie.
-        
-        $this->addFlash('success', 'Votre réservation a été enregistrée.');
-        return $this->redirectToRoute('app_trips_show', ['id' => $trip->getId()]);
+        // Rediriger vers la page de réservation avec l'ID du trajet
+        return $this->redirectToRoute('app_reservations_new', ['tripId' => $trip->getId()]);
     }
 
     #[Route('/{id}/edit', name: 'app_trips_edit', methods: ['GET', 'POST'])]
@@ -157,8 +184,27 @@ class TripsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image')->getData();
+            
+            if ($imageFile) {
+                $newFilename = uniqid().'.'.$imageFile->guessExtension();
+                
+                try {
+                    $imageFile->move(
+                        $this->getParameter('trips_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // Gestion erreur upload
+                }
+                
+                $trip->setImage($newFilename);
+            }
+
+            $entityManager->persist($trip);
             $entityManager->flush();
-            return $this->redirectToRoute('app_trips_index', [], Response::HTTP_SEE_OTHER);
+
+            return $this->redirectToRoute('app_trips_index');
         }
 
         return $this->render('FrontOffice/trips/edit.html.twig', [

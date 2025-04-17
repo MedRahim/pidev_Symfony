@@ -4,7 +4,6 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    {# Vous pouvez extraire ces styles dans public/css/listing.css #}
     <style>
         /* ========= HERO SECTION ========= */
         .hero {
@@ -168,10 +167,10 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Recherchez votre trajet</h1>
-            <div class="search-bar input-group mt-4">
+            <form method="get" action="{{ path('app_trips_index') }}" class="search-bar input-group mt-4">
                 <input type="text" class="form-control" placeholder="Exemple: Paris - Lyon" name="q" value="{{ app.request.get('q') }}">
                 <button class="btn btn-primary" type="submit">Rechercher</button>
-            </div>
+            </form>
         </div>
     </section>
     
@@ -196,143 +195,65 @@
                                     <input type="range" name="maxPrice" class="form-range" id="priceRange" min="0" max="1000" step="10" value="{{ app.request.get('maxPrice')|default(500) }}">
                                 </div>
                                 <div class="mb-3">
-                                    <label>Type de transport</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="transport[]" value="Bus" id="checkBus" {% if app.request.get('transport') is iterable and 'Bus' in app.request.get('transport') %}checked{% endif %}>
-                                        <label class="form-check-label" for="checkBus">Bus</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="transport[]" value="Train" id="checkTrain" {% if app.request.get('transport') is iterable and 'Train' in app.request.get('transport') %}checked{% endif %}>
-                                        <label class="form-check-label" for="checkTrain">Train</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="transport[]" value="Metro" id="checkMetro" {% if app.request.get('transport') is iterable and 'Metro' in app.request.get('transport') %}checked{% endif %}>
-                                        <label class="form-check-label" for="checkMetro">Metro</label>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="sort">Trier par</label>
-                                    <select class="form-select" name="sort" id="sort">
-                                        <option value="">-- Aucun --</option>
-                                        <option value="price" {% if app.request.get('sort') == 'price' %}selected{% endif %}>Prix</option>
-                                        <option value="departureTime" {% if app.request.get('sort') == 'departureTime' %}selected{% endif %}>Heure de départ</option>
-                                        <option value="date" {% if app.request.get('sort') == 'date' %}selected{% endif %}>Date</option>
-                                        <option value="distance" {% if app.request.get('sort') == 'distance' %}selected{% endif %}>Distance</option>
-                                    </select>
-                                </div>
-                                <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-primary">Appliquer les filtres</button>
-                                    <a href="{{ path('app_trips_index') }}" class="btn btn-secondary">Réinitialiser</a>
+                                    <button type="submit" class="btn btn-primary w-100">Filtrer</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
-                <!-- FIN FILTRES -->
-
-                <!-- LISTING -->
+                
+                <!-- LISTING DES TRAJETS -->
                 <div class="col-lg-8">
-                    <div class="text-center mb-4">
-                        <h3><i class="fas fa-route me-2"></i>Trajets Disponibles</h3>
-                        <p class="text-muted">{{ trips|length }} trajet(s) trouvé(s)</p>
-                    </div>
                     <div class="row">
                         {% for trip in trips %}
-                            <div class="col-md-6 mb-4">
-                                <div class="card trip-card">
-                                    {% if trip.capacity < 10 %}
-                                        <span class="trip-badge">Plus que {{ trip.capacity }} places!</span>
-                                    {% elseif trip.capacity < 20 %}
-                                        <span class="trip-badge bg-warning">Dernières places</span>
-                                    {% endif %}
-                                    <img src="{{ asset('FrontOffice/assets/img/listing/' ~ (trip.transportName == 'Bus' ? 'bus.jpg' : (trip.transportName == 'Train' ? 'train.jpg' : (trip.transportName == 'Metro' ? 'metro.jpg' : 'default-transport.jpg')))) }}" class="card-img-top" alt="{{ trip.transportName }}">
-                                    <div class="card-body">
-                                        <h5 class="card-title">
-                                            <a href="{{ path('app_trips_show', {'id': trip.id}) }}" class="stretched-link text-dark">
-                                                {{ trip.departure }} → {{ trip.destination }}
-                                            </a>
-                                        </h5>
-                                        <p class="card-text small text-muted"><i class="far fa-calendar-alt me-1"></i> {{ trip.departureTime|date('d/m/Y') }}</p>
-                                        <p class="card-text small text-muted"><i class="fas fa-clock me-1"></i> {{ trip.departureTime|date('H:i') }} - {{ trip.arrivalTime|date('H:i') }}</p>
-                                        <div class="d-flex align-items-center mt-2">
-                                            <div class="me-2">
-                                                {% if trip.transportName == 'Bus' %}
-                                                    <i class="fas fa-bus transport-icon"></i>
-                                                {% elseif trip.transportName == 'Train' %}
-                                                    <i class="fas fa-train transport-icon"></i>
-                                                {% elseif trip.transportName == 'Metro' %}
-                                                    <i class="fas fa-subway transport-icon"></i>
-                                                {% else %}
-                                                    <i class="fas fa-car transport-icon"></i>
-                                                {% endif %}
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold">{{ trip.transportName|default('Transport') }}</div>
-                                                <small class="text-muted">{{ trip.distance }} km • {{ trip.capacity }} places</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer text-end">
-                                        <a href="{{ path('app_trips_show', {'id': trip.id}) }}" class="btn btn-outline-primary btn-sm me-1">Détails</a>
-                                        <a href="{{ path('app_reservations_new', {'tripId': trip.id}) }}" class="btn btn-success btn-sm">
-                                            <i class="fas fa-ticket-alt me-1"></i> Réserver
+                        <div class="col-md-6 mb-4">
+                            <div class="card trip-card">
+                                {# Construction du nom de l'image selon la destination #}
+                                {% set imageName = trip.destination|lower|replace({' ': '-', "'": ''}) ~ '.png' %}
+                                <img src="{{ asset('FrontOffice/assets/img/' ~ imageName) }}" 
+                                     class="card-img-top" 
+                                     alt="{{ trip.destination }}"
+                                     onerror="this.onerror=null;this.src='{{ asset('FrontOffice/assets/img/default.png') }}';">
+                                
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{{ path('app_trips_show', {'id': trip.id}) }}">
+                                            {{ trip.departure }} - {{ trip.destination }}
                                         </a>
-                                    </div>
+                                    </h5>
+                                    <p class="card-text">
+                                        <i class="fas fa-calendar-alt"></i> {{ trip.departureTime|date('d/m/Y H:i') }}<br>
+                                        <i class="fas fa-bus"></i> {{ trip.transportName }}<br>
+                                        <i class="fas fa-road"></i> {{ trip.distance }} km<br>
+                                        <i class="fas fa-tag"></i> <strong>{{ trip.price }} TND</strong>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="{{ path('app_trips_show', {'id': trip.id}) }}" class="btn btn-sm btn-primary">Détails</a>
+                                    <a href="{{ path('app_trips_reserve', {'id': trip.id}) }}" class="btn btn-sm btn-success">Réserver</a>
                                 </div>
                             </div>
+                        </div>
                         {% else %}
-                            <div class="col-12">
-                                <div class="alert alert-info text-center">Aucun trajet ne correspond à vos critères</div>
-                            </div>
+                        <p>Aucun trajet trouvé.</p>
                         {% endfor %}
                     </div>
                     
-                    {% if totalPages is defined and totalPages > 1 %}
-                        <nav aria-label="Pagination" class="mt-4">
-                            <ul class="pagination justify-content-center">
-                                {% if currentPage > 1 %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ path('app_trips_index', app.request.query.all|merge({'page': currentPage - 1})) }}" aria-label="Précédent">
-                                            <i class="fas fa-angle-left"></i>
-                                        </a>
-                                    </li>
-                                {% endif %}
-                                {% for i in range(max(1, currentPage - 2), min(totalPages, currentPage + 2) + 1) %}
-                                    <li class="page-item {{ i == currentPage ? 'active' : '' }}">
-                                        <a class="page-link" href="{{ path('app_trips_index', app.request.query.all|merge({'page': i})) }}">{{ i }}</a>
-                                    </li>
-                                {% endfor %}
-                                {% if currentPage < totalPages %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ path('app_trips_index', app.request.query.all|merge({'page': currentPage + 1})) }}" aria-label="Suivant">
-                                            <i class="fas fa-angle-right"></i>
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </nav>
+                    {# Pagination #}
+                    {% if totalPages > 1 %}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            {% for page in 1..totalPages %}
+                            <li class="page-item {% if page == currentPage %}active{% endif %}">
+                                <a class="page-link" href="{{ path('app_trips_index', app.request.query.all|merge({'page': page})) }}">{{ page }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </nav>
                     {% endif %}
                 </div>
-                <!-- FIN LISTING -->
             </div>
         </div>
     </section>
 </main>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Mise à jour dynamique du label du slider
-            const priceRange = document.getElementById('priceRange');
-            const priceLabel = document.getElementById('priceLabel');
-            if (priceRange && priceLabel) {
-                priceLabel.textContent = priceRange.value;
-                priceRange.addEventListener('input', function () {
-                    priceLabel.textContent = this.value;
-                });
-            }
-        });
-    </script>
 {% endblock %}

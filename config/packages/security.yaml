@@ -35,8 +35,8 @@ security:
         - { path: ^/admin, roles: PUBLIC_ACCESS }
 
         # Tu peux garder la restriction ici si tu veux protéger /profile ou les trajets
-        - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/trips/new, roles: ROLE_USER }
+        - { path: ^/profile, roles: PUBLIC_ACCESS }
+        - { path: ^/trips/new, roles: PUBLIC_ACCESS }
 
 when@test:
     security:
