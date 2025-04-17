@@ -64,6 +64,11 @@ class ReservationsType extends AbstractType
                 ],
                 'attr' => ['class' => 'form-select'],
             ])
+            ->add('reservationTime', DateTimeType::class, [
+                'widget' => 'single_text',
+                'label' => 'Date de réservation',
+                'required' => false,
+            ])
             ->add('paymentStatus', ChoiceType::class, [
                 'label'   => 'Statut de paiement',
                 'choices' => [

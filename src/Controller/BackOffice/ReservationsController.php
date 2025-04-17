@@ -112,4 +112,26 @@ class ReservationsController extends AbstractController
 
         return $this->redirectToRoute('app_admin_reservations_show', ['id' => $reservation->getId()]);
     }
+    #[Route('/{id}/cancel', name: 'app_admin_reservations_cancel', methods: ['POST'])]
+    public function cancel(Request $request, Reservations $reservation, EntityManagerInterface $em): Response
+    {
+        if (!$this->isCsrfTokenValid('cancel'.$reservation->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide');
+        }
+    
+        $currentStatus = $reservation->getStatus();
+    
+        if ($currentStatus === 'Cancelled') {
+            $this->addFlash('info', 'Cette réservation est déjà annulée.');
+        } elseif ($currentStatus === 'Confirmed') {
+            $this->addFlash('warning', 'Impossible d’annuler une réservation déjà confirmée.');
+        } else {
+            $reservation->setStatus('Cancelled');
+            $em->flush();
+            $this->addFlash('success', 'La réservation a bien été annulée.');
+        }
+    
+        return $this->redirectToRoute('app_admin_reservations_show', ['id' => $reservation->getId()]);
+    }
+    
 }
