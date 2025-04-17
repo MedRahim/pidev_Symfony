@@ -134,19 +134,18 @@
                 <div class="appointment-card wow fadeInUp" data-wow-delay="0.2s">
                     <h2 class="text-center mb-4">Prendre un Rendez-vous</h2>
 
-                    {{ form_start(form, {'attr': {'class': 'modern-form'}}) }}
+                    {{ form_start(form, {'attr': {'class': 'modern-form', 'novalidate': 'novalidate'}}) }}
 
-                        {# Afficher uniquement les champs sans le bouton submit par défaut #}
                         {% for field in form %}
                             {% if field.vars.name != 'submit' %}
-                                <div class="form-group">
-                                    {{ form_label(field) }} <!-- Label clair et espacé -->
-                                    {{ form_widget(field, {'attr': {'class': 'form-control'}}) }} <!-- Champ avec le style amélioré -->
+                                <div class="form-group mb-3">
+                                    {{ form_label(field) }}
+                                    {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(field) }}
                                 </div>
                             {% endif %}
                         {% endfor %}
 
-                       
                     {{ form_end(form) }}
                 </div>
             </div>
@@ -158,6 +157,7 @@
 <script>
     new WOW().init();
 </script>
+
 
 
 

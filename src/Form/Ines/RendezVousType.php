@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -29,7 +30,10 @@ class RendezVousType extends AbstractType
             ])
             ->add('status', TextType::class, [
                 'label' => 'Statut du rendez-vous',
-                'data' => 'En attente', // Valeur par défaut
+                'data' => 'En attente',
+            ])
+            ->add('idMedecin', IntegerType::class, [
+                'label' => 'ID du Médecin',
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Confirmer le rendez-vous',

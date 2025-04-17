@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/rendezvous', name: 'rendezvous_')]
 
+
 class RendezVousController extends AbstractController
 {
     #[Route('/new/{idMedecin}', name: 'new', methods: ['GET', 'POST'])]
@@ -41,4 +42,7 @@ class RendezVousController extends AbstractController
     {
         return $this->render('FrontOffice/rendezvous_success.html.twig');
     }
+
+
+
 }
