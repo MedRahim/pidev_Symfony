@@ -4,8 +4,11 @@ namespace App\Entity\Ines;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Repository\Ines\RendezvousRepository;
 
 #[ORM\Entity]
+#[ORM\Table(name: "rendezvous")]
 class Rendezvous
 {
     #[ORM\Id]
@@ -16,6 +19,7 @@ class Rendezvous
     #[ORM\Column(name: "dateRendezVous", type: "date")]
     #[Assert\NotBlank(message: "La date du rendez-vous est obligatoire.")]
     #[Assert\Type(type: \DateTimeInterface::class, message: "Format de date invalide.")]
+    #[Assert\GreaterThanOrEqual("today", message: "La date ne peut pas être dans le passé.")]
     private ?\DateTimeInterface $dateRendezVous = null;
 
     #[ORM\Column(name: "timeRendezVous", type: "time")]
@@ -42,7 +46,7 @@ class Rendezvous
     #[Assert\Positive(message: "L'ID du médecin doit être un nombre positif.")]
     private ?int $idMedecin = null;
 
-    // --- Getters and Setters ---
+    // ----------------- GETTERS & SETTERS -----------------
 
     public function getIdRendezVous(): ?int
     {
@@ -50,10 +54,9 @@ class Rendezvous
     }
 
     public function getId(): ?int
-{
-    return $this->idRendezVous;
-}
-
+    {
+        return $this->idRendezVous;
+    }
 
     public function getDateRendezVous(): ?\DateTimeInterface
     {
@@ -109,4 +112,21 @@ class Rendezvous
         $this->idMedecin = $value;
         return $this;
     }
+
+    // ----------------- VALIDATIONS PERSONNALISÉES -----------------
+
+    #[Assert\Callback]
+    public function validateTimeRange(ExecutionContextInterface $context): void
+    {
+        if ($this->timeRendezVous) {
+            $hour = (int) $this->timeRendezVous->format('H');
+            if ($hour < 8 || $hour >= 18) {
+                $context->buildViolation("L'heure du rendez-vous doit être entre 08:00 et 18:00.")
+                    ->atPath('timeRendezVous')
+                    ->addViolation();
+            }
+        }
+    }
+
+    
 }

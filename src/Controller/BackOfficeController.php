@@ -21,18 +21,6 @@ class BackOfficeController extends AbstractController
 
 
 
-#[Route('/backoffice/medecins', name: 'medecins_page')]
-public function medecins(): Response
-{
-    return $this->render('BackOffice/medecins.html.twig');
-}
-
-#[Route('/backoffice/services-hospitaliers', name: 'services_hospitaliers_page')]
-public function servicesHospitaliers(): Response
-{
-    return $this->render('BackOffice/services-hospitaliers.html.twig');
-}
-
 
     
 }

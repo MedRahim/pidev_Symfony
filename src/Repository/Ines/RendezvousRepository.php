@@ -2,7 +2,7 @@
 
 namespace App\Repository\Ines;
 
-use App\Entity\Rendezvous;
+use App\Entity\Ines\Rendezvous;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -13,5 +13,17 @@ class RendezvousRepository extends ServiceEntityRepository
         parent::__construct($registry, Rendezvous::class);
     }
 
-    // Add custom methods as needed
+    /**
+     * Vérifie si un rendez-vous avec la même date et heure existe déjà
+     */
+    public function findOneByDateAndTime(\DateTimeInterface $dateRendezVous, \DateTimeInterface $timeRendezVous): ?Rendezvous
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.dateRendezVous = :date')
+            ->andWhere('r.timeRendezVous = :time')
+            ->setParameter('date', $dateRendezVous)
+            ->setParameter('time', $timeRendezVous)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

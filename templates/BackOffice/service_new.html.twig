@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 
 <!-- =========================================================
@@ -155,67 +156,44 @@
 
    <!-- /Menu -->
 
-      <!-- Main content -->
-      <div class="layout-page">
-        <!-- Content wrapper -->
-        <div class="content-wrapper">
-          <!-- Content -->
-          <div class="container-xxl flex-grow-1 container-p-y">
-            <!-- ✅ Ton bloc de rendez-vous ici -->
-            <div class="container mt-4">
-              <h1 class="mb-4">Gestion des Rendez-vous</h1>
 
-              <div class="mb-3">
-  <a href="{{ path('backoffice_rendezvous_new') }}" class="btn btn-primary">
-    <i class="bx bx-plus"></i> Ajouter un rendez-vous
-  </a>
-</div>
+    <div class="layout-page">
+  <div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+       <div class="container mt-5">
+    <h1 class="mb-4">Ajouter un Service Hospitalier</h1>
 
+    {% for message in app.flashes('success') %}
+      <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
 
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Heure</th>
-                    <th>Lieu</th>
-                    <th>Status</th>
-                    <th>ID Médecin</th>
-                    <th>Actions</th> <!-- ✅ Nouvelle colonne -->
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for rdv in rendezvous %}
-                    <tr>
-                      <td>{{ rdv.dateRendezVous|date('d/m/Y') }}</td>
-                      <td>{{ rdv.timeRendezVous|date('H:i') }}</td>
-                      <td>{{ rdv.lieu }}</td>
-                      <td>{{ rdv.status }}</td>
-                      <td>{{ rdv.idMedecin }}</td>
-                       <td>
-                        <a href="{{ path('backoffice_rendezvous_edit', {id: rdv.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
-
-          <!-- ✅ Bouton Supprimer -->
-       
-          <form action="{{ path('backoffice_rendezvous_delete', {id: rdv.id}) }}" method="post" style="display:inline-block;" onsubmit="return confirm('Voulez-vous vraiment supprimer ce rendez-vous ?');">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rdv.id) }}">
-            <button class="btn btn-sm btn-danger">Supprimer</button>
-          </form>
-        </td>
-                    </tr>
-                  {% else %}
-                    <tr>
-                      <td colspan="5" class="text-center">Aucun rendez-vous trouvé</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <!-- / Content -->
-        </div>
-        <!-- / Content wrapper -->
-      </div>
-      <!-- / Layout page -->
-    </div>
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+  <div class="mb-3">
+    {{ form_label(form.nomService) }}
+    {{ form_widget(form.nomService) }}
+    {{ form_errors(form.nomService) }}
   </div>
-</body>
+
+  <div class="mb-3">
+    {{ form_label(form.description) }}
+    {{ form_widget(form.description) }}
+    {{ form_errors(form.description) }}
+  </div>
+
+  <div class="mb-3">
+    {{ form_label(form.nombreLitsDisponibles) }}
+    {{ form_widget(form.nombreLitsDisponibles) }}
+    {{ form_errors(form.nombreLitsDisponibles) }}
+  </div>
+
+  <button type="submit" class="btn btn-success">
+    <i class="bx bx-check"></i> Enregistrer les modifications
+  </button>
+  <a href="{{ path('backoffice_service_list') }}" class="btn btn-secondary ms-2">
+    <i class="bx bx-arrow-back"></i> Retour à la liste
+  </a>
+{{ form_end(form) }}
+
+  </div>
+
+  </body>
