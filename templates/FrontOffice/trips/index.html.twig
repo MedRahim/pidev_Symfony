@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<title>Trips index</title>
+
+{% block body %}
+    <h1>Trips index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Departure</th>
+                <th>Destination</th>
+                <th>DepartureTime</th>
+                <th>ArrivalTime</th>
+                <th>Price</th>
+                <th>TransportName</th>
+                <th>Date</th>
+                <th>Distance</th>
+                <th>Capacity</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for trip in trips %}
+            <tr>
+                <td>{{ trip.id }}</td>
+                <td>{{ trip.departure }}</td>
+                <td>{{ trip.destination }}</td>
+                <td>{{ trip.departureTime ? trip.departureTime|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ trip.arrivalTime ? trip.arrivalTime|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ trip.price }}</td>
+                <td>{{ trip.transportName }}</td>
+                <td>{{ trip.date ? trip.date|date('Y-m-d') : '' }}</td>
+                <td>{{ trip.distance }}</td>
+                <td>{{ trip.capacity }}</td>
+                <td>
+                    <a href="{{ path('app_trips_show', {'id': trip.id}) }}">show</a>
+                    <a href="{{ path('app_trips_edit', {'id': trip.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_trips_new') }}">Create new</a>
+{% endblock %}

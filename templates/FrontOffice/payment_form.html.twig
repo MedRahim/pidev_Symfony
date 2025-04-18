@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Form</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+    <style>
+        .payment-form {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #card-element {
+            border: 1px solid #ced4da;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="payment-form" class="payment-form">
+            {% for orderId in orderIds %}
+                <input type="hidden" name="orderIds[]" value="{{ orderId }}">
+            {% endfor %}
+            <input type="hidden" name="_token" value="{{ csrf_token('process_payment') }}">
+
+            <h2 class="mb-4">Payment Details</h2>
+           
+            <div id="card-element"><!-- Stripe Elements will be inserted here --></div>
+            <div id="card-errors" role="alert" class="text-danger mb-3"></div>
+           
+            <button id="submit-button" class="btn btn-primary w-100">
+                <div class="spinner-border spinner-border-sm d-none" role="status" id="spinner"></div>
+                <span id="button-text">Submit Payment</span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const stripe = Stripe('{{ stripe_public_key }}');
+        const elements = stripe.elements();
+        const cardElement = elements.create('card');
+        cardElement.mount('#card-element');
+
+        const form = document.getElementById('payment-form');
+        const submitButton = document.getElementById('submit-button');
+        const spinner = document.getElementById('spinner');
+        const buttonText = document.getElementById('button-text');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+           
+            // Disable button
+            submitButton.disabled = true;
+            spinner.classList.remove('d-none');
+            buttonText.textContent = 'Processing...';
+
+            // Create payment intent on server
+            const { clientSecret } = await fetch("{{ path('app_order_create_payment_intent') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    orderIds: Array.from(document.querySelectorAll('input[name="orderIds[]"]')).map(input => input.value),
+                    _token: document.querySelector('input[name="_token"]').value
+                })
+            }).then(r => r.json());
+
+            // Confirm payment with Stripe
+            const { error } = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: cardElement
+                }
+            });
+
+            if (error) {
+                document.getElementById('card-errors').textContent = error.message;
+                submitButton.disabled = false;
+                spinner.classList.add('d-none');
+                buttonText.textContent = 'Submit Payment';
+            } else {
+                window.location.href = "{{ path('app_order_payment_success') }}";
+            }
+        });
+    </script>
+</body>
+</html>

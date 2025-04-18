@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement confirmé{% endblock %}
+
+{% block body %}
+<div class="container py-5 text-center">
+  {{ include('flash_messages.html.twig') }}
+  <h1 class="text-success mb-4">
+    <i class="fas fa-check-circle"></i> Paiement confirmé !
+  </h1>
+  <p>Réservation n°{{ reservation.id }} — Montant payé : {{ paidAmount }} TND</p>
+  <p>Date : {{ reservation.reservationTime|date('d/m/Y H:i') }}</p>
+  <a href="{{ path('app_reservations_details', {id: reservation.id}) }}" class="btn btn-primary mt-3">
+    Voir mes réservations
+  </a>
+</div>
+{% endblock %}

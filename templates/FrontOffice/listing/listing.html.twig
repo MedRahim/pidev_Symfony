@@ -1,0 +1,259 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Trajets - TransportX{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* ========= HERO SECTION ========= */
+        .hero {
+            position: relative;
+            background: url("{{ asset('FrontOffice/assets/img/hero/hero-bg.jpg') }}") center center/cover no-repeat;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: #fff;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .hero-content .search-bar {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .hero-content .search-bar .form-control {
+            border-radius: 50px;
+            font-size: 1rem;
+            height: 50px;
+            padding-left: 20px;
+        }
+        .hero-content .search-bar button {
+            border-radius: 50px;
+            font-weight: bold;
+            height: 50px;
+        }
+
+        /* ========= FILTRES ========= */
+        .filter-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+            background-color: #fff;
+        }
+        .filter-card .card-body {
+            padding: 25px;
+        }
+        .filter-card .form-control,
+        .filter-card .form-select {
+            border-radius: 50px;
+            border: 1px solid #ddd;
+            height: 45px;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        .filter-card input[type="range"] {
+            width: 100%;
+        }
+        .filter-card label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .filter-card .form-check {
+            margin-bottom: 10px;
+        }
+        .filter-card .btn {
+            border-radius: 50px;
+            font-weight: bold;
+            padding: 10px 30px;
+        }
+
+        /* ========= CARTES DES TRAJETS ========= */
+        .trip-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #fff;
+            position: relative;
+            margin-bottom: 30px;
+        }
+        .trip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+        .trip-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 69, 58, 0.9);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .trip-card .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+        .trip-card .card-body {
+            padding: 15px 20px;
+        }
+        .trip-card .card-title a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .trip-card .card-text {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        .trip-card .card-footer {
+            background: #f7f7f7;
+            padding: 10px 15px;
+            text-align: right;
+        }
+        .trip-card .card-footer a {
+            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin: 0 5px;
+        }
+
+        /* ========= PAGINATION ========= */
+        .pagination .page-link {
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            line-height: 40px;
+            text-align: center;
+            background: #f2f2f2;
+            margin: 0 4px;
+            transition: background-color 0.3s;
+        }
+        .pagination .page-item.active .page-link,
+        .pagination .page-link:hover {
+            background: #007bff;
+            color: #fff;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<main>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Recherchez votre trajet</h1>
+            <form method="get" action="{{ path('app_trips_index') }}" class="search-bar input-group mt-4">
+                <input type="text" class="form-control" placeholder="Exemple: Paris - Lyon" name="q" value="{{ app.request.get('q') }}">
+                <button class="btn btn-primary" type="submit">Rechercher</button>
+            </form>
+        </div>
+    </section>
+    
+    <!-- SECTION FILTRES & LISTING -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <!-- FILTRES -->
+                <div class="col-lg-4 mb-4">
+                    <div class="card filter-card">
+                        <div class="card-body">
+                            <h4 class="mb-4"><i class="fas fa-filter me-2"></i>Filtres Avancés</h4>
+                            <form method="get" action="{{ path('app_trips_index') }}">
+                                <div class="mb-3">
+                                    <input type="text" name="departure" class="form-control" placeholder="Départ" value="{{ app.request.get('departure') }}">
+                                </div>
+                                <div class="mb-3">
+                                    <input type="text" name="destination" class="form-control" placeholder="Destination" value="{{ app.request.get('destination') }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="priceRange">Prix maximum (<span id="priceLabel">500</span> TND)</label>
+                                    <input type="range" name="maxPrice" class="form-range" id="priceRange" min="0" max="1000" step="10" value="{{ app.request.get('maxPrice')|default(500) }}">
+                                </div>
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- LISTING DES TRAJETS -->
+                <div class="col-lg-8">
+                    <div class="row">
+                        {% for trip in trips %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card trip-card">
+                                {# Construction du nom de l'image selon la destination #}
+                                {% set imageName = trip.destination|lower|replace({' ': '-', "'": ''}) ~ '.png' %}
+                                <img src="{{ asset('FrontOffice/assets/img/' ~ imageName) }}" 
+                                     class="card-img-top" 
+                                     alt="{{ trip.destination }}"
+                                     onerror="this.onerror=null;this.src='{{ asset('FrontOffice/assets/img/default.png') }}';">
+                                
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{{ path('app_trips_show', {'id': trip.id}) }}">
+                                            {{ trip.departure }} - {{ trip.destination }}
+                                        </a>
+                                    </h5>
+                                    <p class="card-text">
+                                        <i class="fas fa-calendar-alt"></i> {{ trip.departureTime|date('d/m/Y H:i') }}<br>
+                                        <i class="fas fa-bus"></i> {{ trip.transportName }}<br>
+                                        <i class="fas fa-road"></i> {{ trip.distance }} km<br>
+                                        <i class="fas fa-tag"></i> <strong>{{ trip.price }} TND</strong>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="{{ path('app_trips_show', {'id': trip.id}) }}" class="btn btn-sm btn-primary">Détails</a>
+                                    <a href="{{ path('app_trips_reserve', {'id': trip.id}) }}" class="btn btn-sm btn-success">Réserver</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p>Aucun trajet trouvé.</p>
+                        {% endfor %}
+                    </div>
+                    
+                    {# Pagination #}
+                    {% if totalPages > 1 %}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            {% for page in 1..totalPages %}
+                            <li class="page-item {% if page == currentPage %}active{% endif %}">
+                                <a class="page-link" href="{{ path('app_trips_index', app.request.query.all|merge({'page': page})) }}">{{ page }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

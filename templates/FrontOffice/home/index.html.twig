@@ -1,0 +1,393 @@
+<!doctype html>
+<html class="no-js" lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Agence de Voyage - Découvrez des voyages incroyables</title>
+        <meta name="description" content="Trouvez et réservez votre voyage parfait avec notre agence">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="manifest" href="{{ asset('FrontOffice/site.webmanifest') }}">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
+
+        <!-- CSS ici -->
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/owl.carousel.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slicknav.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/flaticon.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/animate.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/magnific-popup.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/fontawesome-all.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/themify-icons.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+   </head>
+
+   <body>
+    <!-- Préchargeur -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                <div class="preloader-img pere-text">
+                    <img src="{{ asset('FrontOffice/assets/img/logo/loder.jpg') }}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <header>
+        <div class="header-area header-transparent">
+            <div class="main-header">
+               <div class="header-bottom header-sticky">
+                    <div class="container-fluid">
+                        <div class="row align-items-center">
+                            <!-- Logo -->
+                            <div class="col-xl-2 col-lg-2 col-md-1">
+                                <div class="logo">
+                                   <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt="Agence de Voyage"></a>
+                                </div>
+                            </div>
+                            <div class="col-xl-10 col-lg-10 col-md-8">
+                                <!-- Menu principal -->
+                                <div class="main-menu f-right d-none d-lg-block">
+                                    <nav>
+                                        <ul id="navigation">
+                                            <li><a href="{{ path('home') }}">Accueil</a></li>
+                                            <li><a href="{{ path('app_trips_index') }}">Voyages</a></li>
+                                            <li><a href="{{ path('about') }}">À propos</a></li>
+<li><a href="{{ path('app_reservations_list') }}">Mes Réservations</a></li>
+                                            <li><a href="{{ path('contact') }}">Contact</a></li>
+                                            {% if is_granted('ROLE_USER') %}
+                                                <li class="add-list"><a href="{{ path('trips_new') }}"><i class="ti-plus"></i> Ajouter un voyage</a></li>
+                                                <li class="login"><a href="#"><i class="ti-user"></i> Profil</a></li>
+                                                <li class="register"><a href="{{ path('app_logout') }}"><i class="ti-power-off"></i> Déconnexion</a></li>
+                                            {% else %}
+                                                <li class="login"><a href="{{ path('app_login') }}"><i class="ti-user"></i> Connexion</a></li>
+                                                <li class="register"><a href="{{ path('app_register') }}"><i class="ti-pencil"></i> Inscription</a></li>
+                                            {% endif %}
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                            <!-- Menu Mobile -->
+                            <div class="col-12">
+                                <div class="mobile_menu d-block d-lg-none"></div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+            </div>
+       </div>
+    </header>
+
+    <main>
+        <!-- Zone Hero -->
+        <div class="slider-area hero-overly">
+            <div class="single-slider hero-overly slider-height d-flex align-items-center">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-8 col-lg-9">
+                            <!-- Titre Hero -->
+                            <div class="hero__caption">
+                                <span>Explorez le monde</span>
+                                <h1>Découvrez des voyages extraordinaires</h1>
+                            </div>
+                            <!-- Formulaire de recherche -->
+                            <form action="{{ path('app_trips_index') }}" method="get" class="search-box">
+                                <div class="input-form">
+                                    <input type="text" name="search" placeholder="Où souhaitez-vous aller ?">
+                                </div>
+                                <div class="select-form">
+                                    <div class="select-itms">
+                                        <select name="category" id="category">
+                                            <option value="">Toutes catégories</option>
+                                            <option value="adventure">Aventure</option>
+                                            <option value="beach">Plage</option>
+                                            <option value="cultural">Culturel</option>
+                                            <option value="mountain">Montagne</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="search-form">
+                                    <button type="submit">Rechercher</button>
+                                </div>	
+                            </form>	
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fonctionnement -->
+        <div class="services-area pt-150 pb-150 section-bg" data-background="{{ asset('FrontOffice/assets/img/gallery/section_bg02.jpg') }}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section-tittle section-tittle2 text-center mb-80">
+                            <span>Étapes simples</span>
+                            <h2>Comment ça marche</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="single-services text-center mb-50">
+                            <div class="services-icon">
+                                <span class="flaticon-search"></span>
+                            </div>
+                            <div class="services-cap">
+                                <h5>1. Trouvez votre voyage</h5>
+                                <p>Parcourez notre sélection de voyages extraordinaires</p>
+                            </div>
+                            <img class="shape1 d-none d-lg-block" src="{{ asset('FrontOffice/assets/img/icon/serices1.png') }}" alt="">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="single-services text-center mb-50">
+                            <div class="services-icon">
+                                <span class="flaticon-calendar"></span>
+                            </div>
+                            <div class="services-cap">
+                                <h5>2. Réservez & Payez</h5>
+                                <p>Sécurisez votre réservation avec notre système de paiement</p>
+                            </div>
+                            <img class="shape2 d-none d-lg-block" src="{{ asset('FrontOffice/assets/img/icon/serices2.png') }}" alt="">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="single-services text-center mb-50">
+                            <div class="services-icon">
+                                <span class="flaticon-airplane"></span>
+                            </div>
+                            <div class="services-cap">
+                                <h5>3. Profitez</h5>
+                                <p>Détendez-vous et profitez de votre aventure</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catégories -->
+        <div class="categories-area section-padding30">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section-tittle text-center mb-80">
+                            <span>Voyagez par centre d'intérêt</span>
+                            <h2>Catégories de voyages</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    {% for category in tripCategories %}
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="single-cat text-center mb-50">
+                            <div class="cat-icon">
+                                <span class="{{ category.iconClass }}"></span>
+                            </div>
+                            <div class="cat-cap">
+                                <h5><a href="{{ path('category') }}">{{ category.name }}</a></h5>
+                                <p>{{ category.description }}</p>
+                                <a href="{{ path('category') }}">Voir les voyages</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Témoignages -->
+        <div class="testimonial-area testimonial-padding">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section-tittle text-center mb-80">
+                            <span>Témoignages</span>
+                            <h2>Ce que disent nos voyageurs</h2>
+                        </div> 
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-lg-11 col-md-11">
+                        <div class="h1-testimonial-active">
+                            {% for testimonial in testimonials %}
+                            <div class="single-testimonial text-center">
+                                <div class="testimonial-caption">
+                                    <div class="testimonial-top-cap">
+                                        <p>{{ testimonial.content }}</p>
+                                    </div>
+                                    <div class="testimonial-founder d-flex align-items-center justify-content-center mb-30">
+                                        <div class="founder-img">
+                                            <img src="{{ asset('uploads/testimonials/' ~ testimonial.photo) }}" alt="{{ testimonial.name }}">
+                                        </div>
+                                        <div class="founder-text">
+                                            <span>{{ testimonial.name }}</span>
+                                            <p>Voyageur à {{ testimonial.trip.destination }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="subscribe-area section-bg pt-150 pb-150" data-background="{{ asset('FrontOffice/assets/img/gallery/section_bg04.jpg') }}">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-6 col-lg-8">
+                        <div class="section-tittle section-tittle2 text-center mb-40">
+                            <span>Inspiration voyage</span>
+                            <h2>Abonnez-vous à notre newsletter</h2>
+                        </div> 
+                        <form action="#" method="post" class="search-box">
+                            <div class="input-form">
+                                <input type="email" name="email" placeholder="Votre adresse email" required>
+                            </div>
+                            <div class="search-form">
+                                <button type="submit">S'abonner</button>
+                            </div>	
+                        </form>	
+                    </div>
+                </div>
+            </div>
+        </div>
+<div class="home-blog-area section-padding30">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-tittle text-center mb-70">
+                    <span>Vos voyages</span>
+                    <h2>Mes Réservations</h2>
+                </div> 
+            </div>
+        </div>
+        <div class="row">
+            {% if app.user %}
+                <div class="col-12">
+                    <a href="{{ path('app_reservations_list') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-history me-2"></i>Voir mon historique complet
+                    </a>
+                </div>
+            {% else %}
+                <div class="col-12 text-center">
+                    <p>Connectez-vous pour voir vos réservations</p>
+                    <a href="{{ path('app_login') }}" class="btn btn-primary">Se connecter</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+    </main>
+
+    <footer>
+        <div class="footer-area">
+            <div class="container">
+               <div class="footer-top footer-padding">
+                    <div class="row justify-content-between">
+                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="single-footer-caption mb-30">
+                                    <div class="footer-logo">
+                                      <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo2_footer.png') }}" alt=""></a>
+                                    </div>
+                                    <div class="footer-about">
+                                        <p>Nous créons des expériences de voyage inoubliables à travers le monde.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>Liens rapides</h4>
+                                    <ul>
+                                        <li><a href="{{ path('home') }}">Accueil</a></li>
+                                        <li><a href="{{ path('app_trips_index') }}">Voyages</a></li>
+                                        <li><a href="{{ path('about') }}">À propos</a></li>
+                                        <li><a href="{{ path('contact') }}">Contact</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>Support</h4>
+                                    <ul>
+                                        <li><a href="#">FAQ</a></li>
+                                        <li><a href="#">Conditions</a></li>
+                                        <li><a href="#">Confidentialité</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>Coordonnées</h4>
+                                    <ul class="contact-info">
+                                        <li><i class="ti-location-pin"></i> 123 Rue des Voyages, Paris</li>
+                                        <li><i class="ti-email"></i> contact@agencevoyage.com</li>
+                                        <li><i class="ti-mobile"></i> +33 1 23 45 67 89</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+                <div class="footer-bottom">
+                    <div class="row d-flex justify-content-between align-items-center">
+                        <div class="col-xl-9 col-lg-8">
+                            <div class="footer-copy-right">
+                                <p>&copy; {{ "now"|date("Y") }} Agence de Voyage. Tous droits réservés.</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4">
+                            <div class="footer-social f-right">
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-youtube"></i></a>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Retour en haut -->
+    <div id="back-top">
+        <a title="Retour en haut" href="#"><i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+    <!-- JS ici -->
+    <script src="{{ asset('FrontOffice/assets/js/vendor/modernizr-3.5.0.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/popper.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.slicknav.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/slick.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/wow.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/animated.headline.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.magnific-popup.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.nice-select.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.sticky.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/contact.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.form.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/mail-script.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.ajaxchimp.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/plugins.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/main.js') }}"></script>
+    </body>
+</html>

@@ -98,7 +98,8 @@ final class BlogPostController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('blog_page');
+        // Redirect to the blog index so the same page reloads
+        return $this->redirectToRoute('app_blog_post_index');
     }
 
     #[Route('/{id}/comment', name: 'app_blog_post_comment', methods: ['POST'])]
@@ -149,6 +150,22 @@ final class BlogPostController extends AbstractController
         $form = $this->createForm(BlogPostType::class, $blogPost);
         $form->handleRequest($request);
 
+        // Handle image upload if a new image is provided
+        $file = $form->get('imageFile')->getData();
+        if ($file) {
+            $newFilename = uniqid() . '.' . $file->guessExtension();
+            try {
+                $file->move(
+                    $this->getParameter('images_directory'),
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                $this->addFlash('error', 'Image upload failed.');
+                return $this->redirectToRoute('app_blog_post_index');
+            }
+            $blogPost->setImageUrl($newFilename);
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
@@ -156,9 +173,8 @@ final class BlogPostController extends AbstractController
             return $this->redirectToRoute('app_blog_post_index');
         }
 
-        return $this->redirectToRoute('app_blog_post_index', [
-            'error' => 'Failed to update the post.',
-        ]);
+        // If not valid, reload the page so server-side validation errors are shown in the modal
+        return $this->redirectToRoute('app_blog_post_index');
     }
 
     private function handleImageUpload($form, BlogPost $blogPost): void

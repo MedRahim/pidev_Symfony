@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle réservation{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4">Réservez votre voyage</h1>
+
+    {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.seatNumber) }}
+            {{ form_widget(form.seatNumber) }}
+            {{ form_errors(form.seatNumber) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.seatType) }}
+            {{ form_widget(form.seatType) }}
+            {{ form_errors(form.seatType) }}
+        </div>
+
+        <div class="mb-4">
+            <label>Prix estimé : </label>
+            <span id="price">0</span> TND
+        </div>
+
+        <button type="submit" class="btn btn-primary">Confirmer la réservation</button>
+    {{ form_end(form) }}
+</div>
+
+{% block javascripts %}
+<script>
+    function calculatePrice() {
+        const n = parseInt(document.getElementById('front_reservation_seatNumber').value) || 0;
+        const t = document.getElementById('front_reservation_seatType').value;
+        const base = {{ trip.price|default(0) }};
+        const unit = t === 'premium' ? base + 10 : base;
+        document.getElementById('price').textContent = (unit * n).toFixed(2);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        ['seatNumber','seatType'].forEach(idSuffix => {
+            document.getElementById('front_reservation_' + idSuffix)
+                .addEventListener('input', calculatePrice);
+        });
+        calculatePrice();
+    });
+</script>
+{% endblock %}
+{% endblock %}

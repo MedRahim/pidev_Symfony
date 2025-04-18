@@ -1,0 +1,31 @@
+{% extends 'frontoffice/base.html.twig' %}
+
+{% block title %}Détails du Trip - {{ trip.departure }} vers {{ trip.destination }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Détails du Trip</h1>
+
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr><th class="bg-light">Id</th><td>{{ trip.id }}</td></tr>
+                <tr><th class="bg-light">Départ</th><td>{{ trip.departure }}</td></tr>
+                <tr><th class="bg-light">Destination</th><td>{{ trip.destination }}</td></tr>
+                <tr><th class="bg-light">Heure de départ</th><td>{{ trip.departureTime ? trip.departureTime|date('Y-m-d H:i:s') : '' }}</td></tr>
+                <tr><th class="bg-light">Heure d'arrivée</th><td>{{ trip.arrivalTime ? trip.arrivalTime|date('Y-m-d H:i:s') : '' }}</td></tr>
+                <tr><th class="bg-light">Prix</th><td>{{ trip.price }} TND</td></tr>
+                <tr><th class="bg-light">Transport</th><td>{{ trip.transportName }}</td></tr>
+                <tr><th class="bg-light">Date</th><td>{{ trip.date ? trip.date|date('Y-m-d') : '' }}</td></tr>
+                <tr><th class="bg-light">Distance</th><td>{{ trip.distance }} km</td></tr>
+                <tr><th class="bg-light">Capacité</th><td>{{ trip.capacity }} places</td></tr>
+            </tbody>
+        </table>
+
+        <a href="{{ path('app_trips_index') }}" class="btn btn-secondary">Retour à la liste</a>
+        <a href="{{ path('app_trips_edit', {'id': trip.id}) }}" class="btn btn-primary">Modifier</a>
+
+        <div class="mt-3">
+            {{ include('frontoffice/trips/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

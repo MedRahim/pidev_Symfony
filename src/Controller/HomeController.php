@@ -17,15 +17,25 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(): Response
     {
-        return $this->render('FrontOffice/indexx.html.twig');
+        return $this->render('FrontOffice/index.html.twig');
     }
+    #[Route('/voyage', name: 'voyage')]
+    public function voyage(): Response
+    {
+        return $this->render('FrontOffice/home/index.html.twig', [
+            'featuredTrips' => [],
+            'tripCategories' => [],
+            'testimonials' => [],
+            'blogPosts' => []
+        ]);
+    }
+
 
     #[Route('/testing', name: 'admin')]
     public function test(): Response
     {
         return $this->render('BackOffice/partials/base.html.twig');
     }
-
     #[Route('/about', name: 'about')]
     public function about(): Response
     {
@@ -50,6 +60,7 @@ class HomeController extends AbstractController
         return $this->render('FrontOffice/categori.html.twig');
     }
 
+    
     #[Route('/contact', name: 'contact')]
     public function contact(): Response
     {
@@ -115,24 +126,6 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/location/{city}', name: 'location')]
-    public function location(string $city): Response
-    {
-        // Logique pour afficher les détails d'une ville
-        return $this->render('FrontOffice/location.html.twig', [
-            'city' => $city
-        ]);
-    }
-
-    #[Route('/how-it-works/{step}', name: 'how_it_works', requirements: ['step' => '\d+'])]
-    public function howItWorks(int $step): Response
-    {
-        // Logique pour les étapes de fonctionnement
-        return $this->render('FrontOffice/how_it_works.html.twig', [
-            'step' => $step
-        ]);
-    }
-
     #[Route('/subscribe', name: 'subscribe')]
     public function subscribe(): Response
     {
@@ -164,5 +157,23 @@ class HomeController extends AbstractController
         // Logique pour remonter en haut de page
         return $this->redirectToRoute('home');
     }
+   
+    #[Route('/location/{city}', name: 'location')]
+public function location(string $city): Response
+{
+    // Logique pour afficher les détails d'une ville
+    return $this->render('FrontOffice/location.html.twig', [
+        'city' => $city
+    ]);
+}
+
+#[Route('/how-it-works/{step}', name: 'how_it_works')]
+public function howItWorks(int $step): Response
+{
+    // Logique pour les étapes de fonctionnement
+    return $this->render('FrontOffice/how_it_works.html.twig', [
+        'step' => $step
+    ]);
+}
 
 }

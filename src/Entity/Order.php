@@ -156,7 +156,7 @@ class Order
         if ($this->status === 'cancelled') {
             $now = new \DateTime();
             $interval = $now->diff($this->date);
-            
+           
             if ($interval->h < 24 && $interval->d === 0) {
                 $context->buildViolation('Orders can only be cancelled within 24 hours of creation.')
                     ->atPath('status')
@@ -180,3 +180,4 @@ class Order
         return sprintf('Order #%d - %s', $this->id, $this->status);
     }
 }
+

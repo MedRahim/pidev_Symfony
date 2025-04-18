@@ -1,0 +1,16 @@
+{% extends 'BackOffice/base.html.twig' %}
+
+{% block title %}Bienvenue sur le Dashboard Admin{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Bienvenue dans le Back Office</h1>
+    <p>Vous êtes sur la page d'accueil de l'administration.</p>
+    <a class="btn btn-primary" href="{{ path('app_admin_trips_index') }}">
+        Voir la liste des trajets
+    </a>
+     <a class="btn btn-primary" href="{{ path('app_admin_reservations_index') }}">
+        Voir la liste des reservations
+    </a>
+</div>
+{% endblock %}
