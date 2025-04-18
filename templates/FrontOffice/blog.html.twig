@@ -353,18 +353,37 @@
                                             
                                             {% if post.comments|length > 0 %}
                                                 {% for comment in post.comments %}
-                                                    <div class="comment">
-                                                        <div class="comment-avatar">
-                                                            <i class="fa fa-user"></i>
-                                                        </div>
-                                                        <div class="comment-content">
-                                                            <p class="comment-text mb-1">{{ comment.content }}</p>
-                                                            <div class="comment-time">
-                                                                {{ comment.createdAt|date('d M Y, H:i') }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                {% endfor %}
+    <div class="comment" data-comment-id="{{ comment.id }}">
+        <div class="comment-avatar">
+            <i class="fa fa-user"></i>
+        </div>
+        <div class="comment-content">
+            <div class="d-flex justify-content-between">
+                <p class="comment-text mb-1">{{ comment.content }}</p>
+                <div class="comment-actions">
+                    <button class="btn btn-sm btn-link p-0 mr-2 edit-comment-btn">
+                        <i class="fa fa-edit text-primary" style="font-size: 0.8rem;"></i>
+                    </button>
+                    <button class="btn btn-sm btn-link p-0 delete-comment-btn">
+                        <i class="fa fa-trash text-danger" style="font-size: 0.8rem;"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="comment-time">
+                {{ comment.createdAt|date('d M Y, H:i') }}
+            </div>
+            <div class="edit-comment-form" style="display: none;">
+                <div class="input-group mt-2">
+                    <textarea class="form-control form-control-sm">{{ comment.content }}</textarea>
+                    <div class="input-group-append">
+                        <button class="btn btn-sm btn-primary save-edit-btn">Save</button>
+                        <button class="btn btn-sm btn-secondary cancel-edit-btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
                                             {% else %}
                                                 <div class="no-comments">
                                                     No comments yet. Be the first to share your thoughts!
@@ -372,7 +391,7 @@
                                             {% endif %}
                                         </div>
 
-                                        <form method="post" action="{{ path('app_blog_post_comment', {'id': post.id}) }}" class="comment-form mt-4">
+<form method="post" action="{{ path('app_blog_post_comment', {'id': post.id}) }}" class="comment-form mt-4">
                                             <div class="form-group">
                                                 <textarea name="comment" 
                                                           class="form-control" 
@@ -577,7 +596,8 @@
                     <div class="col-xl-9 col-lg-9 ">
                         <div class="footer-copy-right">
                             <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+Copyright &copy;
+<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
                         </div>
                     </div>
@@ -633,6 +653,273 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <!-- Jquery Plugins, main Jquery -->    
     <script src="{{ asset('FrontOffice/assets/js/plugins.js') }}"></script>
     <script src="{{ asset('FrontOffice/assets/js/main.js') }}"></script>
-    
+    <script>
+$(document).ready(function() {
+    // Handle like button clicks
+    $('.like-form').on('submit', function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const url = form.attr('action');
+        
+        $.ajax({
+            url: url,
+            method: 'POST',
+            success: function(data) {
+                if(data.success) {
+                    const likeCount = form.find('.like-count');
+                    likeCount.text(data.likes);
+                    
+                    // Add visual feedback for the like
+                    if(data.liked) {
+                        form.find('i').addClass('text-danger');
+                    }
+                }
+            }
+        });
+    });
+
+    // Handle comment submission
+    $('.comment-form').on('submit', function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const url = form.attr('action');
+        const textarea = form.find('textarea');
+        const content = textarea.val();
+        
+        if(!content.trim()) return; // Don't submit empty comments
+        
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: { comment: content },
+            success: function(data) {
+                if(data.success) {
+                    // Add new comment to the list
+                    const commentHtml = `
+                        <div class="comment">
+                            <div class="comment-avatar">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <div class="comment-content">
+                                <p class="comment-text mb-1">${data.comment.content}</p>
+                                <div class="comment-time">
+                                    ${data.comment.createdAt}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Find the comments-section within the current post
+                    let commentsSection = form.closest('.interaction-section').find('.comments-section');
+                    
+                    // Remove "no comments" message if it exists
+                    commentsSection.find('.no-comments').remove();
+                    
+                    // Append the new comment
+                    commentsSection.append(commentHtml);
+                    
+                    // Clear the textarea
+                    textarea.val('');
+                    
+                    // Update the comment count
+                    const commentCountElement = form.closest('.interaction-section').find('.text-muted:contains("Comments")');
+                    const currentCount = parseInt(commentCountElement.text().match(/\d+/)[0]) || 0;
+                    commentCountElement.html(`<i class="fa fa-comments mr-1"></i>${currentCount + 1} Comments`);
+                }
+            }
+        });
+    });
+});
+</script>
+<script>
+$(document).ready(function() {
+    // ---------- LIKE FUNCTIONALITY -----------
+    $('.like-form').on('submit', function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const url = form.attr('action');
+        
+        $.ajax({
+            url: url,
+            method: 'POST',
+            success: function(data) {
+                if(data.success) {
+                    const likeCount = form.find('.like-count');
+                    likeCount.text(data.likes);
+                    
+                    // Add visual feedback for the like
+                    if(data.liked) {
+                        form.find('i').addClass('text-danger');
+                    }
+                }
+            }
+        });
+    });
+
+    // ---------- ADD COMMENT FUNCTIONALITY -----------
+    $('.comment-form').on('submit', function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const url = form.attr('action');
+        const textarea = form.find('textarea');
+        const content = textarea.val();
+        
+        if(!content.trim()) return; // Don't submit empty comments
+        
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: { comment: content },
+            success: function(data) {
+                if(data.success) {
+                    // Add new comment to the list
+                    const commentHtml = `
+                        <div class="comment" data-comment-id="${data.comment.id}">
+                            <div class="comment-avatar">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <div class="comment-content">
+                                <div class="d-flex justify-content-between">
+                                    <p class="comment-text mb-1">${data.comment.content}</p>
+                                    <div class="comment-actions">
+                                        <button class="btn btn-sm edit-comment-btn">
+                                            <i class="fa fa-edit text-primary"></i>
+                                        </button>
+                                        <button class="btn btn-sm delete-comment-btn">
+                                            <i class="fa fa-trash text-danger"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="comment-time">
+                                    ${data.comment.createdAt}
+                                </div>
+                                <div class="edit-comment-form" style="display: none;">
+                                    <div class="input-group mt-2">
+                                        <textarea class="form-control">${data.comment.content}</textarea>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-sm btn-primary save-edit-btn">Save</button>
+                                            <button class="btn btn-sm btn-secondary cancel-edit-btn">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Find the comments-section within the current post
+                    let commentsSection = form.closest('.interaction-section').find('.comments-section');
+                    
+                    // Remove "no comments" message if it exists
+                    commentsSection.find('.no-comments').remove();
+                    
+                    // Append the new comment
+                    commentsSection.append(commentHtml);
+                    
+                    // Clear the textarea
+                    textarea.val('');
+                    
+                    // Update the comment count
+                    const commentCountElement = form.closest('.interaction-section').find('.text-muted:contains("Comments")');
+                    const currentCount = parseInt(commentCountElement.text().match(/\d+/)[0]) || 0;
+                    commentCountElement.html(`<i class="fa fa-comments mr-1"></i>${currentCount + 1} Comments`);
+                }
+            }
+        });
+    });
+
+    // ---------- EDIT COMMENT FUNCTIONALITY -----------
+    // Show edit form
+    $(document).on('click', '.edit-comment-btn', function() {
+        const commentDiv = $(this).closest('.comment');
+        const commentText = commentDiv.find('.comment-text').text().trim();
+        const editForm = commentDiv.find('.edit-comment-form');
+        
+        // Set current text in textarea
+        editForm.find('textarea').val(commentText);
+        
+        // Hide comment text and show edit form
+        commentDiv.find('.comment-text').hide();
+        commentDiv.find('.comment-actions').hide();
+        editForm.show();
+    });
+
+    // Cancel edit
+    $(document).on('click', '.cancel-edit-btn', function() {
+        const commentDiv = $(this).closest('.comment');
+        
+        // Hide edit form and show comment text
+        commentDiv.find('.edit-comment-form').hide();
+        commentDiv.find('.comment-text').show();
+        commentDiv.find('.comment-actions').show();
+    });
+
+    // Save edit
+    $(document).on('click', '.save-edit-btn', function() {
+        const commentDiv = $(this).closest('.comment');
+        const commentId = commentDiv.data('comment-id');
+        const content = commentDiv.find('.edit-comment-form textarea').val().trim();
+        
+        if(!content) return; // Don't save empty comments
+        
+        $.ajax({
+            url: `/blog/comment/${commentId}/edit`,
+            method: 'POST',
+            data: { content: content },
+            success: function(data) {
+                if(data.success) {
+                    // Update the comment text
+                    commentDiv.find('.comment-text').text(data.comment.content);
+                    
+                    // Hide edit form and show updated comment
+                    commentDiv.find('.edit-comment-form').hide();
+                    commentDiv.find('.comment-text').show();
+                    commentDiv.find('.comment-actions').show();
+                }
+            }
+        });
+    });
+
+    // ---------- DELETE COMMENT FUNCTIONALITY -----------
+    $(document).on('click', '.delete-comment-btn', function() {
+        if(!confirm('Are you sure you want to delete this comment?')) return;
+        
+        const commentDiv = $(this).closest('.comment');
+        const commentId = commentDiv.data('comment-id');
+        
+        $.ajax({
+            
+            url: `/blog/comment/${commentId}/delete`,
+            method: 'POST',
+            success: function(data) {
+                if(data.success) {
+                    // Remove the comment from DOM
+                    commentDiv.fadeOut(300, function() {
+                        $(this).remove();
+                        
+                        // Update comment count
+                        const postDiv = commentDiv.closest('.blog_item');
+                        const commentCountElement = postDiv.find('.text-muted:contains("Comments")');
+                        const currentCount = parseInt(commentCountElement.text().match(/\d+/)[0]) || 0;
+                        
+                        if(currentCount > 0) {
+                            commentCountElement.html(`<i class="fa fa-comments mr-1"></i>${currentCount - 1} Comments`);
+                        }
+                        
+                        // If no more comments, add the "no comments" message
+                        const commentsSection = postDiv.find('.comments-section');
+                        if(commentsSection.find('.comment').length === 0) {
+                            commentsSection.append(`
+                                <div class="no-comments">
+                                    No comments yet. Be the first to share your thoughts!
+                                </div>
+                            `);
+                        }
+                    });
+                }
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>

@@ -103,43 +103,51 @@ final class BlogPostController extends AbstractController
     }
 
     #[Route('/{id}/comment', name: 'app_blog_post_comment', methods: ['POST'])]
-    public function comment(
-        Request $request,
-        BlogPost $blogPost,
-        EntityManagerInterface $entityManager
-    ): Response {
-        $content = $request->request->get('comment');
-        if ($content) {
-            $comment = new Comment();
-            $comment->setContent($content);
-            $comment->setBlogPost($blogPost);
-            $comment->setCreatedAt(new \DateTimeImmutable());
+public function comment(
+    Request $request,
+    BlogPost $blogPost,
+    EntityManagerInterface $entityManager
+): Response {
+    $content = $request->request->get('comment');
+    if ($content) {
+        $comment = new Comment();
+        $comment->setContent($content);
+        $comment->setBlogPost($blogPost);
+        $comment->setCreatedAt(new \DateTimeImmutable());
 
-            $entityManager->persist($comment);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Comment added successfully.');
-        }
-
-        return $this->redirectToRoute('app_blog_post_show', ['id' => $blogPost->getId()]);
-    }
-
-    #[Route('/{id}/like', name: 'app_blog_post_like', methods: ['POST'])]
-    public function like(
-        BlogPost $blogPost,
-        EntityManagerInterface $entityManager
-    ): Response {
-        $like = new PostLike();
-        $like->setBlogPost($blogPost);
-        $like->setCreatedAt(new \DateTimeImmutable());
-
-        $entityManager->persist($like);
+        $entityManager->persist($comment);
         $entityManager->flush();
 
         return $this->json([
-            'likes' => $blogPost->getLikes()->count(),
+            'success' => true,
+            'comment' => [
+                'id' => $comment->getId(),
+                'content' => $comment->getContent(),
+                'createdAt' => $comment->getCreatedAt()->format('d M Y, H:i')
+            ]
         ]);
     }
+
+    return $this->json(['success' => false]);
+}
+    #[Route('/{id}/like', name: 'app_blog_post_like', methods: ['POST'])]
+public function like(
+    BlogPost $blogPost,
+    EntityManagerInterface $entityManager
+): Response {
+    $like = new PostLike();
+    $like->setBlogPost($blogPost);
+    $like->setCreatedAt(new \DateTimeImmutable());
+
+    $entityManager->persist($like);
+    $entityManager->flush();
+
+    return $this->json([
+        'success' => true,
+        'likes' => $blogPost->getLikes()->count(),
+        'liked' => true
+    ]);
+}
 
     #[Route('/edit/{id}', name: 'app_blog_post_edit', methods: ['POST'])]
     public function edit(
@@ -194,4 +202,44 @@ final class BlogPostController extends AbstractController
             $blogPost->setImageUrl($newFilename);
         }
     }
+    #[Route('/comment/{id}/delete', name: 'app_comment_delete', methods: ['POST'])]public function deleteComment(
+    Comment $comment,
+    EntityManagerInterface $entityManager
+): Response {
+    // You might want to add security check here to ensure only the owner can delete
+    $blogPostId = $comment->getBlogPost()->getId();
+    $entityManager->remove($comment);
+    $entityManager->flush();
+
+    return $this->json([
+        'success' => true,
+        'message' => 'Comment deleted successfully',
+        'postId' => $blogPostId
+    ]);
+}
+
+#[Route('/comment/{id}/edit', name: 'app_comment_edit', methods: ['POST'])]
+public function editComment(
+    Request $request,
+    Comment $comment,
+    EntityManagerInterface $entityManager
+): Response {
+    // You might want to add security check here to ensure only the owner can edit
+    $content = $request->request->get('content');
+    if ($content) {
+        $comment->setContent($content);
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'comment' => [
+                'id' => $comment->getId(),
+                'content' => $comment->getContent(),
+                'createdAt' => $comment->getCreatedAt()->format('d M Y, H:i')
+            ]
+        ]);
+    }
+
+    return $this->json(['success' => false, 'message' => 'Content cannot be empty']);
+}
 }
