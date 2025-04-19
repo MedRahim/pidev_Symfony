@@ -37,6 +37,8 @@ final class BlogPostController extends AbstractController
 
             $entityManager->persist($blogPost);
             $entityManager->flush();
+            $searchTerm = $request->query->get('search');
+            $category = $request->query->get('category');
 
             return $this->redirectToRoute('app_blog_post_index');
         }
@@ -49,7 +51,7 @@ final class BlogPostController extends AbstractController
             ->getResult();
 
         // Fetch recent posts
-        $recentPosts = $blogPostRepository->findBy([], ['postDate' => 'DESC'], 5);
+        $recentPosts = $blogPostRepository->findBy([], ['postDate' => 'DESC'], 3);
 
         // Fetch all blog posts
         $blogPosts = $blogPostRepository->findAll();
