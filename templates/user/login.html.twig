@@ -19,12 +19,16 @@
                             {{ form_row(form.email, {
                                 'attr': {'class': 'form-control'}
                             }) }}
+                            {{ form_errors(form.email) }}
+
                         </div>
 
                         <div class="mb-3">
                             {{ form_row(form.password, {
                                 'attr': {'class': 'form-control'}
                             }) }}
+                            {{ form_errors(form.password) }}
+
                         </div>
 
                         <div class="d-grid gap-2 text-center">

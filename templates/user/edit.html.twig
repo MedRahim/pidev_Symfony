@@ -26,27 +26,37 @@
                             'attr': {'class': 'form-control'},
                             'label_attr': {'class': 'fw-bold'}
                         }) }}
+                        {{ form_errors(form.profilePicture) }}
+
 
                         {{ form_row(form.CIN, {
                             'attr': {'class': 'form-control'},
                             'label_attr': {'class': 'fw-bold'}
                         }) }}
+                        {{ form_errors(form.CIN) }}
+
 
                         {{ form_row(form.Name, {
                             'attr': {'class': 'form-control'},
                             'label_attr': {'class': 'fw-bold'}
                         }) }}
+                        {{ form_errors(form.Name) }}
+
 
                         {{ form_row(form.Email, {
                             'attr': {'class': 'form-control'},
                             'label_attr': {'class': 'fw-bold'}
                         }) }}
+                        {{ form_errors(form.Email) }}
+
 
                         {{ form_row(form.Password, {
                             'attr': {'class': 'form-control'},
                             'label_attr': {'class': 'fw-bold'},
                             'help': 'Leave blank to keep current password'
                         }) }}
+                        {{ form_errors(form.Password) }}
+
                     </div>
 
                     {# Right Column #}
@@ -55,21 +65,26 @@
                             'attr': {'class': 'form-control'},
                             'label_attr': {'class': 'fw-bold'}
                         }) }}
+                        {{ form_errors(form.Phone) }}
+
 
                         {{ form_row(form.Address, {
                             'attr': {'class': 'form-control'},
                             'label_attr': {'class': 'fw-bold'}
                         }) }}
+                        {{ form_errors(form.Address) }}
 
                         {{ form_row(form.birthday, {
                             'attr': {'class': 'form-control'},
                             'label_attr': {'class': 'fw-bold'}
                         }) }}
+                        {{ form_errors(form.birthday) }}
 
                         {{ form_row(form.bio, {
                             'attr': {'class': 'form-control', 'rows': 4},
                             'label_attr': {'class': 'fw-bold'}
                         }) }}
+                        {{ form_errors(form.bio) }}
                     </div>
                 </div>
 

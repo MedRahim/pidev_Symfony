@@ -231,4 +231,30 @@ final class UserController extends AbstractController
 
         return $this->redirectToRoute('app_admin_Listusers', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('isActive/{id}', name: 'app_user_updateStatus', methods: ['POST'])]
+    public function updateStatus(Request $request, User $user, EntityManagerInterface $entityManager,UserRepository $userRepository): Response
+    {
+        $user=$userRepository->findById($user->getId());
+        $user->isActive() ? $user->setIsActive(false): $user->setIsActive(true);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->render('BackOffice/amine/showUser.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+    #[Route('isVerified/{id}', name: 'app_user_updateVerified', methods: ['POST'])]
+    public function updateVerified(Request $request, User $user, EntityManagerInterface $entityManager,UserRepository $userRepository): Response
+    {
+        $user=$userRepository->findById($user->getId());
+        $user->isVerified() ? $user->setIsVerified(false): $user->setIsVerified(true);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->render('BackOffice/amine/showUser.html.twig', [
+            'user' => $user,
+        ]);
+    }
 }
