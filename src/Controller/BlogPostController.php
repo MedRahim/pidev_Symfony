@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Routing\Attribute\Route;
 
+
+
 #[Route('/blog')]
 final class BlogPostController extends AbstractController 
 {
@@ -37,6 +39,8 @@ final class BlogPostController extends AbstractController
 
             $entityManager->persist($blogPost);
             $entityManager->flush();
+            $searchTerm = $request->query->get('search');
+            $category = $request->query->get('category');
 
             return $this->redirectToRoute('app_blog_post_index');
         }
@@ -49,13 +53,23 @@ final class BlogPostController extends AbstractController
             ->getResult();
 
         // Fetch recent posts
-        $recentPosts = $blogPostRepository->findBy([], ['postDate' => 'DESC'], 5);
+        $recentPosts = $blogPostRepository->findBy([], ['postDate' => 'DESC'], 3);
+
+        // Fetch all blog posts
+        $blogPosts = $blogPostRepository->findAll();
+
+        // Create edit forms for each post
+        $editForms = [];
+        foreach ($blogPosts as $post) {
+            $editForms[$post->getId()] = $this->createForm(BlogPostType::class, $post)->createView();
+        }
 
         return $this->render('FrontOffice/blog.html.twig', [
             'form' => $form->createView(),
-            'blog_posts' => $blogPostRepository->findBy([], ['postDate' => 'DESC']),
+            'blog_posts' => $blogPosts,
             'categories' => array_column($categories, 'category'),
             'recent_posts' => $recentPosts,
+            'editForms' => $editForms,
         ]);
     }
 
@@ -88,46 +102,91 @@ final class BlogPostController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('blog_page');
+        // Redirect to the blog index so the same page reloads
+        return $this->redirectToRoute('app_blog_post_index');
     }
 
     #[Route('/{id}/comment', name: 'app_blog_post_comment', methods: ['POST'])]
-    public function comment(
-        Request $request,
-        BlogPost $blogPost,
-        EntityManagerInterface $entityManager
-    ): Response {
-        $content = $request->request->get('comment');
-        if ($content) {
-            $comment = new Comment();
-            $comment->setContent($content);
-            $comment->setBlogPost($blogPost);
-            $comment->setCreatedAt(new \DateTimeImmutable());
+public function comment(
+    Request $request,
+    BlogPost $blogPost,
+    EntityManagerInterface $entityManager
+): Response {
+    $content = $request->request->get('comment');
+    if ($content) {
+        $comment = new Comment();
+        $comment->setContent($content);
+        $comment->setBlogPost($blogPost);
+        $comment->setCreatedAt(new \DateTimeImmutable());
 
-            $entityManager->persist($comment);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Comment added successfully.');
-        }
-
-        return $this->redirectToRoute('app_blog_post_show', ['id' => $blogPost->getId()]);
-    }
-
-    #[Route('/{id}/like', name: 'app_blog_post_like', methods: ['POST'])]
-    public function like(
-        BlogPost $blogPost,
-        EntityManagerInterface $entityManager
-    ): Response {
-        $like = new PostLike();
-        $like->setBlogPost($blogPost);
-        $like->setCreatedAt(new \DateTimeImmutable());
-
-        $entityManager->persist($like);
+        $entityManager->persist($comment);
         $entityManager->flush();
 
         return $this->json([
-            'likes' => $blogPost->getLikes()->count(),
+            'success' => true,
+            'comment' => [
+                'id' => $comment->getId(),
+                'content' => $comment->getContent(),
+                'createdAt' => $comment->getCreatedAt()->format('d M Y, H:i')
+            ]
         ]);
+    }
+
+    return $this->json(['success' => false]);
+}
+    #[Route('/{id}/like', name: 'app_blog_post_like', methods: ['POST'])]
+public function like(
+    BlogPost $blogPost,
+    EntityManagerInterface $entityManager
+): Response {
+    $like = new PostLike();
+    $like->setBlogPost($blogPost);
+    $like->setCreatedAt(new \DateTimeImmutable());
+
+    $entityManager->persist($like);
+    $entityManager->flush();
+
+    return $this->json([
+        'success' => true,
+        'likes' => $blogPost->getLikes()->count(),
+        'liked' => true
+    ]);
+}
+
+    #[Route('/edit/{id}', name: 'app_blog_post_edit', methods: ['POST'])]
+    public function edit(
+        BlogPost $blogPost,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $form = $this->createForm(BlogPostType::class, $blogPost);
+        $form->handleRequest($request);
+
+        // Handle image upload if a new image is provided
+        $file = $form->get('imageFile')->getData();
+        if ($file) {
+            $newFilename = uniqid() . '.' . $file->guessExtension();
+            try {
+                $file->move(
+                    $this->getParameter('images_directory'),
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                $this->addFlash('error', 'Image upload failed.');
+                return $this->redirectToRoute('app_blog_post_index');
+            }
+            $blogPost->setImageUrl($newFilename);
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Post updated successfully!');
+            return $this->redirectToRoute('app_blog_post_index');
+        }
+
+        // If not valid, reload the page so server-side validation errors are shown in the modal
+        return $this->redirectToRoute('app_blog_post_index');
     }
 
     private function handleImageUpload($form, BlogPost $blogPost): void
@@ -147,4 +206,5 @@ final class BlogPostController extends AbstractController
             $blogPost->setImageUrl($newFilename);
         }
     }
+   
 }

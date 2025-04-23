@@ -33,7 +33,7 @@ class BlogPost
     #[Assert\NotBlank(message: "The content cannot be blank.")]
     #[Assert\Length(
         min: 10,
-        minMessage: "The title must exceed {{ limit }} characters."
+        minMessage: "The content must exceed {{ limit }} characters."
     )]
     private string $content;
 
