@@ -92,25 +92,35 @@ final class CommentController extends AbstractController
         ]);
     }
 
-    #[Route('/comment/{id}/delete', name: 'app_comment_delete')]
+    #[Route('/comment/{id}/delete', name: 'app_comment_delete', methods: ['POST'])]
     public function delete(
         Request $request, 
         Comment $comment, 
         EntityManagerInterface $entityManager,
         CsrfTokenManagerInterface $csrfTokenManager
     ): Response {
+        // Validate CSRF token
         $submittedToken = $request->request->get('_token');
-        
         if (!$csrfTokenManager->isTokenValid(new CsrfToken('delete-comment', $submittedToken))) {
             return $this->json([
                 'success' => false,
                 'message' => 'Invalid CSRF token'
             ], Response::HTTP_FORBIDDEN);
         }
-    
-        $entityManager->remove($comment);
-        $entityManager->flush();
-    
-        return $this->json(['success' => true]);
+
+        try {
+            $entityManager->remove($comment);
+            $entityManager->flush();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Comment deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Error deleting comment'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

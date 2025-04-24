@@ -29,8 +29,8 @@ class BlogPostType extends AbstractType
             ])
             // Use a file upload field that is not mapped directly to the entity
             ->add('imageFile', FileType::class, [
-                'label'    => 'Upload Image',
-                'mapped'   => false,
+                'required' => false,
+                'mapped' => false
             ]);
     }
 

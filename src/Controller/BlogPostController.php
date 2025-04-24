@@ -39,24 +39,54 @@ final class BlogPostController extends AbstractController
 
             $entityManager->persist($blogPost);
             $entityManager->flush();
-            $searchTerm = $request->query->get('search');
-            $category = $request->query->get('category');
 
             return $this->redirectToRoute('app_blog_post_index');
         }
+
+        // Get filter parameters
+        $searchTerm = $request->query->get('search');
+        $currentCategory = $request->query->get('category');
+        $selectedRecent = $request->query->get('recent');
 
         // Fetch categories dynamically from the database
         $categories = $blogPostRepository->createQueryBuilder('b')
             ->select('b.category')
             ->distinct()
+            ->where('b.category IS NOT NULL')
             ->getQuery()
             ->getResult();
 
         // Fetch recent posts
-        $recentPosts = $blogPostRepository->findBy([], ['postDate' => 'DESC'], 3);
+        $recentPosts = $blogPostRepository->findBy(
+            [], 
+            ['postDate' => 'DESC'], 
+            3
+        );
 
-        // Fetch all blog posts
-        $blogPosts = $blogPostRepository->findAll();
+        // Build the query based on filters
+        $queryBuilder = $blogPostRepository->createQueryBuilder('b')
+            ->orderBy('b.postDate', 'DESC');
+
+        // Apply category filter if set
+        if ($currentCategory) {
+            $queryBuilder->andWhere('b.category = :category')
+                ->setParameter('category', $currentCategory);
+        }
+
+        // Apply search filter if set
+        if ($searchTerm) {
+            $queryBuilder->andWhere('b.title LIKE :searchTerm OR b.content LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        // Apply recent post filter if set
+        if ($selectedRecent) {
+            $queryBuilder->andWhere('b.id = :recentId')
+                ->setParameter('recentId', $selectedRecent);
+        }
+
+        // Execute the query
+        $blogPosts = $queryBuilder->getQuery()->getResult();
 
         // Create edit forms for each post
         $editForms = [];
@@ -70,6 +100,9 @@ final class BlogPostController extends AbstractController
             'categories' => array_column($categories, 'category'),
             'recent_posts' => $recentPosts,
             'editForms' => $editForms,
+            'current_category' => $currentCategory,
+            'selected_recent' => $selectedRecent,
+            'search_term' => $searchTerm
         ]);
     }
 
@@ -97,13 +130,28 @@ final class BlogPostController extends AbstractController
         BlogPost $blogPost,
         EntityManagerInterface $entityManager
     ): Response {
-        if ($this->isCsrfTokenValid('delete' . $blogPost->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($blogPost);
-            $entityManager->flush();
+        // Verify CSRF token
+        if (!$this->isCsrfTokenValid('delete', $request->request->get('_token'))) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Invalid CSRF token'
+            ], 403);
         }
 
-        // Redirect to the blog index so the same page reloads
-        return $this->redirectToRoute('app_blog_post_index');
+        try {
+            $entityManager->remove($blogPost);
+            $entityManager->flush();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Post deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Error deleting post'
+            ], 500);
+        }
     }
 
     #[Route('/{id}/comment', name: 'app_blog_post_comment', methods: ['POST'])]
@@ -153,41 +201,90 @@ public function like(
     ]);
 }
 
-    #[Route('/edit/{id}', name: 'app_blog_post_edit', methods: ['POST'])]
-    public function edit(
-        BlogPost $blogPost,
-        Request $request,
-        EntityManagerInterface $entityManager
-    ): Response {
-        $form = $this->createForm(BlogPostType::class, $blogPost);
-        $form->handleRequest($request);
+#[Route('/edit/{id}', name: 'app_blog_post_edit', methods: ['POST'])]
+public function edit(
+    Request $request,
+    BlogPost $blogPost,
+    EntityManagerInterface $entityManager
+): Response {
+    // Debug request data
+    error_log(print_r($request->request->all(), true));
+    error_log(print_r($_FILES, true));
 
-        // Handle image upload if a new image is provided
-        $file = $form->get('imageFile')->getData();
+    // Verify CSRF token
+    if (!$this->isCsrfTokenValid('blog_post', $request->request->get('_token'))) {
+        return $this->json([
+            'success' => false,
+            'message' => 'Invalid CSRF token'
+        ], 403);
+    }
+
+    // Handle partial updates
+    $isUpdated = false;
+
+    if ($request->request->has('title')) {
+        $blogPost->setTitle($request->request->get('title'));
+        $isUpdated = true;
+    }
+
+    if ($request->request->has('content')) {
+        $blogPost->setContent($request->request->get('content'));
+        $isUpdated = true;
+    }
+
+    if ($request->request->has('category')) {
+        $blogPost->setCategory($request->request->get('category'));
+        $isUpdated = true;
+    }
+
+    // Handle image upload if present
+    if ($request->files->has('imageFile')) {
+        $file = $request->files->get('imageFile');
         if ($file) {
-            $newFilename = uniqid() . '.' . $file->guessExtension();
+            $newFilename = uniqid().'.'.$file->guessExtension();
             try {
                 $file->move(
                     $this->getParameter('images_directory'),
                     $newFilename
                 );
+                $blogPost->setImageUrl($newFilename);
+                $isUpdated = true;
             } catch (FileException $e) {
-                $this->addFlash('error', 'Image upload failed.');
-                return $this->redirectToRoute('app_blog_post_index');
+                return $this->json([
+                    'success' => false,
+                    'message' => 'File upload failed'
+                ], 400);
             }
-            $blogPost->setImageUrl($newFilename);
         }
+    }
 
-        if ($form->isSubmitted() && $form->isValid()) {
+    if ($isUpdated) {
+        try {
             $entityManager->flush();
 
-            $this->addFlash('success', 'Post updated successfully!');
-            return $this->redirectToRoute('app_blog_post_index');
+            return $this->json([
+                'success' => true,
+                'post' => [
+                    'id' => $blogPost->getId(),
+                    'title' => $blogPost->getTitle(),
+                    'content' => $blogPost->getContent(),
+                    'category' => $blogPost->getCategory(),
+                    'imageUrl' => $blogPost->getImageUrl()
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Error updating post'
+            ], 500);
         }
-
-        // If not valid, reload the page so server-side validation errors are shown in the modal
-        return $this->redirectToRoute('app_blog_post_index');
     }
+
+    return $this->json([
+        'success' => true,
+        'message' => 'No changes made'
+    ]);
+}
 
     private function handleImageUpload($form, BlogPost $blogPost): void
     {
@@ -205,6 +302,15 @@ public function like(
             }
             $blogPost->setImageUrl($newFilename);
         }
+    }
+
+    private function getFormErrors($form): array
+    {
+        $errors = [];
+        foreach ($form->getErrors(true) as $error) {
+            $errors[] = $error->getMessage();
+        }
+        return $errors;
     }
    
 }
