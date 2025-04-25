@@ -2,19 +2,40 @@
 
 namespace App\Controller;
 
+use App\Form\UserType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProductRepository;
+use App\Entity\User;
+use Symfony\Component\HttpFoundation\Request;
 
 class HomeController extends AbstractController
 {
+
     #[Route('/', name: 'home')]
     public function index(): Response
     {
         return $this->render('FrontOffice/index.html.twig');
     }
+    #[Route('/voyage', name: 'voyage')]
+    public function voyage(): Response
+    {
+        return $this->render('FrontOffice/home/index.html.twig', [
+            'featuredTrips' => [],
+            'tripCategories' => [],
+            'testimonials' => [],
+            'blogPosts' => []
+        ]);
+    }
 
+
+    #[Route('/testing', name: 'admin')]
+    public function test(): Response
+    {
+        return $this->render('BackOffice/partials/base.html.twig');
+    }
     #[Route('/about', name: 'about')]
     public function about(): Response
     {
@@ -39,6 +60,7 @@ class HomeController extends AbstractController
         return $this->render('FrontOffice/categori.html.twig');
     }
 
+    
     #[Route('/contact', name: 'contact')]
     public function contact(): Response
     {
@@ -51,13 +73,23 @@ class HomeController extends AbstractController
         return $this->render('FrontOffice/elements.html.twig');
     }
 
-    #[Route('/listing', name: 'listing')]
-    public function listing(ProductRepository $productRepo): Response
+    #[Route('/market', name: 'market')]
+    public function listing(ProductRepository $productRepository, Request $request): Response
     {
-        $products = $productRepo->findAll();
+        $name = $request->query->get('name', '');
 
-        return $this->render('FrontOffice/listing.html.twig', [
+        $queryBuilder = $productRepository->createQueryBuilder('p');
+
+        if ($name) {
+            $queryBuilder->andWhere('p.name LIKE :name')
+                         ->setParameter('name', '%' . $name . '%');
+        }
+
+        $products = $queryBuilder->getQuery()->getResult();
+
+        return $this->render('FrontOffice/market.html.twig', [
             'products' => $products,
+            'searchName' => $name,
         ]);
     }
 
@@ -67,6 +99,7 @@ class HomeController extends AbstractController
         return $this->render('FrontOffice/listing_details.html.twig');
     }
 
+
     #[Route('/search', name: 'search')]
     public function search(): Response
     {
@@ -74,27 +107,22 @@ class HomeController extends AbstractController
         return $this->render('FrontOffice/search.html.twig');
     }
 
-    #[Route('/register', name: 'register')]
-    public function register(): Response
+    #[Route('/register', name: 'register', methods: ['GET', 'POST'])]
+    public function register(Request $request, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('security/register.html.twig');
-    }
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
 
-    #[Route('/location/{city}', name: 'location', requirements: ['city' => '(?!about|contact|blog)[a-zA-Z\-\s]+'])]
-    public function location(string $city): Response
-    {
-        // Logic to display city details
-        return $this->render('FrontOffice/location.html.twig', [
-            'city' => $city
-        ]);
-    }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($user);
+            $entityManager->flush();
 
-    #[Route('/how-it-works/{step}', name: 'how_it_works', requirements: ['step' => '\d+'])]
-    public function howItWorks(int $step): Response
-    {
-        // Logique pour les étapes de fonctionnement
-        return $this->render('FrontOffice/how_it_works.html.twig', [
-            'step' => $step
+            return $this->redirectToRoute('app_user_index');
+        }
+
+        return $this->render('user/new.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 
@@ -129,4 +157,23 @@ class HomeController extends AbstractController
         // Logique pour remonter en haut de page
         return $this->redirectToRoute('home');
     }
+   
+    #[Route('/location/{city}', name: 'location')]
+public function location(string $city): Response
+{
+    // Logique pour afficher les détails d'une ville
+    return $this->render('FrontOffice/location.html.twig', [
+        'city' => $city
+    ]);
+}
+
+#[Route('/how-it-works/{step}', name: 'how_it_works')]
+public function howItWorks(int $step): Response
+{
+    // Logique pour les étapes de fonctionnement
+    return $this->render('FrontOffice/how_it_works.html.twig', [
+        'step' => $step
+    ]);
+}
+
 }

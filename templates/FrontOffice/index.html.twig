@@ -55,18 +55,14 @@
                                     <nav>
                                         <ul id="navigation">
                                             <li><a href="{{ path('home') }}">Home</a></li>
-                                            <li><a href="{{ path('about') }}">About</a></li>
-                                            <li><a href="{{ path('contact') }}">Contact</a></li>
-                                            <li><a href="{{ path('categori') }}">Categories</a></li>
-                                            <li><a href="{{ path('listing') }}">Listing</a></li>
-                                            <li><a href="#">Page</a>
-                                                <ul class="submenu">
-                                                    <li><a href="{{ path('blog') }}">Blog</a></li>
-                                                    <li><a href="{{ path('blog_details') }}">Blog Details</a></li>
-                                                    <li><a href="{{ path('elements') }}">Elements</a></li>
-                                                    <li><a href="{{ path('listing_details') }}">Listing Details</a></li>
-                                                </ul>
+                                            <li><a>Voyage</a></li>
+                                            <li><>Hospital</a></li>
+                                            <li><a href="{{ path('market') }}">market</a></li>
+                                            <li><a href="{{ path('blog') }}">Blog</a></li>
+
+                                               
                                             </li>
+                                            <li><a href="{{ path('contact') }}">Contact</a></li>
                                             <li class="add-list"><a href="{{ path('listing_details') }}"><i class="ti-plus"></i> Add Listing</a></li>
                                             {#<li class="login"><a href="{{ path('login') }}"><i class="ti-user"></i> Sign in</a></li>#}
                                             <li class="register"><a href="{{ path('register') }}"><i class="ti-pencil"></i> Register</a></li>
@@ -208,7 +204,7 @@
                 <!-- More Btn -->
                 <div class="row justify-content-center">
                     <div class="room-btn pt-20">
-                        <a href="{{ path('categori') }}" class="btn view-btn1">View All Places</a>
+                        <a href="" class="btn view-btn1">View All Places</a>
                     </div>
                 </div>
             </div>
@@ -286,9 +282,9 @@
                                 <span class="flaticon-bed"></span>
                             </div>
                             <div class="cat-cap">
-                                <h5><a href="{{ path('categori', {'type': 'hotel'}) }}">Living Hotel</a></h5>
+                                <h5><a >Living Hotel</a></h5>
                                 <p>Must explain your how this keind denoun pleasure</p>
-                                <a href="{{ path('categori', {'type': 'hotel'}) }}">View Details</a>
+                                <a >View Details</a>
                             </div>
                         </div>
                     </div>
@@ -298,9 +294,9 @@
                                 <span class="flaticon-drink"></span>
                             </div>
                             <div class="cat-cap">
-                                <h5><a href="{{ path('categori', {'type': 'night_life'}) }}">Night Life</a></h5>
+                                <h5><a>Night Life</a></h5>
                                 <p>Must explain your how this keind denoun pleasure</p>
-                                <a href="{{ path('categori', {'type': 'night_life'}) }}">View Details</a>
+                                <a >View Details</a>
                             </div>
                         </div>
                     </div>
@@ -310,9 +306,9 @@
                                 <span class="flaticon-home"></span>
                             </div>
                             <div class="cat-cap">
-                                <h5><a href="{{ path('categori', {'type': 'culture_place'}) }}">Culture Place</a></h5>
+                                <h5><a >Culture Place</a></h5>
                                 <p>Must explain your how this keind denoun pleasure</p>
-                                <a href="{{ path('categori', {'type': 'culture_place'}) }}">View Details</a>
+                                <a >View Details</a>
                             </div>
                         </div>
                     </div>
@@ -322,9 +318,9 @@
                                 <span class="flaticon-food"></span>
                             </div>
                             <div class="cat-cap">
-                                <h5><a href="{{ path('categori', {'type': 'restaurant'}) }}">Restaurant</a></h5>
+                                <h5><a >Restaurant</a></h5>
                                 <p>Must explain your how this keind denoun pleasure</p>
-                                <a href="{{ path('categori', {'type': 'restaurant'}) }}">View Details</a>
+                                <a >View Details</a>
                             </div>
                         </div>
                     </div>
@@ -536,7 +532,7 @@
                                     <h4>Quick Link</h4>
                                     <ul>
                                         <li><a href="{{ path('home') }}">Home</a></li>
-                                        <li><a href="{{ path('listing') }}">Listing</a></li>
+                                        <li><a href="{{ path('market') }}">market</a></li>
                                         <li><a href="{{ path('about') }}">About</a></li>
                                         <li><a href="{{ path('contact') }}">Contact</a></li>
                                     </ul>
@@ -548,10 +544,7 @@
                                 <div class="footer-tittle">
                                     <h4>Categories</h4>
                                     <ul>
-                                        <li><a href="{{ path('categori', {'type': 'hotel'}) }}">Reasonable Hotel</a></li>
-                                        <li><a href="{{ path('categori', {'type': 'restaurant'}) }}">Popular Restaurant</a></li>
-                                        <li><a href="{{ path('categori', {'type': 'shopping'}) }}">Easy Shopping</a></li>
-                                        <li><a href="{{ path('categori', {'type': 'night_life'}) }}">Night Life</a></li>     
+                                           
                                     </ul>
                                 </div>
                             </div>

@@ -1,0 +1,47 @@
+{{ form_start(form, { 
+    'attr': {'id': 'editProductForm', 'enctype': 'multipart/form-data'},
+    'action': path('app_product_edit', {'id': product.id})
+}) }}
+  {{ form_errors(form) }}
+  <div class="mb-3">
+    {{ form_label(form.name, 'Name', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.name) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+    {{ form_errors(form.description) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.price, 'Price', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.price) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.stock, 'Stock', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.stock, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.stock) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.stockLimit, 'Stock Limit', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.stockLimit, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.stockLimit) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.reference, 'Reference', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.reference, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.reference) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.sold, 'Sold', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.sold, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.sold) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.imagePath, 'Image', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.imagePath, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.imagePath) }}
+  </div>
+  <button type="submit" class="btn btn-primary">Save Changes</button>
+{{ form_end(form) }}

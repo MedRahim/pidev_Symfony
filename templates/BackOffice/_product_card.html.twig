@@ -1,0 +1,32 @@
+<div class="col-lg-4 mb-4" id="product-card-{{ product.id }}">
+  <div class="card">
+    <img
+      src="{{ product.imagePath ? asset(product.imagePath) : asset('BackOffice/assets/img/default-product.jpg') }}"
+      class="card-img-top"
+      alt="{{ product.name }}"
+    />
+    <div class="card-body">
+      <h5 class="card-title">{{ product.name }}</h5>
+      <p class="card-text">{{ product.description }}</p>
+      <p class="card-text"><strong>Price:</strong> {{ product.price }} USD</p>
+      <p class="card-text"><strong>Stock:</strong> {{ product.stock }}</p>
+      <button
+        type="button"
+        class="btn btn-primary edit-product-btn"
+        data-bs-toggle="modal"
+        data-bs-target="#editProductModal"
+        data-edit-url="{{ path('app_product_edit_modal', { id: product.id }) }}"
+      >
+        Edit
+      </button>
+      <button type="button" 
+              class="btn btn-danger" 
+              data-bs-toggle="modal" 
+              data-bs-target="#deleteModal"
+              data-delete-url="{{ path('app_product_delete', {'id': product.id}) }}"
+              data-csrf-token="{{ csrf_token('delete' ~ product.id) }}">
+        Delete
+      </button>
+    </div>
+  </div>
+</div>

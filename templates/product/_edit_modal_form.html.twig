@@ -1,0 +1,39 @@
+{{ form_start(form, {
+    action: path('app_product_edit', { id: product.id }),
+    method: 'POST',
+    attr: { enctype: 'multipart/form-data' }
+}) }}
+  <div class="mb-3">
+    {{ form_label(form.name, 'Name', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.price, 'Price', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.stock, 'Stock', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.stock, {'attr': {'class': 'form-control'}}) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.stockLimit, 'Stock Limit', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.stockLimit, {'attr': {'class': 'form-control'}}) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.reference, 'Reference', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.reference, {'attr': {'class': 'form-control'}}) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.sold, 'Sold', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.sold, {'attr': {'class': 'form-control'}}) }}
+  </div>
+  <div class="mb-3">
+    {{ form_label(form.imagePath, 'Image', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.imagePath, {'attr': {'class': 'form-control'}}) }}
+  </div>
+  <button type="submit" class="btn btn-primary">Save</button>
+{{ form_end(form) }}

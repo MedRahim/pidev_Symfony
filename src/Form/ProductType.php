@@ -7,25 +7,40 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class ProductType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name')
-            ->add('reference')
-            ->add('price')
-            ->add('stockLimit')
-            ->add('stock')
-            ->add('imagePath', FileType::class, [
-                'required' => false, // Allow the field to be optional
-                'label' => 'Choose File',
-                'mapped' => false, // Prevent mapping to the entity directly
+            ->add('name', TextType::class, [
+                'required' => false, // Disable client-side validation
             ])
-            ->add('sold')
-            ->add('description')
-        ;
+            ->add('reference', TextType::class, [
+                'required' => false,
+            ])
+            ->add('price', NumberType::class, [
+                'required' => false,
+            ])
+            ->add('stockLimit', NumberType::class, [
+                'required' => false,
+            ])
+            ->add('stock', NumberType::class, [
+                'required' => false,
+            ])
+            ->add('imagePath', FileType::class, [
+                'label' => 'Product Image',
+                'mapped' => false,              // <<— not a property setter on your entity
+                'required' => false,
+            ])
+            ->add('sold', NumberType::class, [
+                'required' => false,
+            ])
+            ->add('description', TextType::class, [
+                'required' => false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

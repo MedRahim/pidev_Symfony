@@ -16,6 +16,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
+use Stripe\Exception\ApiErrorException;
 
 #[Route('/order')]
 final class OrderController extends AbstractController
@@ -89,10 +92,12 @@ final class OrderController extends AbstractController
             $entityManager->remove($order);
             $entityManager->flush();
 
-            return $this->redirectToRoute('orders_page', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Order deleted successfully.');
+        } else {
+            $this->addFlash('error', 'Invalid CSRF token.');
         }
 
-        return $this->redirectToRoute('orders_page', [], Response::HTTP_FORBIDDEN);
+        return $this->redirectToRoute('app_order_pannier');
     }
 
     #[Route('/order/create', name: 'order_create', methods: ['POST'])]
@@ -130,7 +135,7 @@ final class OrderController extends AbstractController
     {
         $products = $productRepository->findAll();
 
-        return $this->render('FrontOffice/listing.html.twig', [
+        return $this->render('FrontOffice/market.html.twig', [
             'products' => $products,
         ]);
     }
@@ -167,30 +172,89 @@ final class OrderController extends AbstractController
     }
 
     #[Route('/pannier/pay', name: 'app_order_pannier_pay', methods: ['POST'])]
-    public function pay(Request $request, OrderRepository $orderRepository, EntityManagerInterface $entityManager): Response
+    public function pay(Request $request, OrderRepository $orderRepository): Response
     {
-        $orderIds = $request->request->all('order_ids'); // Use all() to retrieve an array of order IDs
+        $stripePublicKey = $this->getParameter('stripe_public_key'); // Ensure this line retrieves the parameter correctly
+
+        $orderIds = $request->request->all('order_ids');
 
         if (empty($orderIds)) {
             $this->addFlash('error', 'No orders selected for payment.');
             return $this->redirectToRoute('app_order_pannier');
         }
 
-        $orders = $orderRepository->findBy(['id' => $orderIds, 'status' => 'confirmed']);
+        return $this->render('FrontOffice/payment_form.html.twig', [
+            'orderIds' => $orderIds,
+            'stripe_public_key' => $stripePublicKey,
+        ]);
+    }
 
-        if (empty($orders)) {
-            $this->addFlash('error', 'No valid orders found for payment.');
-            return $this->redirectToRoute('app_order_pannier');
+    #[Route('/create-payment-intent', name: 'app_order_create_payment_intent', methods: ['POST'])]
+    public function createPaymentIntent(Request $request, OrderRepository $orderRepository): JsonResponse
+    {
+        Stripe::setApiKey($this->getParameter('stripe_secret_key'));
+
+        try {
+            $orderIds = json_decode($request->getContent(), true)['orderIds'];
+            $orders = $orderRepository->findBy(['id' => $orderIds]);
+            $amount = array_sum(array_map(fn($order) => $order->getTotalPrice(), $orders)) * 100;
+
+            $paymentIntent = PaymentIntent::create([
+                'amount' => $amount,
+                'currency' => 'usd',
+                'metadata' => [
+                    'order_ids' => implode(',', $orderIds)
+                ]
+            ]);
+
+            return $this->json(['clientSecret' => $paymentIntent->client_secret]);
+        } catch (ApiErrorException $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
         }
+    }
 
-        // Simulate payment processing
+    #[Route('/pannier/payment-success', name: 'app_order_payment_success', methods: ['GET'])]
+    public function paymentSuccess(EntityManagerInterface $entityManager, OrderRepository $orderRepository): Response
+    {
+        $orders = $orderRepository->findBy(['status' => 'confirmed']);
+
         foreach ($orders as $order) {
             $order->setStatus('paid');
         }
 
         $entityManager->flush();
 
-        $this->addFlash('success', 'Payment successful for selected orders.');
+        $this->addFlash('success', 'Payment processed successfully!');
+        return $this->redirectToRoute('app_order_pannier');
+    }
+
+    #[Route('/delete-multiple', name: 'app_order_delete_multiple', methods: ['POST'])]
+    public function deleteMultiple(Request $request, OrderRepository $orderRepository, EntityManagerInterface $entityManager): Response
+    {
+        $csrfToken = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('delete_multiple', $csrfToken)) {
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('app_order_pannier');
+        }
+
+        $orderIds = explode(',', $request->request->get('order_ids'));
+       
+        if (empty($orderIds)) {
+            $this->addFlash('error', 'No orders selected for deletion.');
+            return $this->redirectToRoute('app_order_pannier');
+        }
+
+        $orders = $orderRepository->findBy(['id' => $orderIds]);
+       
+        foreach ($orders as $order) {
+            $entityManager->remove($order);
+        }
+       
+        $entityManager->flush();
+       
+        $this->addFlash('success', sprintf('Deleted %d orders successfully.', count($orders)));
         return $this->redirectToRoute('app_order_pannier');
     }
 }
+
+
