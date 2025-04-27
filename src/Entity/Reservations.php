@@ -1,119 +1,88 @@
 <?php
-
 // src/Entity/Reservations.php
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
+use App\Repository\ReservationsRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * Reservations
- *
- * @ORM\Table(name="reservations", indexes={@ORM\Index(name="fk_reservation_trip", columns={"trip_id"}), @ORM\Index(name="transport_id", columns={"transport_id"}), @ORM\Index(name="reservations_fk_users", columns={"user_id"})})
- * @ORM\Entity
- *@ORM\Entity(repositoryClass="App\Repository\ReservationsRepository")
+ * @ORM\Entity(repositoryClass=ReservationsRepository::class)
+ * @ORM\Table(name="reservations")
  */
 class Reservations
 {
     public const STATUS_CONFIRMED = 'confirmed';
     public const STATUS_PENDING   = 'pending';
-    public const STATUS_CANCELED  = 'canceled';
+    public const STATUS_CANCELED  = 'cancelled';
 
     public const PAYMENT_PAID     = 'paid';
     public const PAYMENT_PENDING  = 'pending';
     public const PAYMENT_FAILED   = 'failed';
+
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="reservation_time", type="datetime", nullable=true, options={"default"="NULL"})
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    private $reservationTime = null;
+    private ?\DateTimeInterface $reservationTime = null;
 
     /**
-     * @var string|null
+     * @ORM\Column(type="string", length=20, options={"default":"pending"})
+     */
+    private ?string $status = self::STATUS_PENDING;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private int $transportId;
+
+    /**
+     * @ORM\Column(type="integer")
      *
-     * @ORM\Column(name="status", type="string", length=20, nullable=true, options={"default"="'Pending'"})
-     * @Assert\Choice(
-     *     choices={"Pending", "Confirmed", "Cancelled"},
-     *     message="Statut invalide"
+     * @Assert\NotBlank(message="Le nombre de sièges est obligatoire.")
+     * @Assert\Positive(message="Le nombre de sièges doit être un entier positif.")
+     * @Assert\Range(
+     *     min=1,
+     *     notInRangeMessage="Vous devez réserver au moins {{ min }} siège."
      * )
      */
-    private $status = 'Pending';
+    private int $seatNumber;
 
     /**
-     * @var int
+     * @ORM\Column(type="string", length=20, nullable=true)
      *
-     * @ORM\Column(name="transport_id", type="integer", nullable=false)
-     */
-    private $transportId;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="seat_number", type="integer", nullable=false)
-     * @Assert\NotBlank(message="Le nombre de sièges est obligatoire")
-     * @Assert\Positive(message="Le nombre de sièges doit être positif")
-     * @Assert\LessThanOrEqual(
-     *     value=10,
-     *     message="Vous ne pouvez pas réserver plus de 10 sièges"
-     * )
-     */
-    private $seatNumber;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="payment_status", type="string", length=20, nullable=true, options={"default"="'Pending'"})
-     * @Assert\Choice(
-     *     choices={"Pending", "Paid", "Cancelled", "Refunded"},
-     *     message="Statut de paiement invalide"
-     * )
-     */
-    private $paymentStatus = 'Pending';
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="seat_type", type="string", length=20, nullable=true, options={"default"="'Standard'"})
-     * @Assert\NotBlank(message="Le type de siège est obligatoire")
+     * @Assert\NotBlank(message="Le type de siège est obligatoire.")
      * @Assert\Choice(
      *     choices={"Standard", "Premium"},
-     *     message="Type de siège invalide"
+     *     message="Le type de siège doit être Standard ou Premium."
      * )
      */
-    private $seatType = 'Standard';
+    private ?string $seatType = null;
 
     /**
-     * @var \Trips
-     *
-     * @ORM\ManyToOne(targetEntity="Trips")
-     * @ORM\JoinColumns({
-     *  @ORM\JoinColumn(name="trip_id", referencedColumnName="id", nullable=true)
-     * })
+     * @ORM\Column(type="string", length=20, options={"default":"pending"})
      */
-    private $trip;
+    private ?string $paymentStatus = self::PAYMENT_PENDING;
 
     /**
-     * @var \Users
-     *
-     * @ORM\ManyToOne(targetEntity="Users")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
-     * })
+     * @ORM\ManyToOne(targetEntity=Trips::class)
+     * @ORM\JoinColumn(nullable=false, name="trip_id", referencedColumnName="id")
      */
-    private $user;
+    private ?Trips $trip = null;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Users::class)
+     * @ORM\JoinColumn(nullable=true, name="user_id", referencedColumnName="id")
+     */
+    private ?Users $user = null;
 
     public function getId(): ?int
     {
@@ -128,7 +97,6 @@ class Reservations
     public function setReservationTime(?\DateTimeInterface $reservationTime): static
     {
         $this->reservationTime = $reservationTime;
-
         return $this;
     }
 
@@ -140,7 +108,6 @@ class Reservations
     public function setStatus(?string $status): static
     {
         $this->status = $status;
-
         return $this;
     }
 
@@ -152,7 +119,6 @@ class Reservations
     public function setTransportId(int $transportId): static
     {
         $this->transportId = $transportId;
-
         return $this;
     }
 
@@ -164,19 +130,6 @@ class Reservations
     public function setSeatNumber(int $seatNumber): static
     {
         $this->seatNumber = $seatNumber;
-
-        return $this;
-    }
-
-    public function getPaymentStatus(): ?string
-    {
-        return $this->paymentStatus;
-    }
-
-    public function setPaymentStatus(?string $paymentStatus): static
-    {
-        $this->paymentStatus = $paymentStatus;
-
         return $this;
     }
 
@@ -188,7 +141,17 @@ class Reservations
     public function setSeatType(?string $seatType): static
     {
         $this->seatType = $seatType;
+        return $this;
+    }
 
+    public function getPaymentStatus(): ?string
+    {
+        return $this->paymentStatus;
+    }
+
+    public function setPaymentStatus(?string $paymentStatus): static
+    {
+        $this->paymentStatus = $paymentStatus;
         return $this;
     }
 
@@ -200,7 +163,6 @@ class Reservations
     public function setTrip(?Trips $trip): static
     {
         $this->trip = $trip;
-
         return $this;
     }
 
@@ -212,9 +174,26 @@ class Reservations
     public function setUser(?Users $user): static
     {
         $this->user = $user;
-
         return $this;
     }
 
+    /**
+     * @Assert\Callback
+     */
+    public function validateSeatNumber(ExecutionContextInterface $context): void
+    {
+        // Si aucun trip n’est lié, on skippe la vérif
+        if (null === $this->trip) {
+            return;
+        }
 
+        $capacity = $this->trip->getCapacity();
+        if ($this->seatNumber > $capacity) {
+            $context
+                ->buildViolation('Vous ne pouvez pas réserver plus de {{ limit }} sièges.')
+                ->atPath('seatNumber')
+                ->setParameter('{{ limit }}', (string) $capacity)
+                ->addViolation();
+        }
+    }
 }

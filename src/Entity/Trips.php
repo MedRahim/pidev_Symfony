@@ -274,4 +274,16 @@ public function setImage(?string $image): self
     $this->image = $image;
     return $this;
 }
+public function updateCapacity(int $reservedSeats): void
+{
+    if ($this->capacity >= $reservedSeats) {
+        $this->capacity -= $reservedSeats;
+    } else {
+        throw new \Exception("Il n'y a pas assez de places disponibles.");
+    }
+}
+public function getAvailableSeats(): int
+{
+    return $this->capacity - $this->reservations->count();
+}
 }

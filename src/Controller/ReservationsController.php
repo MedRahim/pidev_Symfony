@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Controller;
+// Ajoutez ce use statement avec les autres imports
+use App\Entity\Trips;
 
 use Psr\Log\LoggerInterface;
 use App\Entity\Reservations;
@@ -13,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Users;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/reservations')]
 class ReservationsController extends AbstractController
@@ -41,47 +44,53 @@ class ReservationsController extends AbstractController
         ]);
     }
 
-    #[Route('/new/{tripId}', name: 'app_reservations_new', methods: ['GET', 'POST'])]
-    public function new(
-        int $tripId,
-        Request $request,
-        EntityManagerInterface $em,
-        TripsRepository $tripsRepository
-    ): Response {
-        $trip = $tripsRepository->find($tripId);
-        if (!$trip) {
-            $this->addFlash('error', 'Le trajet demandé n’existe pas.');
-            return $this->redirectToRoute('app_reservations_list');
-        }
+    // src/Controller/ReservationsController.php
 
-        $fixedUser = $this->getFixedUser($em);
-        $reservation = (new Reservations())
-            ->setTrip($trip)
-            ->setReservationTime(new \DateTime())
-            ->setUser($fixedUser)
-            ->setTransportId($trip->getTransportId());
-
-        $form = $this->createForm(FrontReservationType::class, $reservation);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $price = $this->calculateReservationPrice($reservation, $trip);
-            $request->getSession()->set('reservation_data', [
-                'trip_id'      => $trip->getId(),
-                'seat_number'  => $reservation->getSeatNumber(),
-                'seat_type'    => $reservation->getSeatType(),
-                'price'        => $price,
-                'transport_id' => $trip->getTransportId(),
-            ]);
-
-            return $this->redirectToRoute('app_reservations_choose');
-        }
-
-        return $this->render('FrontOffice/reservations/add.html.twig', [
-            'form' => $form->createView(),
-            'trip' => $trip,
-        ]);
+#[Route('/new/{tripId}', name: 'app_reservations_new', methods: ['GET', 'POST'])]
+public function new(
+    int $tripId,
+    Request $request,
+    EntityManagerInterface $em,
+    TripsRepository $tripsRepository
+): Response {
+    $trip = $tripsRepository->find($tripId);
+    if (!$trip) {
+        $this->addFlash('error', 'Le trajet demandé n’existe pas.');
+        return $this->redirectToRoute('app_reservations_list');
     }
+
+    $fixedUser = $this->getFixedUser($em);
+    $reservation = (new Reservations())
+        ->setTrip($trip)
+        ->setReservationTime(new \DateTime())
+        ->setUser($fixedUser)
+        ->setTransportId($trip->getTransportId());
+
+    // *** Passage de l’option 'trip' ici
+    $form = $this->createForm(FrontReservationType::class, $reservation, [
+        'trip' => $trip,
+    ]);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $price = $this->calculateReservationPrice($reservation, $trip);
+        $request->getSession()->set('reservation_data', [
+            'trip_id'      => $trip->getId(),
+            'seat_number'  => $reservation->getSeatNumber(),
+            'seat_type'    => $reservation->getSeatType(),
+            'price'        => $price,
+            'transport_id' => $trip->getTransportId(),
+        ]);
+
+        return $this->redirectToRoute('app_reservations_choose');
+    }
+
+    return $this->render('FrontOffice/reservations/add.html.twig', [
+        'form' => $form->createView(),
+        'trip' => $trip,
+    ]);
+}
+
 
     #[Route('/choose', name: 'app_reservations_choose', methods: ['GET'])]
     public function choose(Request $request, TripsRepository $tripsRepository): Response
@@ -114,64 +123,70 @@ class ReservationsController extends AbstractController
         LoggerInterface $logger
     ): Response {
         $session = $request->getSession();
-        $data    = $session->get('reservation_data');
+        $data = $session->get('reservation_data');
+        
+        // Validation des données
         if (!$data) {
             $this->addFlash('error', 'Aucune réservation en attente.');
             return $this->redirectToRoute('app_reservations_list');
         }
-
+    
         $trip = $tripsRepository->find($data['trip_id']);
-        if (!$trip) {
-            $this->addFlash('error', 'Trajet inexistant.');
-            return $this->redirectToRoute('app_reservations_list');
+        $selectedSeats = explode(',', $data['seat_number']);
+        $seatCount = count($selectedSeats);
+    
+        // Vérification de la capacité
+        if ($trip->getCapacity() < $seatCount) {
+            $this->addFlash('error', 'Pas assez de places disponibles.');
+            return $this->redirectToRoute('app_reservations_new', ['tripId' => $trip->getId()]);
         }
-
+    
         if ($request->isMethod('POST')) {
-            $errors = $this->validatePayment(
-                $request->request->get('cardNumber'),
-                $request->request->get('expiryDate'),
-                $request->request->get('cvv')
-            );
-            if ($errors) {
-                foreach ($errors as $e) {
-                    $this->addFlash('error', $e);
-                }
-                return $this->redirectToRoute('app_reservations_payment');
-            }
-
-            $fixedUser = $this->getFixedUser($em);
+            $em->getConnection()->beginTransaction();
             try {
+                // Création de la réservation
                 $reservation = (new Reservations())
                     ->setTrip($trip)
-                    ->setUser($fixedUser)
+                    ->setUser($this->getFixedUser($em))
                     ->setTransportId($data['transport_id'])
                     ->setSeatNumber($data['seat_number'])
                     ->setSeatType($data['seat_type'])
                     ->setReservationTime(new \DateTime())
                     ->setStatus(Reservations::STATUS_CONFIRMED)
                     ->setPaymentStatus(Reservations::PAYMENT_PAID);
-
+    
+                // Mise à jour de la capacité
+                $trip->setCapacity($trip->getCapacity() - $seatCount);
+                
                 $em->persist($reservation);
+                $em->persist($trip);
                 $em->flush();
+                $em->getConnection()->commit();
+    
                 $session->remove('reservation_data');
-
-                $logger->info('Paiement réussi', [
-                    'reservation_id' => $reservation->getId(),
-                    'user_id'        => self::FIXED_USER_ID,
-                    'amount'         => $data['price'],
-                ]);
-                $this->addFlash('success', sprintf('Réservation #%d confirmée.', $reservation->getId()));
+                
+                // Logging et redirection
+                $logger->info('Paiement réussi', ['reservation_id' => $reservation->getId()]);
                 return $this->redirectToRoute('app_reservations_payment_confirmation', ['id' => $reservation->getId()]);
+    
             } catch (\Exception $e) {
+                $em->getConnection()->rollBack();
                 $logger->error('Erreur paiement', ['error' => $e->getMessage()]);
-                $this->addFlash('error', 'Erreur lors du paiement.');
+                $this->addFlash('error', 'Erreur lors du traitement du paiement.');
                 return $this->redirectToRoute('app_reservations_payment');
             }
         }
-
-        return $this->render('FrontOffice/reservations/pay.html.twig', ['price' => $data['price']]);
+    
+        return $this->render('FrontOffice/reservations/pay.html.twig', [
+            'price' => $this->calculateReservationPrice(
+                (new Reservations())
+                    ->setSeatNumber($data['seat_number'])
+                    ->setSeatType($data['seat_type']),
+                $trip
+            )
+        ]);
+    
     }
-
     #[Route('/payment/confirmation/{id}', name: 'app_reservations_payment_confirmation', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function paymentConfirmation(int $id, EntityManagerInterface $em): Response
@@ -285,125 +300,104 @@ class ReservationsController extends AbstractController
         ]);
     }
     #[Route('/edit/{id}', name: 'app_reservations_edit', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function edit(Request $request, Reservations $reservation, EntityManagerInterface $em): Response
-    {
-        if ($reservation->getUser()->getId() !== self::FIXED_USER_ID) {
-            $this->addFlash('error', 'Accès non autorisé.');
-            return $this->redirectToRoute('app_reservations_list');
-        }
+#[IsGranted('ROLE_USER')]
+public function edit(Request $request, Reservations $reservation, EntityManagerInterface $em): Response
+{
+    if ($reservation->getUser()->getId() !== self::FIXED_USER_ID) {
+        $this->addFlash('error', 'Accès non autorisé.');
+        return $this->redirectToRoute('app_reservations_list');
+    }
 
-        // Empêcher la modification si la réservation est annulée
-        if ($reservation->getStatus() === 'cancelled') {
-            $this->addFlash('warning', 'Les réservations annulées ne peuvent pas être modifiées');
+    if ($reservation->getStatus() === 'cancelled') {
+        $this->addFlash('warning', 'Les réservations annulées ne peuvent pas être modifiées');
+        return $this->redirectToRoute('app_reservations_details', ['id' => $reservation->getId()]);
+    }
+
+    // Sauvegarde des valeurs originales
+    $originalData = [
+        'seatNumber' => $reservation->getSeatNumber(),
+        'seatType'   => $reservation->getSeatType(),
+        'price'      => $this->calculateReservationPrice($reservation, $reservation->getTrip()),
+    ];
+
+    // *** Passage de l’option 'trip' ici aussi
+    $form = $this->createForm(FrontReservationType::class, $reservation, [
+        'trip' => $reservation->getTrip(),
+    ]);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $newPrice = $this->calculateReservationPrice($reservation, $reservation->getTrip());
+
+        if ($reservation->getSeatNumber() == $originalData['seatNumber'] &&
+            $reservation->getSeatType() == $originalData['seatType']) {
+            $this->addFlash('info', 'Aucune modification apportée à la réservation');
             return $this->redirectToRoute('app_reservations_details', ['id' => $reservation->getId()]);
         }
 
-        // Sauvegarder les valeurs originales pour comparaison
-        $originalData = [
-            'seatNumber' => $reservation->getSeatNumber(),
-            'seatType' => $reservation->getSeatType(),
-            'price' => $this->calculateReservationPrice($reservation, $reservation->getTrip())
-        ];
-
-        $form = $this->createForm(FrontReservationType::class, $reservation);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Calculer le nouveau prix
-            $newPrice = $this->calculateReservationPrice($reservation, $reservation->getTrip());
-
-            // Vérifier si des modifications ont été apportées
-            if ($reservation->getSeatNumber() == $originalData['seatNumber'] &&
-                $reservation->getSeatType() == $originalData['seatType']) {
-                $this->addFlash('info', 'Aucune modification apportée à la réservation');
-                return $this->redirectToRoute('app_reservations_details', ['id' => $reservation->getId()]);
-            }
-
-            // Stocker les données en session pour le paiement
-            $request->getSession()->set('reservation_data', [
-                'trip_id' => $reservation->getTrip()->getId(),
-                'seat_number' => $reservation->getSeatNumber(),
-                'seat_type' => $reservation->getSeatType(),
-                'price' => $newPrice,
-                'transport_id' => $reservation->getTransportId(),
-                'is_edit' => true,
-                'reservation_id' => $reservation->getId(),
-                'original_price' => $originalData['price'],
-                'price_difference' => $newPrice - $originalData['price']
-            ]);
-
-            // Rediriger vers la page de confirmation de modification
-            return $this->redirectToRoute('app_reservations_edit_confirmation', ['id' => $reservation->getId()]);
-        }
-
-        return $this->render('FrontOffice/reservations/edit.html.twig', [
-            'form' => $form->createView(),
-            'reservation' => $reservation,
-            'originalPrice' => $this->calculateReservationPrice(
-                (new Reservations())
-                    ->setSeatNumber($originalData['seatNumber'])
-                    ->setSeatType($originalData['seatType']),
-                $reservation->getTrip()
-            ),
-            'newPrice' => $this->calculateReservationPrice($reservation, $reservation->getTrip())
+        $request->getSession()->set('reservation_data', [
+            'trip_id'         => $reservation->getTrip()->getId(),
+            'seat_number'     => $reservation->getSeatNumber(),
+            'seat_type'       => $reservation->getSeatType(),
+            'price'           => $newPrice,
+            'transport_id'    => $reservation->getTransportId(),
+            'is_edit'         => true,
+            'reservation_id'  => $reservation->getId(),
+            'original_price'  => $originalData['price'],
+            'price_difference'=> $newPrice - $originalData['price'],
         ]);
-    }
-    #[Route('/edit/{id}/process', name: 'app_reservations_edit_process', methods: ['POST'])]
-    public function Processedit(Request $request, Reservations $reservation, EntityManagerInterface $em): Response
-    {
-        // 1. Persist + flush
-        $em->persist($reservation);
-        $em->flush();
 
-        // 2. Récupération des prix
-        $originalPrice  = floatval($request->request->get('originalPrice'));
-        $newPrice       = $this->calculateReservationPrice($reservation, $reservation->getTrip());
-        $priceDifference = $newPrice - $originalPrice;
-
-        // 3. Logique paiement/remboursement
-        if ($priceDifference > 0) {
-            $this->addFlash('warning', "Vous devez encore payer $priceDifference TND.");
-            return $this->redirectToRoute('app_reservations_pay_pending', ['id' => $reservation->getId()]);
-        } elseif ($priceDifference < 0) {
-                $this->addFlash('success', "Vous allez être remboursé de ".abs($priceDifference)." TND.");
-        } else{
-             $this->addFlash('success', "Votre réservation a été modifiée .");
-        }
-        return $this->redirectToRoute('app_reservations_details', ['id' => $reservation->getId()]);
+        return $this->redirectToRoute('app_reservations_edit_confirmation', ['id' => $reservation->getId()]);
     }
+
+    return $this->render('FrontOffice/reservations/edit.html.twig', [
+        'form'          => $form->createView(),
+        'reservation'   => $reservation,
+        'originalPrice' => $originalData['price'],
+        'newPrice'      => $this->calculateReservationPrice($reservation, $reservation->getTrip()),
+    ]);
+}
+
 
     #[Route('/cancel/{id}', name: 'app_reservations_cancel', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
     public function cancel(Request $request, Reservations $reservation, EntityManagerInterface $em): Response
     {
-        if ($reservation->getUser()->getId() !== self::FIXED_USER_ID) {
-            $this->addFlash('error', 'Accès non autorisé.');
-            return $this->redirectToRoute('app_reservations_list');
-        }
-
         if ($this->isCsrfTokenValid('cancel'.$reservation->getId(), $request->request->get('_token'))) {
-            $reservation->setStatus('cancelled');
-            $em->flush();
-            $this->addFlash('success', 'Réservation annulée.');
+            $em->getConnection()->beginTransaction();
+            try {
+                // Récupération des sièges annulés
+                $seatCount = count(explode(',', $reservation->getSeatNumber()));
+                $trip = $reservation->getTrip();
+                
+                // Mise à jour de la capacité
+                $trip->setCapacity($trip->getCapacity() + $seatCount);
+                
+                // Annulation de la réservation
+                $reservation->setStatus('cancelled');
+                
+                $em->persist($trip);
+                $em->persist($reservation);
+                $em->flush();
+                $em->getConnection()->commit();
+                
+                $this->addFlash('success', 'Réservation annulée avec succès.');
+            } catch (\Exception $e) {
+                $em->getConnection()->rollBack();
+                $this->addFlash('error', 'Erreur lors de l\'annulation.');
+            }
         }
-
         return $this->redirectToRoute('app_reservations_details', ['id' => $reservation->getId()]);
     }
+    
 
-    private function calculateReservationPrice(Reservations $reservation, $trip): float
+    private function calculateReservationPrice(Reservations $reservation, Trips $trip): float
     {
-        $basePrice = $trip->getPrice();
-        $seatType = $reservation->getSeatType();
-        $seatNumber = $reservation->getSeatNumber();
-        $price = $basePrice;
-
-        if ($seatType == 'VIP') {
-            $price *= 1.5;
-        }
-         return $price;
+        $basePrice = (float) $trip->getPrice();
+        $seatCount = count(explode(',', $reservation->getSeatNumber()));
+        $multiplier = $reservation->getSeatType() === 'Premium' ? 1.5 : 1.0;
+        
+        return round($basePrice * $seatCount * $multiplier, 2);
     }
-
     private function validatePayment(string $cardNumber, string $expiryDate, string $cvv): array
     {
         $errors = [];
@@ -422,4 +416,48 @@ class ReservationsController extends AbstractController
 
         return $errors;
     }
+    public function getSeatConfiguration(int $tripId, EntityManagerInterface $em): JsonResponse
+    {
+        $trip = $em->getRepository(Trips::class)->find($tripId);
+        if (!$trip) {
+            return $this->json(['error' => 'Trip not found'], 404);
+        }
+    
+        $reservations = $em->getRepository(Reservations::class)->findBy(['trip' => $trip]);
+    
+        $reservedSeats = [];
+        foreach ($reservations as $reservation) {
+            $seats = array_filter(explode(',', (string) $reservation->getSeatNumber()));
+            $reservedSeats = array_merge($reservedSeats, array_unique(array_map('strval', $seats)));
+        }
+    
+        return $this->json([
+            'totalSeats' => (int) $trip->getCapacity(),
+            'reservedSeats' => array_values(array_unique($reservedSeats)), // Élimine les doublons
+            'seatPrice' => (float) $trip->getPrice(), // Convertit en float
+            'seatTypes' => ['default', 'premium']
+        ]);
+    }
+#[Route('/api/update-capacity/{tripId}', name: 'update_capacity', methods: ['POST'])]
+public function updateCapacity(Request $request, int $tripId, EntityManagerInterface $em): JsonResponse
+{
+    $trip = $em->getRepository(Trips::class)->find($tripId);
+    $data = json_decode($request->getContent(), true);
+
+    try {
+        $trip->setCapacity($trip->getCapacity() - $data['seatsCount']);
+        $em->flush();
+
+        return $this->json([
+            'success' => true,
+            'newCapacity' => $trip->getCapacity()
+        ]);
+    } catch (\Exception $e) {
+        return $this->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
 }

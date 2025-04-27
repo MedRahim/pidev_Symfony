@@ -17,3 +17,9 @@ app_trips_show:
 app_trips_search:
     path: /recherche
     controller: App\Controller\TripsController::search
+
+    # config/routes.yaml
+api_seat_configuration:
+    path: /api/seat-configuration/{tripId}
+    controller: App\Controller\ReservationsController::getSeatConfiguration
+    methods: GET
