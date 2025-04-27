@@ -328,18 +328,23 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="orderModalLabel">Order Received</h5>
+            <h5 class="modal-title" id="orderModalLabel">Order Summary</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            Your order has been placed! Please await confirmation.
+            <div id="orderSummary">
+              <p>Your order has been placed successfully!</p>
+              <div class="order-details">
+                <p><strong>Unit Price:</strong> <span id="unitPrice"></span> DT</p>
+                <p><strong>Quantity:</strong> <span id="orderQuantity"></span></p>
+                <p><strong>Total Price:</strong> <span id="totalPrice"></span> DT</p>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Close
-            </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
@@ -384,19 +389,27 @@
           e.preventDefault();
 
           const productId = $(this).data('product-id');
-          const quantity = $('#quantity-' + productId).val(); // Get quantity value
-          const csrfToken = '{{ csrf_token("order") }}'; // Fetch CSRF token
+          const quantity = $('#quantity-' + productId).val();
+          const csrfToken = '{{ csrf_token("order") }}';
 
           const url = '{{ path("order_create") }}';
 
           $.ajax({
             url: url,
             method: 'POST',
-            data: JSON.stringify({ productId: productId, quantity: quantity, _csrf_token: csrfToken }),
+            data: JSON.stringify({ 
+              productId: productId, 
+              quantity: quantity, 
+              _csrf_token: csrfToken 
+            }),
             contentType: 'application/json',
             success: function(response) {
               if (response.success) {
-                alert('Order created successfully. Awaiting admin approval.');
+                // Update modal with order details
+                $('#unitPrice').text(response.data.unitPrice);
+                $('#orderQuantity').text(response.data.quantity);
+                $('#totalPrice').text(response.data.totalPrice);
+                $('#orderModal').modal('show');
               } else {
                 alert('Error placing order: ' + response.error);
               }

@@ -17,11 +17,9 @@ class OrderItem
     #[Assert\Positive]
     private ?int $id = null;
 
-    #[ORM\Column]
-    #[Assert\NotNull]
-    #[Assert\Type("integer")]
-    #[Assert\Positive]
-    private ?int $productId = null;
+    #[ORM\ManyToOne(targetEntity: Product::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Product $product = null;
 
     #[ORM\Column]
     #[Assert\NotNull]
@@ -44,6 +42,17 @@ class OrderItem
         return $this->id;
     }
 
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): static
+    {
+        $this->product = $product;
+        return $this;
+    }
+
     public function getQuantity(): ?int
     {
         return $this->quantity;
@@ -52,7 +61,6 @@ class OrderItem
     public function setQuantity(int $quantity): static
     {
         $this->quantity = $quantity;
-
         return $this;
     }
 
@@ -64,7 +72,6 @@ class OrderItem
     public function setPriceTotal(float $priceTotal): static
     {
         $this->priceTotal = $priceTotal;
-
         return $this;
     }
 
@@ -76,7 +83,6 @@ class OrderItem
     public function setOrder(?Order $order): static
     {
         $this->order = $order;
-
         return $this;
     }
 }

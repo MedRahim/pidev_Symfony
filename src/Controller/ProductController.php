@@ -13,14 +13,27 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/product')]
 final class ProductController extends AbstractController
 {
     #[Route('/backoffice/products', name: 'products_page', methods: ['GET', 'POST'])]
-    public function index(ProductRepository $productRepository, Request $request, EntityManagerInterface $entityManager, FormFactoryInterface $formFactory): Response
+    public function index(
+        ProductRepository $productRepository, 
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        FormFactoryInterface $formFactory,
+        PaginatorInterface $paginator
+    ): Response
     {
-        $products = $productRepository->findAll();
+        $query = $productRepository->createQueryBuilder('p')->getQuery();
+        
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10 // Items per page
+        );
 
         $product = new Product();
         $form = $formFactory->create(ProductType::class, $product);
@@ -36,7 +49,7 @@ final class ProductController extends AbstractController
                 );
                 $product->setImagePath('/uploads/products/'.$newFilename);
             } else {
-                $product->setImagePath(null); // Explicitly set to null if no file is uploaded
+                $product->setImagePath(null);
             }
 
             $entityManager->persist($product);
@@ -50,7 +63,7 @@ final class ProductController extends AbstractController
         }
 
         return $this->render('BackOffice/products.html.twig', [
-            'products' => $products,
+            'pagination' => $pagination,
             'form' => $form->createView(),
         ]);
     }
@@ -170,19 +183,25 @@ final class ProductController extends AbstractController
                 $product->setImagePath('uploads/images/' . $filename);
             }
 
-            // No need to persist, just flush
+            // Flush changes to the database
             $em->flush();
 
-            // Return updated card HTML for AJAX
+            // Return updated product list HTML for AJAX
             if ($request->isXmlHttpRequest()) {
+                $products = $em->getRepository(Product::class)->findAll();
                 return $this->json([
                     'success' => true,
-                    'html' => $this->renderView('BackOffice/_product_card.html.twig', ['product' => $product]),
+                    'html' => $this->renderView('BackOffice/_product_list.html.twig', [
+                        'products' => $products,
+                    ]),
                 ]);
             }
 
-            // Redirect or return JSON
-            return $this->redirectToRoute('app_product_index');
+            // Redirect or dynamically render the list of products
+            $products = $em->getRepository(Product::class)->findAll();
+            return $this->render('BackOffice/_product_list.html.twig', [
+                'products' => $products,
+            ]);
         }
 
         // Render the form for GET requests
@@ -206,6 +225,16 @@ final class ProductController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
             $entityManager->remove($product);
             $entityManager->flush();
+
+            if ($request->isXmlHttpRequest()) {
+                $products = $entityManager->getRepository(Product::class)->findAll();
+                return $this->json([
+                    'success' => true,
+                    'html' => $this->renderView('BackOffice/_product_list.html.twig', [
+                        'products' => $products,
+                    ]),
+                ]);
+            }
         }
 
         return $this->redirectToRoute('products_page', [], Response::HTTP_SEE_OTHER);

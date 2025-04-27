@@ -19,17 +19,26 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Stripe\Exception\ApiErrorException;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/order')]
 final class OrderController extends AbstractController
 {
     #[Route('/BackOffice/orders', name: 'orders_page', methods: ['GET'])]
-    public function index(OrderRepository $orderRepository): Response
+    public function index(OrderRepository $orderRepository, Request $request, PaginatorInterface $paginator): Response
     {
-        $orders = $orderRepository->findAll(); // Fetch all orders from the database
+        $query = $orderRepository->createQueryBuilder('o')
+            ->orderBy('o.date', 'DESC')
+            ->getQuery();
+        
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10 // Items per page
+        );
 
         return $this->render('BackOffice/orders.html.twig', [
-            'orders' => $orders, // Pass the orders variable to the template
+            'pagination' => $pagination,
         ]);
     }
 
@@ -86,18 +95,16 @@ final class OrderController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'app_order_delete', methods: ['POST'])]
-    public function delete(Request $request, Order $order, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Order $order, EntityManagerInterface $entityManager): JsonResponse
     {
         if ($this->isCsrfTokenValid('delete' . $order->getId(), $request->request->get('_token'))) {
             $entityManager->remove($order);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Order deleted successfully.');
-        } else {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            return new JsonResponse(['success' => true, 'message' => 'Order deleted successfully']);
         }
 
-        return $this->redirectToRoute('app_order_pannier');
+        return new JsonResponse(['success' => false, 'message' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
     }
 
     #[Route('/order/create', name: 'order_create', methods: ['POST'])]
@@ -105,7 +112,7 @@ final class OrderController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['productId']) || !isset($data['_csrf_token'])) {
+        if (!isset($data['productId']) || !isset($data['_csrf_token']) || !isset($data['quantity'])) {
             return new JsonResponse(['success' => false, 'error' => 'Invalid request data'], 400);
         }
 
@@ -119,15 +126,44 @@ final class OrderController extends AbstractController
             return new JsonResponse(['success' => false, 'error' => 'Product not found'], 404);
         }
 
-        $order = new Order();
-        $order->setProduct($product);
-        $order->setStatus('not approved');
-        $order->setCreatedAt(new \DateTime());
+        try {
+            // Create the order
+            $order = new Order();
+            $order->setProduct($product);
+            $order->setStatus('not approved');
+            $order->setCreatedAt(new \DateTime());
 
-        $entityManager->persist($order);
-        $entityManager->flush();
+            // Calculate total price
+            $quantity = (int)$data['quantity'];
+            $unitPrice = $product->getPrice();
+            $totalPrice = $unitPrice * $quantity;
 
-        return new JsonResponse(['success' => true, 'message' => 'Order created successfully']);
+            // Create the order item
+            $orderItem = new OrderItem();
+            $orderItem->setProduct($product);
+            $orderItem->setQuantity($quantity);
+            $orderItem->setPriceTotal($totalPrice);
+            $orderItem->setOrder($order);
+
+            $entityManager->persist($order);
+            $entityManager->persist($orderItem);
+            $entityManager->flush();
+
+            return new JsonResponse([
+                'success' => true, 
+                'message' => 'Order created successfully',
+                'data' => [
+                    'unitPrice' => $unitPrice,
+                    'quantity' => $quantity,
+                    'totalPrice' => $totalPrice
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false, 
+                'error' => 'Error creating order: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     #[Route('/listing', name: 'app_order_listing', methods: ['GET'])]
@@ -143,21 +179,30 @@ final class OrderController extends AbstractController
     #[Route('/{id}/confirm', name: 'app_order_confirm', methods: ['POST'])]
     public function confirm(Request $request, Order $order, EntityManagerInterface $entityManager): JsonResponse
     {
-        if ($this->isCsrfTokenValid('confirm' . $order->getId(), $request->request->get('_token'))) {
-            $order->setStatus('confirmed');
-            $entityManager->flush();
-
-            return new JsonResponse(['success' => true, 'message' => 'Order confirmed successfully']);
+        $data = json_decode($request->getContent(), true);
+        
+        if (!$this->isCsrfTokenValid('confirm' . $order->getId(), $data['_token'])) {
+            return new JsonResponse(['success' => false, 'message' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
 
-        return new JsonResponse(['success' => false, 'message' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        $order->setStatus('confirmed');
+        $entityManager->flush();
+
+        return new JsonResponse(['success' => true, 'message' => 'Order confirmed successfully']);
     }
 
     #[Route('/{id}/details', name: 'app_order_details', methods: ['GET'])]
-    public function details(Order $order): Response
+    public function details(Order $order): JsonResponse
     {
-        return $this->render('BackOffice/order_details_modal.html.twig', [
-            'order' => $order,
+        return $this->json([
+            'id' => $order->getId(),
+            'date' => $order->getDate()->format('Y-m-d H:i:s'),
+            'status' => $order->getStatus(),
+            'product' => [
+                'name' => $order->getProduct()->getName(),
+                'price' => $order->getProduct()->getPrice(),
+            ],
+            'quantity' => $order->getOrderItems()->first() ? $order->getOrderItems()->first()->getQuantity() : 1,
         ]);
     }
 
