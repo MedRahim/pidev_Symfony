@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Routing\Attribute\Route;
 use Knp\Component\Pager\PaginatorInterface;
+use App\Service\ContentFilterService;
+
 
 
 
@@ -164,29 +166,40 @@ final class BlogPostController extends AbstractController
 public function comment(
     Request $request,
     BlogPost $blogPost,
-    EntityManagerInterface $entityManager
+    EntityManagerInterface $entityManager,
+    ContentFilterService $contentFilter
 ): Response {
     $content = $request->request->get('comment');
-    if ($content) {
-        $comment = new Comment();
-        $comment->setContent($content);
-        $comment->setBlogPost($blogPost);
-        $comment->setCreatedAt(new \DateTimeImmutable());
+    
+    if (empty($content)) {
+        return $this->json(['success' => false, 'message' => 'Comment cannot be empty']);
+    }
 
-        $entityManager->persist($comment);
-        $entityManager->flush();
-
+    // Check for bad words
+    if ($contentFilter->containsBadWords($content)) {
         return $this->json([
-            'success' => true,
-            'comment' => [
-                'id' => $comment->getId(),
-                'content' => $comment->getContent(),
-                'createdAt' => $comment->getCreatedAt()->format('d M Y, H:i')
-            ]
+            'success' => false,
+            'message' => 'Your comment contains inappropriate language'
         ]);
     }
 
-    return $this->json(['success' => false]);
+    // Existing code to save comment
+    $comment = new Comment();
+    $comment->setContent($content);
+    $comment->setBlogPost($blogPost);
+    $comment->setCreatedAt(new \DateTimeImmutable());
+
+    $entityManager->persist($comment);
+    $entityManager->flush();
+
+    return $this->json([
+        'success' => true,
+        'comment' => [
+            'id' => $comment->getId(),
+            'content' => $comment->getContent(),
+            'createdAt' => $comment->getCreatedAt()->format('d M Y, H:i')
+        ]
+    ]);
 }
     #[Route('/{id}/like', name: 'app_blog_post_like', methods: ['POST'])]
 public function like(

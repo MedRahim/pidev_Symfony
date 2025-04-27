@@ -8,6 +8,9 @@ services:
         exclude: '../src/{DependencyInjection,Entity,Tests,Kernel.php}'
         autowire: true
         autoconfigure: true
+    App\Service\ContentFilterService:
+        arguments:
+            $httpClient: '@http_client'
 
     # You can add more service definitions here if needed
 

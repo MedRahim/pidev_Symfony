@@ -156,6 +156,25 @@
         display: inline-flex;
         align-items: center;
     }
+    /* Add to your existing styles */
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-3px); }
+    100% { transform: translateX(0); }
+}
+
+.alert-danger {
+    background: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
 
     /* Hover Effects for All Buttons */
     .btn:hover {
@@ -1102,12 +1121,12 @@
             if (!content) return;
 
             $.ajax({
-                url: form.attr('action'),
-                method: 'POST',
-                data: {
-                    comment: content,
-                    _token: $('meta[name="csrf-token-edit"]').attr('content')
-                },
+    url: form.attr('action'),
+    method: 'POST',
+    data: {
+        comment: content,
+        _token: $('meta[name="csrf-token-edit"]').attr('content')
+    },
                 success: function(data) {
                     if (data.success) {
                         // Clear the textarea
@@ -1157,6 +1176,21 @@
                         `;
                         commentsSection.append(newComment);
                     }
+                    else {
+            // Show error message
+            const errorHtml = `
+                <div class="alert alert-danger mt-2">
+                    ${data.message}
+                </div>
+            `;
+            
+            form.find('.alert-danger').remove();
+            form.prepend(errorHtml);
+            
+            // Shake animation for attention
+            form.find('.alert-danger').css('animation', 'shake 0.5s');
+        }
+
                 },
                 error: function(xhr) {
                     alert('Error adding comment. Please try again.');
