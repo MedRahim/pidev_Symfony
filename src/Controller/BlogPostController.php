@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Routing\Attribute\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 
 
@@ -23,7 +24,8 @@ final class BlogPostController extends AbstractController
     public function index(
         Request $request,
         BlogPostRepository $blogPostRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        \Knp\Component\Pager\PaginatorInterface $paginator
     ): Response {
         $blogPost = new BlogPost();
         $form = $this->createForm(BlogPostType::class, $blogPost);
@@ -85,18 +87,22 @@ final class BlogPostController extends AbstractController
                 ->setParameter('recentId', $selectedRecent);
         }
 
-        // Execute the query
-        $blogPosts = $queryBuilder->getQuery()->getResult();
+        // Paginate the results
+        $pagination = $paginator->paginate(
+            $queryBuilder->getQuery(),
+            $request->query->getInt('page', 1),
+            10 // Number of items per page
+        );
 
         // Create edit forms for each post
         $editForms = [];
-        foreach ($blogPosts as $post) {
+        foreach ($pagination as $post) {
             $editForms[$post->getId()] = $this->createForm(BlogPostType::class, $post)->createView();
         }
 
         return $this->render('FrontOffice/blog.html.twig', [
             'form' => $form->createView(),
-            'blog_posts' => $blogPosts,
+            'blog_posts' => $pagination,
             'categories' => array_column($categories, 'category'),
             'recent_posts' => $recentPosts,
             'editForms' => $editForms,
