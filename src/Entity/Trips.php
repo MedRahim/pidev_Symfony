@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TripsRepository")
  * @ORM\Table(name="trips")
@@ -127,6 +128,10 @@ class Trips
     /**
  * @ORM\PrePersist
  */
+
+ public const PREMIUM_SEATS_COUNT = 10;
+    public const PREMIUM_MULTIPLIER = 1.5;
+    
 public function setTimestamps(): void
 {
     $this->createdAt = new \DateTime();

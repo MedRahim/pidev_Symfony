@@ -46,51 +46,47 @@ class ReservationsController extends AbstractController
 
     // src/Controller/ReservationsController.php
 
-#[Route('/new/{tripId}', name: 'app_reservations_new', methods: ['GET', 'POST'])]
-public function new(
-    int $tripId,
-    Request $request,
-    EntityManagerInterface $em,
-    TripsRepository $tripsRepository
-): Response {
-    $trip = $tripsRepository->find($tripId);
-    if (!$trip) {
-        $this->addFlash('error', 'Le trajet demandé n’existe pas.');
-        return $this->redirectToRoute('app_reservations_list');
-    }
 
-    $fixedUser = $this->getFixedUser($em);
-    $reservation = (new Reservations())
-        ->setTrip($trip)
-        ->setReservationTime(new \DateTime())
-        ->setUser($fixedUser)
-        ->setTransportId($trip->getTransportId());
-
-    // *** Passage de l’option 'trip' ici
-    $form = $this->createForm(FrontReservationType::class, $reservation, [
-        'trip' => $trip,
-    ]);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        $price = $this->calculateReservationPrice($reservation, $trip);
-        $request->getSession()->set('reservation_data', [
-            'trip_id'      => $trip->getId(),
-            'seat_number'  => $reservation->getSeatNumber(),
-            'seat_type'    => $reservation->getSeatType(),
-            'price'        => $price,
-            'transport_id' => $trip->getTransportId(),
+    #[Route('/new/{tripId}', name: 'app_reservations_new', methods: ['GET', 'POST'])]
+    public function new(
+        int $tripId,
+        Request $request,
+        EntityManagerInterface $em,
+        TripsRepository $tripsRepository
+    ): Response {
+        $trip = $tripsRepository->find($tripId);
+        if (!$trip) {
+            $this->addFlash('error', 'Le trajet demandé n’existe pas.');
+            return $this->redirectToRoute('app_reservations_list');
+        }
+    
+        $reservation = new Reservations();
+        $form = $this->createForm(FrontReservationType::class, $reservation);
+        
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $seatNumbers = $form->get('seatNumber')->getData();
+            if (empty($seatNumbers)) {
+                $this->addFlash('error', 'Veuillez sélectionner au moins un siège');
+                return $this->redirectToRoute('app_reservations_new', ['tripId' => $tripId]);
+            }
+    
+            $request->getSession()->set('reservation_data', [
+                'trip_id' => $trip->getId(),
+                'seat_number' => $seatNumbers,
+                'seat_type' => $form->get('seatType')->getData(),
+                'price' => $this->calculateReservationPrice($reservation, $trip),
+                'transport_id' => $trip->getTransportId(),
+            ]);
+    
+            return $this->redirectToRoute('app_reservations_choose');
+        }
+    
+        return $this->render('FrontOffice/reservations/add.html.twig', [
+            'form' => $form->createView(),
+            'trip' => $trip,
         ]);
-
-        return $this->redirectToRoute('app_reservations_choose');
     }
-
-    return $this->render('FrontOffice/reservations/add.html.twig', [
-        'form' => $form->createView(),
-        'trip' => $trip,
-    ]);
-}
-
 
     #[Route('/choose', name: 'app_reservations_choose', methods: ['GET'])]
     public function choose(Request $request, TripsRepository $tripsRepository): Response
@@ -393,10 +389,15 @@ public function edit(Request $request, Reservations $reservation, EntityManagerI
     private function calculateReservationPrice(Reservations $reservation, Trips $trip): float
     {
         $basePrice = (float) $trip->getPrice();
-        $seatCount = count(explode(',', $reservation->getSeatNumber()));
-        $multiplier = $reservation->getSeatType() === 'Premium' ? 1.5 : 1.0;
-        
-        return round($basePrice * $seatCount * $multiplier, 2);
+        $types     = explode(',', $reservation->getSeatType());
+        $total     = 0.0;
+
+        foreach ($types as $type) {
+            $mult = $type === 'Premium' ? 2.0 : 1.0;
+            $total += $basePrice * $mult;
+        }
+
+        return round($total, 2);
     }
     private function validatePayment(string $cardNumber, string $expiryDate, string $cvv): array
     {
@@ -416,48 +417,54 @@ public function edit(Request $request, Reservations $reservation, EntityManagerI
 
         return $errors;
     }
+    #[Route('/api/seat-configuration/{tripId}', name: 'api_seat_configuration', methods: ['GET'])]
     public function getSeatConfiguration(int $tripId, EntityManagerInterface $em): JsonResponse
     {
         $trip = $em->getRepository(Trips::class)->find($tripId);
         if (!$trip) {
             return $this->json(['error' => 'Trip not found'], 404);
         }
-    
-        $reservations = $em->getRepository(Reservations::class)->findBy(['trip' => $trip]);
-    
+
+        $reservations = $em->getRepository(Reservations::class)
+                           ->findBy(['trip' => $trip]);
+
         $reservedSeats = [];
-        foreach ($reservations as $reservation) {
-            $seats = array_filter(explode(',', (string) $reservation->getSeatNumber()));
-            $reservedSeats = array_merge($reservedSeats, array_unique(array_map('strval', $seats)));
+        foreach ($reservations as $r) {
+            $seats = array_filter(explode(',', $r->getSeatNumber()));
+            $reservedSeats = array_merge($reservedSeats, $seats);
         }
-    
-        return $this->json([
-            'totalSeats' => (int) $trip->getCapacity(),
-            'reservedSeats' => array_values(array_unique($reservedSeats)), // Élimine les doublons
-            'seatPrice' => (float) $trip->getPrice(), // Convertit en float
-            'seatTypes' => ['default', 'premium']
-        ]);
-    }
-#[Route('/api/update-capacity/{tripId}', name: 'update_capacity', methods: ['POST'])]
-public function updateCapacity(Request $request, int $tripId, EntityManagerInterface $em): JsonResponse
-{
-    $trip = $em->getRepository(Trips::class)->find($tripId);
-    $data = json_decode($request->getContent(), true);
+        $reservedSeats = array_values(array_unique($reservedSeats));
+        $reservedCount = count($reservedSeats);
 
-    try {
-        $trip->setCapacity($trip->getCapacity() - $data['seatsCount']);
-        $em->flush();
+        // Total original seats = capacité actuelle + déjà réservé
+        $totalSeatsOriginal = $trip->getCapacity() + $reservedCount;
 
         return $this->json([
-            'success' => true,
-            'newCapacity' => $trip->getCapacity()
+            'totalSeats'    => $totalSeatsOriginal,
+            'reservedSeats' => $reservedSeats,
+            'seatPrice'     => (float) $trip->getPrice(),
         ]);
-    } catch (\Exception $e) {
-        return $this->json([
-            'success' => false,
-            'error' => $e->getMessage()
-        ], 500);
     }
-}
+    #[Route('/api/update-capacity/{tripId}', name: 'update_capacity', methods: ['POST'])]
+    public function updateCapacity(Request $request, int $tripId, EntityManagerInterface $em): JsonResponse
+    {
+        $trip = $em->getRepository(Trips::class)->find($tripId);
+        $data = json_decode($request->getContent(), true);
+
+        try {
+            $trip->setCapacity($trip->getCapacity() - $data['seatsCount']);
+            $em->flush();
+
+            return $this->json([
+                'success'     => true,
+                'newCapacity' => $trip->getCapacity(),
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
 
 }

@@ -1,0 +1,28 @@
+{# templates/seatmap/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    /* Simple reset du container */
+    #seatmap-3d {
+      width: 100%;
+      height: 600px;
+      background: #000; /* chargé, bascule en gris clair */
+      position: relative;
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+  <h1>Réservation de sièges</h1>
+  <div
+    id="seatmap-3d"
+    data-controller="seatmap"
+    data-seatmap-api-url-value="{{ path('api_seats', { journey: journey.id }) }}"
+    data-seatmap-fallback-seats-value="49"
+    data-seatmap-fallback-price-value="6.5"
+  >
+    <p class="loading">Chargement 3D…</p>
+  </div>
+{% endblock %}

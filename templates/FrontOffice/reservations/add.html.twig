@@ -1,4 +1,4 @@
-{# templates/FrontOffice/reservations/add.html.twig #}
+{# templates/reservation/new.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Nouvelle réservation{% endblock %}
@@ -6,114 +6,155 @@
 {% block stylesheets %}
   {{ parent() }}
   <style>
-    /* Vos styles spécifiques au seatmap */
+    :root {
+      --color-primary: #3B82F6;
+      --color-premium: #F59E0B;
+      --color-success: #10B981;
+      --color-danger: #EF4444;
+      --color-disabled: #6B7280;
+    }
+
     #seat-map {
-      width: 100%;
-      height: 600px;
       position: relative;
-      background-color: #f8f9fa;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      overflow: hidden;
-      margin: 20px 0;
+      min-height: 400px;
     }
-    .seat-standard {
-      background-color: #4CAF50;
-      border: 2px solid #388E3C;
-      border-radius: 4px;
-      transition: all 0.2s ease;
-      cursor: pointer;
+
+    #seat-map.seatmap-2d {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      gap: 1rem;
+      padding: 1.5rem;
+      background: #F8FAFC;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
-    .seat-premium {
-      background-color: #2196F3;
-      border: 2px solid #1565C0;
-      border-radius: 4px;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-    .reserved {
-      background-color: #f44336 !important;
-      border-color: #d32f2f !important;
-      cursor: not-allowed !important;
-    }
-    .selected {
-      background-color: #FFC107 !important;
-      border-color: #FFA000 !important;
-      transform: scale(1.05);
-      box-shadow: 0 0 8px rgba(0,0,0,0.2);
-    }
-    .loading-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255,255,255,0.9);
+
+    .seat {
+      position: relative;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      z-index: 100;
+      justify-content: center;
+      height: 60px;
+      border-radius: 8px;
+      font-weight: 600;
+      color: #1E293B;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      background: white;
     }
-    .seatmap-error {
-      padding: 20px;
-      text-align: center;
-      background: #f8d7da;
-      border: 1px solid #f5c6cb;
-      border-radius: 5px;
-      margin: 20px 0;
+
+    .available {
+      border-color: var(--color-primary);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
-    @media (max-width: 768px) {
-      #seat-map { height: 400px; }
+
+    .premium.available {
+      border-color: var(--color-premium);
+      background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+    }
+
+    .premium-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 1rem;
+      color: var(--color-premium);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .selected {
+      background: var(--color-primary) !important;
+      color: white !important;
+      border-color: var(--color-primary) !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transform: scale(1.05);
+    }
+
+    .premium.selected {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+    }
+
+    .reserved {
+      background: repeating-linear-gradient(
+        45deg,
+        #E5E7EB,
+        #E5E7EB 10px,
+        #F8FAFC 10px,
+        #F8FAFC 20px
+      ) !important;
+      border-color: #D1D5DB !important;
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+
+    .price-panel {
+      margin: 1.5rem 0;
+      font-size: 1.25rem;
+      text-align: right;
     }
   </style>
 {% endblock %}
 
+
+
 {% block body %}
   <div class="container py-5">
     <h1 class="mb-4">Réservez votre voyage</h1>
+
     <div class="alert alert-info">
-      Places disponibles : <span id="available-seats">{{ trip.capacity }}</span>
+      Places disponibles : <strong>{{ trip.capacity }}</strong>
     </div>
 
-    {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+    {{ form_start(form, { 
+      'attr': { 
+        'data-controller': 'seatmap',
+        'data-seatmap-api-url-value': path('api_seat_configuration', { tripId: trip.id }),
+        'data-seatmap-fallback-seats-value': trip.capacity,
+        'data-seatmap-fallback-price-value': trip.price,
+        'data-seatmap-premium-seats-count-value': 10,
+        'data-seatmap-premium-multiplier-value': 1.5,
+        'data-action': 'submit->seatmap#validateSelection'
+      } 
+    }) }}
       {{ form_errors(form) }}
-      <div class="row mb-4">
-        <div class="col-md-6">
-          {{ form_row(form.seatNumber, { attr: { class: 'form-control' } }) }}
-        </div>
-        <div class="col-md-6">
-          {{ form_row(form.seatType,   { attr: { class: 'form-select' } }) }}
-        </div>
-      </div>
-      <div class="mb-4 p-3 bg-light rounded">
-        <h5 class="fw-bold">
-          Prix total : <span id="price" class="text-success">0.00</span> TND
-        </h5>
+
+      <div class="price-panel">
+        Total à payer : 
+        <strong data-seatmap-target="priceDisplay" class="text-success">0.00 TND</strong>
       </div>
 
-      <div id="seat-map"
-           data-controller="seatmap"
-           data-seatmap-trip-id-value="{{ trip.id }}"
-           data-seatmap-api-url-value="{{ path('api_seat_configuration', { tripId: trip.id }) }}"
-           data-seatmap-fallback-seats-value="{{ trip.capacity }}"
-           data-seatmap-fallback-price-value="{{ trip.price }}">
+      <div id="seat-map" data-seatmap-target="map">
         <div class="loading-overlay">
-          <div class="spinner-border text-primary" style="width:3rem;height:3rem;"></div>
+          <div class="spinner-border text-primary"></div>
           <p class="mt-3">Chargement du plan des sièges...</p>
         </div>
-        <div class="seatmap-error"></div>
+        
+        <div class="seatmap-error">
+          <p class="mb-2">⚠️ Impossible de charger les données en temps réel</p>
+          <small>Mode hors-ligne activé</small>
+        </div>
       </div>
 
-      <input type="hidden" id="selectedSeats" name="selectedSeats" />
+      {{ form_widget(form.seatNumber, { 
+        'attr': { 
+          'data-seatmap-target': 'seatNumberInput',
+          'class': 'd-none'
+        } 
+      }) }}
+      
+      {{ form_widget(form.seatType, { 
+        'attr': { 
+          'data-seatmap-target': 'seatTypesInput',
+          'class': 'd-none'
+        } 
+      }) }}
 
       <div class="text-center mt-4">
-        <button type="submit" class="btn btn-primary btn-lg">
+        <button type="submit" class="btn btn-primary btn-lg px-5">
           <i class="bi bi-check-circle me-2"></i> Confirmer la réservation
         </button>
       </div>
     {{ form_end(form) }}
   </div>
 {% endblock %}
-
-{# 
-  Remarquez : on ne redéfinit pas le bloc javascripts ici, 
-  ce qui évite de ré-inclure deux fois encore_entry_script_tags('app').
-#}

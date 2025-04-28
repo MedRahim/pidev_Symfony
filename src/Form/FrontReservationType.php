@@ -1,23 +1,24 @@
 <?php
 // src/Form/FrontReservationType.php
 
+// src/Form/FrontReservationType.php
 namespace App\Form;
 
+use App\Entity\Reservations;
+use App\Entity\Trips;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Entity\Reservations;
-use App\Entity\Trips;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class FrontReservationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // On injecte l'entité Trip avant le handleRequest()
         if ($options['trip'] instanceof Trips) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
                 $reservation = $event->getForm()->getData();
@@ -28,26 +29,16 @@ class FrontReservationType extends AbstractType
         }
 
         $builder
-            ->add('seatNumber', IntegerType::class, [
-                'label'       => 'Nombre de sièges',
-                // ❌ 'html5' => false supprimé
-                'attr'        => ['class' => 'form-control'],
+            // Champ caché pour récupérer la liste des numéros de siège (ex: "1,4,6")
+            ->add('seatNumber', HiddenType::class, [
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Le nombre de sièges est obligatoire.']),
-                    new Assert\Positive(['message' => 'Le nombre de sièges doit être un entier positif.']),
+                    new Assert\NotBlank(message: 'Vous devez sélectionner au moins un siège.'),
                 ],
-                'invalid_message' => 'Veuillez saisir un nombre de sièges valide.',
             ])
-            ->add('seatType', ChoiceType::class, [
-                'label'       => 'Type de siège',
-                'choices'     => ['Standard' => 'Standard', 'Premium' => 'Premium'],
-                'attr'        => ['class' => 'form-select'],
+            // Champ caché pour récupérer le type de chaque siège (ex: "Standard,Premium,Standard")
+            ->add('seatType', HiddenType::class, [
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Le type de siège est obligatoire.']),
-                    new Assert\Choice([
-                        'choices' => ['Standard', 'Premium'],
-                        'message' => 'Le type de siège doit être Standard ou Premium.',
-                    ]),
+                    new Assert\NotBlank(message: 'Le type de siège est requis.'),
                 ],
             ])
         ;
