@@ -10,6 +10,7 @@
         "@symfony/webpack-encore": "^5.0.0",
         "bootstrap": "^5.3.5",
         "core-js": "^3.38.0",
+        "countup.js": "^2.8.2",
         "file-loader": "^6.2.0",
         "regenerator-runtime": "^0.13.9",
         "seatchart": "^0.1.0",

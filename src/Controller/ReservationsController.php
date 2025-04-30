@@ -110,7 +110,6 @@ class ReservationsController extends AbstractController
             'price'      => $data['price'],
         ]);
     }
-
     #[Route('/payment', name: 'app_reservations_payment', methods: ['GET', 'POST'])]
     public function payment(
         Request $request,
@@ -119,28 +118,30 @@ class ReservationsController extends AbstractController
         LoggerInterface $logger
     ): Response {
         $session = $request->getSession();
-        $data = $session->get('reservation_data');
-        
-        // Validation des données
+        $data    = $session->get('reservation_data');
+
         if (!$data) {
             $this->addFlash('error', 'Aucune réservation en attente.');
             return $this->redirectToRoute('app_reservations_list');
         }
-    
+
         $trip = $tripsRepository->find($data['trip_id']);
-        $selectedSeats = explode(',', $data['seat_number']);
-        $seatCount = count($selectedSeats);
-    
-        // Vérification de la capacité
-        if ($trip->getCapacity() < $seatCount) {
-            $this->addFlash('error', 'Pas assez de places disponibles.');
-            return $this->redirectToRoute('app_reservations_new', ['tripId' => $trip->getId()]);
+        if (!$trip) {
+            $this->addFlash('error', 'Trajet inexistant.');
+            return $this->redirectToRoute('app_reservations_list');
         }
-    
+
+        $selectedSeats = explode(',', $data['seat_number'] ?? '');
+        $seatCount     = count($selectedSeats);
+
         if ($request->isMethod('POST')) {
+            if ($seatCount > $trip->getCapacity()) {
+                $this->addFlash('error', 'Pas assez de places disponibles.');
+                return $this->redirectToRoute('app_reservations_new', ['tripId' => $trip->getId()]);
+            }
+
             $em->getConnection()->beginTransaction();
             try {
-                // Création de la réservation
                 $reservation = (new Reservations())
                     ->setTrip($trip)
                     ->setUser($this->getFixedUser($em))
@@ -150,38 +151,60 @@ class ReservationsController extends AbstractController
                     ->setReservationTime(new \DateTime())
                     ->setStatus(Reservations::STATUS_CONFIRMED)
                     ->setPaymentStatus(Reservations::PAYMENT_PAID);
-    
+
                 // Mise à jour de la capacité
                 $trip->setCapacity($trip->getCapacity() - $seatCount);
-                
+
+                // Persistance réservation + trip
                 $em->persist($reservation);
                 $em->persist($trip);
+
+                // Calcul CO₂
+                $co2PerKmPerSeat = 0.05;
+                $co2Saved = (int) round($trip->getDistance() * $seatCount * $co2PerKmPerSeat);
+
+                // Enregistrement progression (sans flush interne)
+                $this->progressService->recordTrip(
+                    $this->getFixedUser($em),
+                    $trip->getTransportName(),
+                    $trip->getDistance(),
+                    $co2Saved
+                );
+
+                // Flush + commit
                 $em->flush();
                 $em->getConnection()->commit();
-    
+
+                // Nettoyage + log + redirection
                 $session->remove('reservation_data');
-                
-                // Logging et redirection
                 $logger->info('Paiement réussi', ['reservation_id' => $reservation->getId()]);
-                return $this->redirectToRoute('app_reservations_payment_confirmation', ['id' => $reservation->getId()]);
-    
-            } catch (\Exception $e) {
+
+                return $this->redirectToRoute('app_reservations_payment_confirmation', [
+                    'id' => $reservation->getId(),
+                ]);
+            } catch (\Throwable $e) {
                 $em->getConnection()->rollBack();
-                $logger->error('Erreur paiement', ['error' => $e->getMessage()]);
-                $this->addFlash('error', 'Erreur lors du traitement du paiement.');
-                return $this->redirectToRoute('app_reservations_payment');
+                $logger->error('Erreur paiement détaillée', [
+                    'message' => $e->getMessage(),
+                    'trace'   => $e->getTraceAsString(),
+                ]);
+                $this->addFlash('error', 'Erreur lors du traitement du paiement : ' . $e->getMessage());
+
+                return $this->redirectToRoute('app_reservations_payment', [
+                    'tripId' => $trip->getId(),
+                ]);
             }
         }
-    
+
+        // Si GET ou méthode autre que POST → affichage du formulaire de paiement
         return $this->render('FrontOffice/reservations/pay.html.twig', [
             'price' => $this->calculateReservationPrice(
                 (new Reservations())
                     ->setSeatNumber($data['seat_number'])
                     ->setSeatType($data['seat_type']),
                 $trip
-            )
+            ),
         ]);
-    
     }
     #[Route('/payment/confirmation/{id}', name: 'app_reservations_payment_confirmation', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -391,32 +414,15 @@ public function edit(Request $request, Reservations $reservation, EntityManagerI
         $basePrice = (float) $trip->getPrice();
         $types     = explode(',', $reservation->getSeatType());
         $total     = 0.0;
-
+    
         foreach ($types as $type) {
-            $mult = $type === 'Premium' ? 2.0 : 1.0;
+            $mult = $type === 'Premium' ? 1.5 : 1.0; // Modifier 2.0 → 1.5
             $total += $basePrice * $mult;
         }
-
+    
         return round($total, 2);
     }
-    private function validatePayment(string $cardNumber, string $expiryDate, string $cvv): array
-    {
-        $errors = [];
 
-        if (empty($cardNumber) || !preg_match('/^[0-9]{16}$/', $cardNumber)) {
-            $errors[] = 'Numéro de carte invalide.';
-        }
-
-        if (empty($expiryDate) || !preg_match('/^(0[1-9]|1[0-2])\/[0-9]{2}$/', $expiryDate)) {
-            $errors[] = 'Date d\'expiration invalide.';
-        }
-
-        if (empty($cvv) || !preg_match('/^[0-9]{3,4}$/', $cvv)) {
-            $errors[] = 'Code CVV invalide.';
-        }
-
-        return $errors;
-    }
     #[Route('/api/seat-configuration/{tripId}', name: 'api_seat_configuration', methods: ['GET'])]
     public function getSeatConfiguration(int $tripId, EntityManagerInterface $em): JsonResponse
     {

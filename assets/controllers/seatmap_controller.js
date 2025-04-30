@@ -1,3 +1,4 @@
+// assets/controllers/seatmap_controller.js
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
@@ -17,7 +18,7 @@ export default class extends Controller {
   ];
 
   connect() {
-    this.selected = new Set();
+    this.selected = [];
     this.submitBtn = this.element.querySelector('button[type="submit"]');
     this.baseBtnText = this.submitBtn.textContent.trim();
     this.submitBtn.disabled = true;
@@ -27,11 +28,11 @@ export default class extends Controller {
   }
 
   validateSelection(event) {
-    if (this.selected.size === 0) {
+    if (this.selected.length === 0) {
       event.preventDefault();
       alert('⚠️ Veuillez sélectionner au moins un siège avant de confirmer la réservation.');
     } else {
-      this.updateDisplay(); // Force la mise à jour avant soumission
+      this.updateDisplay(); // mise à jour juste avant d’envoyer
     }
   }
 
@@ -118,12 +119,16 @@ export default class extends Controller {
   toggleSeat(e) {
     const cell = e.currentTarget;
     const n = Number(cell.dataset.seatNumber);
-    if (this.selected.has(n)) {
-      this.selected.delete(n);
+
+    const idx = this.selected.indexOf(n);
+    if (idx !== -1) {
+      // dé-sélection
+      this.selected.splice(idx, 1);
       cell.classList.replace('selected', 'available');
       cell.style.transform = 'none';
     } else {
-      this.selected.add(n);
+      // sélection
+      this.selected.push(n);
       cell.classList.replace('available', 'selected');
       cell.style.transform = 'scale(1.05)';
     }
@@ -133,19 +138,22 @@ export default class extends Controller {
   updateDisplay() {
     let total = 0;
     const seatTypes = [];
-    
+
+    // Pour chaque n dans l'ordre de this.selected
     this.selected.forEach(n => {
       const cell = this.mapTarget.querySelector(`[data-seat-number="${n}"]`);
-      total += parseFloat(cell.dataset.price);
+      const price = parseFloat(cell.dataset.price);
+      total += price;
       seatTypes.push(cell.classList.contains('premium') ? 'Premium' : 'Standard');
     });
 
+    // Met à jour l’affichage
     this.priceDisplayTarget.textContent = `${total.toFixed(2)} TND`;
-    this.seatNumberInputTarget.value = Array.from(this.selected).join(',');
+    this.seatNumberInputTarget.value = this.selected.join(',');
     this.seatTypesInputTarget.value = seatTypes.join(',');
 
-    this.submitBtn.disabled = this.selected.size === 0;
-    this.submitBtn.textContent = this.selected.size > 0 
+    this.submitBtn.disabled = this.selected.length === 0;
+    this.submitBtn.textContent = this.selected.length > 0
       ? `${this.baseBtnText} (${total.toFixed(2)} TND)`
       : this.baseBtnText;
   }

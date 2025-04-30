@@ -106,21 +106,20 @@
       Places disponibles : <strong>{{ trip.capacity }}</strong>
     </div>
 
-    {{ form_start(form, { 
-      'attr': { 
+    {{ form_start(form, {
+      attr: {
         'data-controller': 'seatmap',
         'data-seatmap-api-url-value': path('api_seat_configuration', { tripId: trip.id }),
         'data-seatmap-fallback-seats-value': trip.capacity,
         'data-seatmap-fallback-price-value': trip.price,
         'data-seatmap-premium-seats-count-value': 10,
-        'data-seatmap-premium-multiplier-value': 1.5,
-        'data-action': 'submit->seatmap#validateSelection'
-      } 
+        'data-seatmap-premium-multiplier-value': 1.5
+      }
     }) }}
       {{ form_errors(form) }}
 
       <div class="price-panel">
-        Total à payer : 
+        Total à payer :
         <strong data-seatmap-target="priceDisplay" class="text-success">0.00 TND</strong>
       </div>
 
@@ -129,25 +128,17 @@
           <div class="spinner-border text-primary"></div>
           <p class="mt-3">Chargement du plan des sièges...</p>
         </div>
-        
         <div class="seatmap-error">
           <p class="mb-2">⚠️ Impossible de charger les données en temps réel</p>
           <small>Mode hors-ligne activé</small>
         </div>
       </div>
 
-      {{ form_widget(form.seatNumber, { 
-        'attr': { 
-          'data-seatmap-target': 'seatNumberInput',
-          'class': 'd-none'
-        } 
+      {{ form_widget(form.seatNumber, {
+        attr: {'data-seatmap-target': 'seatNumberInput', 'class': 'd-none'}
       }) }}
-      
-      {{ form_widget(form.seatType, { 
-        'attr': { 
-          'data-seatmap-target': 'seatTypesInput',
-          'class': 'd-none'
-        } 
+      {{ form_widget(form.seatType, {
+        attr: {'data-seatmap-target': 'seatTypesInput', 'class': 'd-none'}
       }) }}
 
       <div class="text-center mt-4">

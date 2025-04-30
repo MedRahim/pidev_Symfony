@@ -210,12 +210,14 @@ public function setTimestamps(): void
         return $this;
     }
 
-    public function getTransportName(): ?string
+    public function getTransportName(): string
     {
-        return $this->transportName;
+        // Retourne le nom du transport ou 'bus' par défaut
+        return $this->transportName ?? ($this->transport ? $this->transport->getName() : 'bus');
     }
-
-    public function setTransportName(?string $transportName): static
+  
+    
+    public function setTransportName(string $transportName): static
     {
         $this->transportName = $transportName;
         return $this;
