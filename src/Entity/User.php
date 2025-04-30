@@ -5,13 +5,14 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface,PasswordAuthenticatedUserInterface
+class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFactorInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -59,8 +60,8 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface
     )]
     private ?string $Password = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $Role = null;
+    #[ORM\Column(type: 'json', nullable: false, options: ['default' => '["ROLE_USER"]'])]
+    private array $roles = ['ROLE_USER'];
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Phone number cannot be blank.')]
@@ -120,13 +121,25 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $googleId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $avatar = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $googleAuthenticatorSecret = null;
+
+    #[ORM\Column]
+    private ?bool $isGoogleAuthenticatorEnabled = false;
+
     public function __construct()
     {
         // Set default values directly in constructor
         $this->isActive = false;
         $this->isVerified = false;
         $this->failedLoginAttempts = 0;
-        $this->Role = 'USER';
+        $this->roles = ['ROLE_USER'];
         $this->createdAt = new \DateTimeImmutable();
         $this->accountCreationDate = new \DateTimeImmutable();
         $this->lastLoginDate = new \DateTimeImmutable();
@@ -198,15 +211,17 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface
         $this->Password = null;
     }
 
-    public function getRole(): ?string
+    public function getRoles(): array
     {
-        return $this->Role;
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
     }
 
-    public function setRole(string $Role): static
+    public function setRoles(array $roles): static
     {
-        $this->Role = $Role;
-
+        $this->roles = $roles ?: ['ROLE_USER'];
         return $this;
     }
 
@@ -347,27 +362,60 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface
         return $this->updatedAt;
     }
 
-    public function getRoles(): array
-    {
-        // Start with an empty array
-        $roles = [];
 
-        // Add the main role if it exists
-        if ($this->Role !== null) {
-            $roles[] = $this->Role;
-        }
-
-        // Ensure all users have at least USER role
-        if (!in_array('USER', $roles)) {
-            $roles[] = 'USER';
-        }
-
-        return array_unique($roles);
-    }
 
 
     public function getUserIdentifier(): string
     {
         return $this->Email;
+    }
+
+    public function getGoogleId(): ?string
+    {
+        return $this->googleId;
+    }
+
+    public function setGoogleId(?string $googleId): static
+    {
+        $this->googleId = $googleId;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): static
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function isGoogleAuthenticatorEnabled(): bool
+    {
+        return $this->isGoogleAuthenticatorEnabled;
+    }
+
+    public function getGoogleAuthenticatorSecret(): ?string
+    {
+        return $this->googleAuthenticatorSecret;
+    }
+
+    public function setGoogleAuthenticatorSecret(?string $googleAuthenticatorSecret): void
+    {
+        $this->googleAuthenticatorSecret = $googleAuthenticatorSecret;
+    }
+
+    public function setIsGoogleAuthenticatorEnabled(bool $isGoogleAuthenticatorEnabled): void
+    {
+        $this->isGoogleAuthenticatorEnabled = $isGoogleAuthenticatorEnabled;
+    }
+
+    public function getGoogleAuthenticatorUsername(): string
+    {
+        return $this->getUserIdentifier(); // Returns the email
     }
 }

@@ -115,4 +115,55 @@ class UserRepository extends ServiceEntityRepository
     {
         $this->entityManager->flush();
     }
+
+    public function findAllWithFilters(array $filters = [], string $sort = null, string $direction = 'ASC'): array
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        // CIN filter (exact match or regex)
+        if (!empty($filters['cin'])) {
+            if (str_starts_with($filters['cin'], '%')) {
+                // Handle regex-like pattern
+                $qb->andWhere('u.CIN LIKE :cin')
+                    ->setParameter('cin', str_replace('%', '', $filters['cin']).'%');
+            } else {
+                // Exact match
+                $qb->andWhere('u.CIN = :cin')
+                    ->setParameter('cin', $filters['cin']);
+            }
+        }
+
+        // Email filter
+        if (!empty($filters['email'])) {
+            $qb->andWhere('u.Email LIKE :email')
+                ->setParameter('email', '%'.$filters['email'].'%');
+        }
+
+        // Age filter (calculated from birthday)
+        if (!empty($filters['age'])) {
+            $minDate = new \DateTime();
+            $minDate->modify('-'.(intval($filters['age'])+1).' years');
+            $maxDate = new \DateTime();
+            $maxDate->modify('-'.intval($filters['age']).' years');
+
+            $qb->andWhere('u.birthday <= :minDate')
+                ->andWhere('u.birthday > :maxDate')
+                ->setParameter('minDate', $minDate)
+                ->setParameter('maxDate', $maxDate);
+        }
+
+        // Sorting
+        if ($sort) {
+            if ($sort === 'age') {
+                // Special handling for age sorting
+                $qb->addSelect('TIMESTAMPDIFF(YEAR, u.birthday, CURRENT_DATE()) AS HIDDEN age');
+                $qb->orderBy('age', $direction);
+            } else {
+                $qb->orderBy('u.'.$sort, $direction);
+            }
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

@@ -1,5 +1,7 @@
 <?php
 
+// src/Security/OAuthUserProvider.php
+
 namespace App\Security;
 
 use App\Entity\User;
@@ -20,20 +22,44 @@ class OAuthUserProvider implements UserProviderInterface
 
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
-        // Load or create your user based on the identifier (email)
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $identifier]);
+        return $this->entityManager->getRepository(User::class)->findOneBy(['Email' => $identifier]);
+    }
 
-        if (!$user) {
-            // Create new user
-            $user = new User();
-            $user->setEmail($identifier);
-            // Set other default properties
+    public function loadUserByOAuthUserResponse($resourceOwner, $userData)
+    {
+        if ($resourceOwner === 'google' && $userData instanceof GoogleUser) {
+            $user = $this->entityManager->getRepository(User::class)
+                ->findOneBy(['googleId' => $userData->getId()]);
 
-            $this->entityManager->persist($user);
-            $this->entityManager->flush();
+            if (!$user) {
+                $user = $this->entityManager->getRepository(User::class)
+                    ->findOneBy(['Email' => $userData->getEmail()]);
+            }
+
+            if (!$user) {
+                $user = new User();
+                $user->setEmail($userData->getEmail());
+                $user->setGoogleId($userData->getId());
+                $user->setName($userData->getName());
+                $user->setAvatar($userData->getAvatar());
+                $user->setIsVerified(true);
+                $user->setRoles(['ROLE_USER']);
+
+                // Set default values for required fields
+                $user->setCIN('00000000');
+                $user->setPhone('+000000000');
+                $user->setAddress('To be updated');
+                $user->setBirthday(new \DateTime('1990-01-01'));
+                $user->setPassword('googleauth');
+
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
+            }
+
+            return $user;
         }
 
-        return $user;
+        throw new \RuntimeException(sprintf('No OAuth2 provider found for "%s".', $resourceOwner));
     }
 
     public function refreshUser(UserInterface $user): UserInterface

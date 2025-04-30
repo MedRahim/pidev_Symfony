@@ -12,14 +12,19 @@ app_login:
 app_logout:
     path: /logout
 
-connect_google:
-    path: /connect/google
-    controller: KnpU\OAuth2ClientBundle\Controller\ConnectController::connectAction
 
-connect_google_check:
-    path: /connect/google/check
-    controller: KnpU\OAuth2ClientBundle\Controller\ConnectController::connectCheckAction
-    
+#connect_google:
+#    path: /connect/google
+#    controller: KnpU\OAuth2ClientBundle\Controller\ConnectController::connectAction
+#    defaults:
+#        _priority: 1  # Correct placement
+#
+#connect_google_check:
+#    path: /connect/google/check
+#    controller: KnpU\OAuth2ClientBundle\Controller\ConnectController::connectCheckAction
+#    defaults:
+#        _priority: 1  # Correct placement
+
 app_trips_index:
     path: /voyages
     controller: App\Controller\TripsController::index
@@ -33,3 +38,13 @@ app_trips_show:
 app_trips_search:
     path: /recherche
     controller: App\Controller\TripsController::search
+
+
+2fa_login:
+    path: /2fa
+    defaults:
+        _controller: scheb_two_factor.form_controller:form
+
+2fa_login_check:
+    path: /2fa_check
+

@@ -9,6 +9,7 @@ use App\Repository\UserRepository;
 use App\Service\EmailService;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
+use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -17,6 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 
 #[Route('/user')]
 final class UserController extends AbstractController
@@ -36,13 +39,39 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/users',name: 'app_admin_Listusers', methods: ['GET'])]
-    public function users(UserRepository $userRepository): Response
+
+    #[Route('/admin/users', name: 'app_admin_Listusers', methods: ['GET'])]
+    public function users(Request $request, UserRepository $userRepository): Response
     {
+        // Get filter parameters from request
+        $filters = [
+            'cin' => $request->query->get('cin'),
+            'email' => $request->query->get('email'),
+            'age' => $request->query->get('age'),
+        ];
+
+        // Get sorting parameters
+        $sort = $request->query->get('sort');
+        $direction = $request->query->get('direction', 'ASC');
+
+        // Validate sort direction
+        $direction = in_array(strtoupper($direction), ['ASC', 'DESC']) ? $direction : 'ASC';
+
         return $this->render('BackOffice/amine/users.html.twig', [
-            'users' => $userRepository->findAll(),
+            'users' => $userRepository->findAllWithFilters($filters, $sort, $direction),
+            'current_filters' => $filters,
+            'current_sort' => $sort,
+            'current_direction' => $direction,
         ]);
     }
+
+//    #[Route('/admin/users',name: 'app_admin_Listusers', methods: ['GET'])]
+//    public function users(UserRepository $userRepository): Response
+//    {
+//        return $this->render('BackOffice/amine/users.html.twig', [
+//            'users' => $userRepository->findAll(),
+//        ]);
+//    }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(
@@ -77,9 +106,7 @@ final class UserController extends AbstractController
             }
 
             // Set role
-            if (empty($user->getRole())) {
-                $user->setRole('USER');
-            }
+            $user->setRoles($user->getRoles() ?: ['ROLE_USER']);
 
             //uploading profile picture
             $profilePictureFile = $form->get('profilePicture')->getData();
@@ -100,7 +127,7 @@ final class UserController extends AbstractController
 
             //verifying the information
             $logger->debug('User entity before processing:', [
-                'role' => $user->getRole(),
+                'role' => $user->getRoles()[0],
                 'pic' => $user->getPathToPic(),
             ]);
 
@@ -154,7 +181,7 @@ final class UserController extends AbstractController
             // Login successful - do something with the user
             $session->set('user_id', $user->getId());
 
-            if($user->getRole() == 'USER'){
+            if($user->getRole() == 'ROLE_USER'){
                 $this->addFlash('success', 'Login successful!');
                 return $this->redirectToRoute('app_user_index');
             }else{
@@ -257,4 +284,17 @@ final class UserController extends AbstractController
             'user' => $user,
         ]);
     }
+
+//    #[Route('/connect/google', name: 'connect_google_start')]
+//    public function connect(ClientRegistry $clientRegistry): RedirectResponse
+//    {
+//        return $clientRegistry->getClient('google')->redirect(['email','profile','openid'], []);
+//    }
+//
+//    #[Route('/connect/google/check', name: 'connect_google_check')]
+//    public function check(): void
+//    {
+//        // This route is intercepted by your authenticator
+//        throw new \Exception('Should not be reached directly.');
+//    }
 }
