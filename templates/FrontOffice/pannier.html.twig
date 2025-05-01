@@ -3,134 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pannier</title>
+    <title>Shopping Cart</title>
     <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #2A4B7C;
+            --secondary: #6C757D;
+            --success: #28A745;
+            --danger: #DC3545;
+            --light: #F8F9FA;
+            --dark: #212529;
+        }
+
         body {
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
+            background: var(--light);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
-        .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+
+        .cart-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
         }
-        h1 {
-            font-size: 2.8rem;
-            color: #343a40;
+
+        .cart-header {
             text-align: center;
-            margin-bottom: 30px;
-            font-weight: bold;
+            margin-bottom: 2.5rem;
         }
-        .single-listing {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            background-color: #ffffff;
-            padding: 20px;
+
+        .cart-header h1 {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 2.5rem;
+            letter-spacing: -0.5px;
         }
-        .single-listing:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            position: relative;
+            cursor: pointer;
         }
-        .list-caption h5 {
-            font-size: 1.5rem;
-            color: #007bff;
-            font-weight: bold;
+
+        .cart-item.selected {
+            border-color: var(--primary);
+            background: rgba(42, 75, 124, 0.03);
         }
-        .list-caption p {
-            font-size: 1rem;
-            color: #6c757d;
+
+        .cart-item-checkbox {
+            margin-right: 1.5rem;
+            transform: scale(1.2);
         }
-        .btn-primary, .btn-secondary, .btn-danger {
-            border-radius: 30px;
-            padding: 12px 30px;
+
+        .cart-item-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 2rem;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-size: 1.25rem;
             font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
         }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
+
+        .cart-item-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--secondary);
         }
-        .btn-secondary:hover {
-            background-color: #6c757d;
-            transform: scale(1.05);
+
+        .cart-item-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
         }
-        .btn-danger:hover {
-            background-color: #bd2130;
-            transform: scale(1.05);
-        }
-        .no-orders {
-            text-align: center;
-            margin-top: 50px;
-        }
-        .no-orders p {
-            font-size: 1.2rem;
-            color: #6c757d;
-        }
-        .no-orders a {
-            margin-top: 15px;
-        }
-        .form-check-input {
-            margin-right: 10px;
-            width: 20px; /* Increased width */
-            height: 20px; /* Increased height */
-            cursor: pointer; /* Pointer cursor for better UX */
-        }
-        .order-actions {
+
+        .cart-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 20px;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--light);
         }
-        .order-actions button {
-            width: 48%;
+
+        .empty-cart {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .empty-cart i {
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            padding: 0.5em 0.75em;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .btn-custom {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-custom {
+            background: var(--primary);
+            border: none;
+        }
+
+        .btn-danger-custom {
+            background: var(--danger);
+            border: none;
+        }
+
+        .btn-secondary-custom {
+            background: var(--secondary);
+            border: none;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .selected-count {
+            font-weight: 600;
+            color: var(--primary);
+            margin-left: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .cart-item-image {
+                width: 100%;
+                height: 200px;
+                margin-bottom: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1>Pannier</h1>
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success">{{ message }}</div>
-        {% endfor %}
-        {% for message in app.flashes('error') %}
-            <div class="alert alert-danger">{{ message }}</div>
-        {% endfor %}
+    <div class="cart-container">
+        <div class="cart-header">
+            <h1>Your Shopping Cart</h1>
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+
         {% if orders is defined and orders is not empty %}
             <form method="post" action="{{ path('app_order_pannier_pay') }}" id="payment-form">
-                <div class="d-flex justify-content-between mt-5">
-                    <div>
-                        <button type="submit" class="btn btn-primary">Pay Selected Orders</button>
-                        <button type="button" class="btn btn-danger" onclick="deleteSelectedOrders()">Delete Selected</button>
+                <div class="cart-actions">
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-primary-custom btn-custom text-white">
+                            <i class="fas fa-credit-card me-2"></i>
+                            Pay Selected (<span id="selectedCount">0</span>)
+                        </button>
+                        <button type="button" class="btn btn-danger-custom btn-custom text-white" onclick="deleteSelectedOrders()">
+                            <i class="fas fa-trash me-2"></i>
+                            Delete Selected
+                        </button>
                     </div>
-                    <a href="{{ path('app_product_listing') }}" class="btn btn-secondary">Continue Shopping</a>
+                    <a href="{{ path('app_product_listing') }}" class="btn btn-secondary-custom btn-custom text-white">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Continue Shopping
+                    </a>
                 </div>
 
-                <div class="row justify-content-center mt-4">
+                <div class="row">
                     {% for order in orders %}
-                    <div class="col-lg-5 mb-4">
-                        <div class="single-listing shadow-sm">
-                            <div class="list-caption">
-                                <div class="d-flex align-items-center">
-                                    <input type="checkbox" name="order_ids[]" value="{{ order.id }}"
-                                           class="form-check-input order-checkbox">
-                                    <h5 class="ms-2">Order #{{ order.id }}</h5>
+                    <div class="col-12 mb-4">
+                        <div class="cart-item" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="order_ids[]" value="{{ order.id }}"
+                                   class="cart-item-checkbox" onclick="updateSelectionCount()">
+                            <img src="{{ order.product.imagePath|default('https://via.placeholder.com/120') }}" 
+                                 alt="{{ order.product.name }}" 
+                                 class="cart-item-image">
+                            <div class="cart-item-details">
+                                <h3 class="cart-item-title">{{ order.product.name }}</h3>
+                                <div class="cart-item-meta">
+                                    <span class="d-flex align-items-center gap-1">
+                                        <i class="fas fa-hashtag"></i>
+                                        Order #{{ order.id }}
+                                    </span>
+                                    <span class="d-flex align-items-center gap-1">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        {{ order.date|date('M d, Y H:i') }}
+                                    </span>
                                 </div>
-                                <p class="text-muted"><strong>Product:</strong> {{ order.product.name }}</p>
-                                <p><strong>Quantity:</strong>
-                                    {% for item in order.orderItems %}
-                                        {{ item.quantity }}
-                                    {% endfor %}
-                                </p>
-                                <p><strong>Total Price:</strong>
-                                    {% for item in order.orderItems %}
-                                        {{ item.priceTotal }}
-                                    {% endfor %}
-                                </p>
-                                <p><strong>Date:</strong> {{ order.date|date('Y-m-d H:i') }}</p>
+                                <div class="d-flex gap-4">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-primary">
+                                            <i class="fas fa-box-open me-2"></i>
+                                            {% for item in order.orderItems %}
+                                                {{ item.quantity }}x
+                                            {% endfor %}
+                                        </span>
+                                        <span class="cart-item-price">
+                                            {% for item in order.orderItems %}
+                                                {{ item.priceTotal }} DT
+                                            {% endfor %}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -143,29 +255,52 @@
                 <input type="hidden" name="order_ids" id="delete-order-ids">
             </form>
 
-            <script>
-            function deleteSelectedOrders() {
-                const checkboxes = document.querySelectorAll('.order-checkbox:checked');
-                const orderIds = Array.from(checkboxes).map(cb => cb.value);
-               
-                if (orderIds.length === 0) {
-                    alert('Please select at least one order to delete');
-                    return;
-                }
-               
-                if (confirm('Are you sure you want to delete the selected orders?')) {
-                    document.getElementById('delete-order-ids').value = orderIds.join(',');
-                    document.getElementById('delete-form').submit();
-                }
-            }
-            </script>
         {% else %}
-            <div class="no-orders">
-                <p>No confirmed orders in your pannier.</p>
-                <a href="{{ path('app_product_listing') }}" class="btn btn-primary">Start Shopping</a>
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <h3 class="mb-3">Your Cart is Empty</h3>
+                <p class="text-muted mb-4">Explore our products and find something special!</p>
+                <a href="{{ path('market') }}" class="btn btn-primary-custom btn-custom text-white">
+                    <i class="fas fa-bag-shopping me-2"></i>
+                    Start Shopping
+                </a>
             </div>
         {% endif %}
     </div>
-    <script src="{{ asset('FrontOffice/assets/js/bootstrap.min.js') }}"></script>
+
+    <script>
+        function toggleCheckbox(element) {
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            element.classList.toggle('selected', checkbox.checked);
+            updateSelectionCount();
+        }
+
+        function updateSelectionCount() {
+            const count = document.querySelectorAll('.cart-item-checkbox:checked').length;
+            document.getElementById('selectedCount').textContent = count;
+        }
+
+        function deleteSelectedOrders() {
+            const checkboxes = document.querySelectorAll('.cart-item-checkbox:checked');
+            const orderIds = Array.from(checkboxes).map(cb => cb.value);
+           
+            if (orderIds.length === 0) {
+                toastr.error('Please select at least one order to delete');
+                return;
+            }
+           
+            if (confirm(`Are you sure you want to delete ${orderIds.length} selected orders?`)) {
+                document.getElementById('delete-order-ids').value = orderIds.join(',');
+                document.getElementById('delete-form').submit();
+            }
+        }
+
+        // Initialize selection count
+        document.addEventListener('DOMContentLoaded', updateSelectionCount);
+    </script>
+
+    <script src="{{ asset('FrontOffice/assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </body>
 </html>

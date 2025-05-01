@@ -54,43 +54,60 @@
         const spinner = document.getElementById('spinner');
         const buttonText = document.getElementById('button-text');
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-           
-            // Disable button
-            submitButton.disabled = true;
-            spinner.classList.remove('d-none');
-            buttonText.textContent = 'Processing...';
+       form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitButton.disabled = true;
+    spinner.classList.remove('d-none');
+    buttonText.textContent = 'Processing...';
 
-            // Create payment intent on server
-            const { clientSecret } = await fetch("{{ path('app_order_create_payment_intent') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({
-                    orderIds: Array.from(document.querySelectorAll('input[name="orderIds[]"]')).map(input => input.value),
-                    _token: document.querySelector('input[name="_token"]').value
-                })
-            }).then(r => r.json());
-
-            // Confirm payment with Stripe
-            const { error } = await stripe.confirmCardPayment(clientSecret, {
-                payment_method: {
-                    card: cardElement
-                }
-            });
-
-            if (error) {
-                document.getElementById('card-errors').textContent = error.message;
-                submitButton.disabled = false;
-                spinner.classList.add('d-none');
-                buttonText.textContent = 'Submit Payment';
-            } else {
-                window.location.href = "{{ path('app_order_payment_success') }}";
-            }
+    try {
+        // Fetch client secret
+        const response = await fetch("{{ path('app_order_create_payment_intent') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                orderIds: Array.from(document.querySelectorAll('input[name="orderIds[]"]')).map(input => input.value),
+                _token: document.querySelector('input[name="_token"]').value
+            })
         });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const { clientSecret, error } = await response.json();
+        
+        if (error) {
+            throw new Error(error);
+        }
+
+        // Confirm payment
+        const { error: stripeError } = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: { card: cardElement }
+        });
+
+        if (stripeError) {
+            document.getElementById('card-errors').textContent = stripeError.message;
+            submitButton.disabled = false;
+            spinner.classList.add('d-none');
+            buttonText.textContent = 'Submit Payment';
+        } else {
+            // Redirect with order IDs
+            const orderIds = Array.from(document.querySelectorAll('input[name="orderIds[]"]'))
+                .map(input => input.value)
+                .join(',');
+            window.location.href = `{{ path('app_order_payment_success') }}?order_ids=${orderIds}`;
+        }
+    } catch (error) {
+        document.getElementById('card-errors').textContent = error.message;
+        submitButton.disabled = false;
+        spinner.classList.add('d-none');
+        buttonText.textContent = 'Submit Payment';
+    }
+});
     </script>
 </body>
 </html>

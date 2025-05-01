@@ -147,6 +147,15 @@
             "./config/packages/mercure.yaml"
         ]
     },
+    "symfony/mercure-notifier": {
+        "version": "6.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "5.3",
+            "ref": "98a27687305d236709390ff01d7a6a9818735b97"
+        }
+    },
     "symfony/messenger": {
         "version": "6.4",
         "recipe": {
@@ -263,6 +272,9 @@
             "./config/packages/twig.yaml",
             "./templates/base.html.twig"
         ]
+    },
+    "symfony/ux-notify": {
+        "version": "v2.24.0"
     },
     "symfony/ux-turbo": {
         "version": "2.23",

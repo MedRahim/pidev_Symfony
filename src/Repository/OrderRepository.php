@@ -15,6 +15,18 @@ class OrderRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Order::class);
     }
-
+    public function count(array $criteria = []): int
+    {
+        $qb = $this->createQueryBuilder('o');
+        $qb->select('COUNT(o.id)');
+    
+        foreach ($criteria as $field => $value) {
+            $qb->andWhere("o.$field = :$field")
+               ->setParameter($field, $value);
+        }
+    
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
     // Add custom query methods here if needed
+    
 }

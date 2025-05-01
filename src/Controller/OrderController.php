@@ -20,6 +20,9 @@ use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Stripe\Exception\ApiErrorException;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
+
 
 #[Route('/order')]
 final class OrderController extends AbstractController
@@ -167,17 +170,20 @@ final class OrderController extends AbstractController
     }
 
     #[Route('/listing', name: 'app_order_listing', methods: ['GET'])]
-    public function listing(ProductRepository $productRepository): Response
+    public function listing(ProductRepository $productRepository, OrderRepository $orderRepository): Response
     {
         $products = $productRepository->findAll();
+        $confirmedOrderCount = $orderRepository->count(['status' => 'confirmed']); // ✅ Correct count
 
         return $this->render('FrontOffice/market.html.twig', [
             'products' => $products,
+            'confirmedOrderCount' => $confirmedOrderCount, // ✅ Pass variable
+
         ]);
     }
 
     #[Route('/{id}/confirm', name: 'app_order_confirm', methods: ['POST'])]
-    public function confirm(Request $request, Order $order, EntityManagerInterface $entityManager): JsonResponse
+    public function confirm(Request $request, Order $order, EntityManagerInterface $entityManager ) // Add this parameter    ): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         
@@ -187,6 +193,8 @@ final class OrderController extends AbstractController
 
         $order->setStatus('confirmed');
         $entityManager->flush();
+
+
 
         return new JsonResponse(['success' => true, 'message' => 'Order confirmed successfully']);
     }
@@ -235,43 +243,68 @@ final class OrderController extends AbstractController
     }
 
     #[Route('/create-payment-intent', name: 'app_order_create_payment_intent', methods: ['POST'])]
-    public function createPaymentIntent(Request $request, OrderRepository $orderRepository): JsonResponse
-    {
-        Stripe::setApiKey($this->getParameter('stripe_secret_key'));
-
-        try {
-            $orderIds = json_decode($request->getContent(), true)['orderIds'];
-            $orders = $orderRepository->findBy(['id' => $orderIds]);
-            $amount = array_sum(array_map(fn($order) => $order->getTotalPrice(), $orders)) * 100;
-
-            $paymentIntent = PaymentIntent::create([
-                'amount' => $amount,
-                'currency' => 'usd',
-                'metadata' => [
-                    'order_ids' => implode(',', $orderIds)
-                ]
-            ]);
-
-            return $this->json(['clientSecret' => $paymentIntent->client_secret]);
-        } catch (ApiErrorException $e) {
-            return $this->json(['error' => $e->getMessage()], 500);
+    public function createPaymentIntent(
+        Request $request, 
+        OrderRepository $orderRepository,
+        CsrfTokenManagerInterface $csrfTokenManager // Add this
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        
+        // Validate CSRF Token
+        $token = new CsrfToken('process_payment', $data['_token'] ?? '');
+        if (!$csrfTokenManager->isTokenValid($token)) {
+            return $this->json(['error' => 'Invalid CSRF token'], 403);
         }
+    
+    Stripe::setApiKey($this->getParameter('stripe_secret_key'));
+
+    try {
+        $orderIds = json_decode($request->getContent(), true)['orderIds'];
+        $orders = $orderRepository->findBy(['id' => $orderIds]);
+        
+        if (empty($orders)) {
+        return $this->json(['error' => 'No valid orders found'], 404);
     }
-
-    #[Route('/pannier/payment-success', name: 'app_order_payment_success', methods: ['GET'])]
-    public function paymentSuccess(EntityManagerInterface $entityManager, OrderRepository $orderRepository): Response
-    {
-        $orders = $orderRepository->findBy(['status' => 'confirmed']);
-
+        // Correct total amount calculation
+        $totalAmount = 0;
         foreach ($orders as $order) {
-            $order->setStatus('paid');
+            foreach ($order->getOrderItems() as $item) {
+                $totalAmount += $item->getPriceTotal();
+            }
         }
+        $amount = (int) ($totalAmount * 100); // Convert to cents
+        
 
-        $entityManager->flush();
+        $paymentIntent = PaymentIntent::create([
+            'amount' => $amount,
+            'currency' => 'usd',
+            'metadata' => ['order_ids' => implode(',', $orderIds)]
+        ]);
 
-        $this->addFlash('success', 'Payment processed successfully!');
-        return $this->redirectToRoute('app_order_pannier');
+        return $this->json(['clientSecret' => $paymentIntent->client_secret]);
+    } catch (ApiErrorException $e) {
+        return $this->json(['error' => $e->getMessage()], 500);
     }
+}
+
+#[Route('/pannier/payment-success', name: 'app_order_payment_success', methods: ['GET'])]
+public function paymentSuccess(Request $request, EntityManagerInterface $entityManager, OrderRepository $orderRepository): Response
+{
+    // Get the order IDs from the session or query parameters
+    $orderIds = explode(',', $request->query->get('order_ids'));
+    
+    // Fetch only the paid orders
+    $orders = $orderRepository->findBy(['id' => $orderIds]);
+    
+    foreach ($orders as $order) {
+        $order->setStatus('paid');
+    }
+    
+    $entityManager->flush();
+    
+    $this->addFlash('success', 'Payment processed successfully!');
+    return $this->redirectToRoute('app_order_pannier');
+}
 
     #[Route('/delete-multiple', name: 'app_order_delete_multiple', methods: ['POST'])]
     public function deleteMultiple(Request $request, OrderRepository $orderRepository, EntityManagerInterface $entityManager): Response

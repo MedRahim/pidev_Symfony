@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Form\ProductType;
+use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -89,12 +90,14 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/listing', name: 'app_product_listing', methods: ['GET'])]
-    public function listing(ProductRepository $productRepository, Request $request): Response
+    public function listing(ProductRepository $productRepository,OrderRepository $orderRepository, Request $request): Response
     {
         $searchName = $request->query->get('name', '');
         $selectedCategory = $request->query->get('category', '');
         $minPrice = $request->query->get('minPrice', '');
         $maxPrice = $request->query->get('maxPrice', '');
+        $confirmedOrderCount = $orderRepository->count(['status' => 'confirmed']); // ✅ Correct count
+
 
         // Define categories manually (no database migration required)
         $categories = ['Drinks', 'Food', 'Household products', 'Home Appliances'];
@@ -123,6 +126,8 @@ final class ProductController extends AbstractController
             'maxPrice' => $maxPrice,
             'sliderMin' => $sliderMin, // Pass sliderMin to the template
             'sliderMax' => $sliderMax, // Pass sliderMax to the template
+            'confirmedOrderCount' => $confirmedOrderCount, // ✅ Pass variable
+
         ]);
     }
 
