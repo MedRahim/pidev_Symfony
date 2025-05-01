@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use App\Service\ContentFilterService;
 use App\Service\NewsApiService;
+use App\Service\HuggingFaceService;
 
 
 
@@ -343,5 +344,23 @@ public function edit(
         }
         return $errors;
     }
+    #[Route('/blog/generate-content', name: 'app_generate_content', methods: ['POST'])]
+public function generateContent(
+    Request $request,
+    HuggingFaceService $huggingFace
+): Response {
+    $title = $request->request->get('title');
+    
+    if (empty($title)) {
+        return $this->json(['error' => 'Title is required'], 400);
+    }
+
+    $prompt = "Write a detailed blog post about: $title\n\n";
+    $generatedContent = $huggingFace->generateContent($prompt);
+
+    return $this->json([
+        'content' => $generatedContent
+    ]);
+}
    
 }

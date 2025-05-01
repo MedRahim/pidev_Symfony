@@ -12,5 +12,11 @@ services:
         arguments:
             $httpClient: '@http_client'
 
+    App\Service\HuggingFaceService:
+        arguments:
+            $client: '@http_client'
+            $apiToken: '%env(HUGGINGFACE_API_TOKEN)%'
+            $apiUrl: '%env(HUGGINGFACE_API_URL)%'
+
     # You can add more service definitions here if needed
 

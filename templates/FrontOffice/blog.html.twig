@@ -24,567 +24,8 @@
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/responsive.css') }}">
-<style>
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/custom.css') }}">
 
-:root {
-        --primary-color: #4a90e2;
-        --secondary-color: #6c5ce7;
-        --accent-color: #ff4757;
-        --text-color: #2d3436;
-        --light-bg: #f8f9fa;
-        --border-radius: 12px;
-        --box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    }
-
-.btn {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: none;
-border-radius: 8px;
-font-weight: 600;
-letter-spacing: 0.5px;
-position: relative;
-overflow: hidden;
-border-radius: 8px;
-font-weight: 600;
-letter-spacing: 0.5px;
-position: relative;
-overflow: hidden;
-border-radius: 8px;
-font-weight: 600;
-letter-spacing: 0.5px;
-position: relative;
-overflow: hidden;
-    border-radius: 8px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    position: relative;
-    overflow: hidden;
-}
-.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    box-shadow: 0 4px 6px rgba(102, 126, 234, 0.1);
-    padding: 12px 28px;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(102, 126, 234, 0.2);
-}
-
-        .blog_item{
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        margin-bottom: 2rem;
-        overflow: hidden;
-        position: relative;
-    }
-
-       .blog_item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-    }
-
-    .blog_item_img {
-        height: 400px;
-        overflow: hidden;
-        position: relative;
-        border-radius: var(--border-radius) var(--border-radius) 0 0;
-    }
-
-    .blog_item_img img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .blog_item:hover .blog_item_img img {
-        transform: scale(1.05);
-    }
-
-        /* Comments Section */
-        .comments-container {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-
-        .comments-container.expanded {
-            max-height: 1000px; /* Reduced from 2000px for better transition */
-        }
-
-        .comment-form {
-            opacity: 1; /* Remove the opacity transition */
-            transform: none;
-        }
-
-        .comment-actions {
-            opacity: 1;
-            position: static;
-            transform: none;
-            display: flex;
-            gap: 8px;
-        }
-
-        .comment {
-        padding: 1rem;
-        background: var(--light-bg);
-        border-radius: var(--border-radius);
-        margin-bottom: 1rem;
-        transition: background 0.2s ease;
-    }
-.comment-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: var(--primary-color);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        flex-shrink: 0;
-    }
-        .comment:hover {
-        background: #fff;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-    /* Professional Confirmation Modal */
-    .confirmation-modal .modal-content {
-        border: none;
-        border-radius: var(--border-radius);
-    }
-
-    .confirmation-modal .modal-header {
-        border: none;
-        padding: 2rem 2rem 0;
-        justify-content: center;
-    }
-
-    .confirmation-modal .modal-body {
-        text-align: center;
-        padding: 1rem 2rem 2rem;
-    }
-
-    .confirmation-modal .modal-icon {
-        font-size: 3rem;
-        color: var(--accent-color);
-        margin-bottom: 1rem;
-    }
-
-    .confirmation-modal .btn-group {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        margin-top: 1.5rem;
-    }
-        /* Comment Action Buttons */
-.comment-actions button {
-min-width: 80px; /* Ensure enough space for text */
-    padding: 8px 12px;
-    color: white !important; /* Force white text */
-    font-size: 0.85rem;
-    font-weight: 500;
-}
-
-.comment-actions button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.comment-actions button i {
-    font-size: 14px;
-    margin-right: 6px;
-}
-
-/* Edit/Save Buttons */
-.edit-comment-btn, .save-edit-btn {
-background: linear-gradient(135deg, #4fd1c5 0%, #38b2ac 100%) !important;
-    border-color: #38b2ac;
-
-}
-
-/* Delete/Cancel Buttons */
-.delete-comment-btn, .cancel-edit-btn {
-    background: linear-gradient(135deg, #fc8181 0%, #f56565 100%) !important;
-    border-color: #f56565;
-}
-
-/* Modal Buttons */
-.modal .btn-success {
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-}
-
-.modal .btn-danger {
-    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-}
-
-/* Comment Submit Button */
-.comment-form .btn-primary {
-    padding: 12px 24px;
-    font-size: 0.9rem;
-    display: inline-flex;
-    align-items: center;
-}
-    /* Add to your existing styles */
-@keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-3px); }
-    100% { transform: translateX(0); }
-}
-
-.alert-danger {
-    background: #f8d7da;
-    border-color: #f5c6cb;
-    color: #721c24;
-    border-radius: 8px;
-    padding: 12px;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-}
-
-/* Hover Effects for All Buttons */
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-/* Button Icons */
-.btn i {
-    transition: transform 0.3s ease;
-}
-
-.btn:hover i {
-    transform: translateX(3px);
-}
-
-/* Loading State */
-.btn-loading {
-    position: relative;
-    opacity: 0.8;
-    pointer-events: none;
-}
-
-.btn-loading:after {
-    content: "";
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    border: 3px solid transparent;
-    border-top-color: white;
-    border-radius: 50%;
-    animation: button-loading-spinner 1s ease infinite;
-}
-
-@keyframes button-loading-spinner {
-    from { transform: rotate(0turn); }
-    to { transform: rotate(1turn); }
-}
-
-        @media (max-width: 768px) {
-            .blog_item_img img {
-                height: 250px;
-            }
-        }
-
-    /* Category Styles */
-    .cat-list li a {
-        padding: 10px 15px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        background: #f8f9fa;
-        margin-bottom: 5px;
-    }
-
-    .cat-list li a:hover {
-        background: #e9ecef;
-        transform: translateX(5px);
-    }
-
-    .cat-list li a.active {
-        background: #667eea;
-        color: white;
-    }
-
-    .cat-list li a.active p {
-        color: white;
-    }
-
-    .cat-list li a p {
-        margin: 0;
-        font-weight: 500;
-        color: #495057;
-    }
-
-    /* Add these styles */
-    .edit-comment-form {
-        display: none; /* Hide edit form by default */
-    }
-
-    .comment-text {
-        display: block; /* Show comment text by default */
-    }
-
-    .comment-actions {
-        display: flex;
-        gap: 8px;
-    }
-    .comment-delete-modal .modal-content {
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-.comment-delete-modal .modal-body {
-    padding: 2rem 1.5rem;
-}
-
-.comment-delete-modal .btn-danger {
-    background: linear-gradient(135deg, #ff6b6b, #ff4757);
-    padding: 0.75rem 2rem;
-}
-
-.comment-delete-modal .btn-secondary {
-    background: #f8f9fa;
-    color: #6c757d;
-    border: 1px solid #e9ecef;
-}
-
-    /* Three Dots Menu Styles */
-    .post-actions-dropdown {
-        position: relative;
-    }
-    .interaction-section {
-            border-top: 1px solid rgba(0,0,0,0.08);
-            padding-top: 1.5rem;
-            margin-top: 1.5rem;
-        }
-  /* Post Meta Information */
-    .post-meta {
-        display: flex;
-        gap: 1.5rem;
-        color: #6c757d;
-        font-size: 0.9rem;
-        margin: 1rem 0;
-    }
-
-    .post-meta i {
-        margin-right: 0.5rem;
-        color: var(--primary-color);
-    }
-
-
-.three-dots-btn {
-    padding: 5px;
-    border: none;
-    background: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.three-dots-btn:hover {
-    color: #667eea !important;
-}
-
-.action-buttons {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    padding: 8px;
-    z-index: 1000;
-    min-width: 120px;
-}
-
-.action-buttons button {
-    width: 100%;
-    text-align: left;
-    padding: 8px 12px;
-    border: none;
-    background: transparent;
-    color: #333;
-    transition: all 0.2s ease;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-}
-
-.action-buttons button:hover {
-    background: #f8f9fa;
-}
-
-.action-buttons .edit-post-btn {
-    color: #1a8cd8;
-}
-
-.action-buttons .delete-post-btn {
-    color: #f4212e;
-}
-
-.action-buttons .edit-post-btn:hover {
-    background: rgba(26,140,216,0.1);
-}
-
-.action-buttons .delete-post-btn:hover {
-    background: rgba(244,33,46,0.1);
-}
-
-/* Modal Styles */
-.modal-content {
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.modal-header {
-    border-bottom: 1px solid #eee;
-    padding: 1rem 1.5rem;
-}
-
-.modal-body {
-    padding: 1.5rem;
-}
-
-.modal-footer {
-    border-top: 1px solid #eee;
-    padding: 1rem 1.5rem;
-}
-
-.edit-post-form .form-control {
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    padding: 0.75rem 1rem;
-    transition: all 0.2s ease;
-}
- .form-control {
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        padding: 0.75rem 1rem;
-        transition: border-color 0.3s ease;
-    }
-
-    .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: none;
-    }
-
-.edit-post-form .form-control:focus {
-    border-color: #1a8cd8;
-    box-shadow: 0 0 0 3px rgba(26,140,216,0.1);
-}
-
-.edit-post-form label {
-    color: #1a1a1a;
-    margin-bottom: 0.5rem;
-}
-
-.modal .btn {
-    padding: 0.5rem 1.5rem;
-    font-weight: 500;
-    border-radius: 8px;
-}
-
-.modal .btn-primary {
-    background: #1a8cd8;
-    border: none;
-}
-
-.modal .btn-danger {
-    background: #f4212e;
-    border: none;
-}
-
-.modal .btn-secondary {
-    background: #eee;
-    color: #333;
-    border: none;
-}
-
-.modal .btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
- .btn {
-        border-radius: 8px;
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .btn-primary {
-        background: var(--primary-color);
-        border: none;
-    }
-
-    .btn-primary:hover {
-        background: #357abd;
-        transform: translateY(-2px);
-    }
-
-    .btn-danger {
-        background: var(--accent-color);
-        border: none;
-    }
-
-    .btn-danger:hover {
-        background: #ff2d3f;
-        transform: translateY(-2px);
-    }
-
-    /* Loading State */
-    .btn-loading {
-        position: relative;
-        pointer-events: none;
-        opacity: 0.8;
-    }
-
-    .btn-loading:after {
-        content: "";
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        border: 3px solid rgba(255,255,255,0.3);
-        border-top-color: white;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .blog_item_img {
-            height: 250px;
-        }
-         .post-meta {
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        .comment-actions button span {
-            display: none;
-        }
-    }
-</style>
 
     <!-- Add these before your closing </head> tag -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -702,6 +143,14 @@ background: linear-gradient(135deg, #4fd1c5 0%, #38b2ac 100%) !important;
                                                         'placeholder': 'Enter post title'
                                                     }
                                                 }) }}
+                                                <div class="input-group-append">
+            <button type="button" 
+                    class="btn btn-outline-primary generate-content-btn"
+                    data-loading-text="Generating..."
+                    style="border-radius: 0 24px 24px 0">
+                <i class="fa fa-magic mr-2"></i>Generate Content
+            </button>
+        </div>
                                                 <div class="invalid-feedback">
                                                     {{ form_errors(form.title) }}
                                                 </div>
@@ -884,7 +333,7 @@ background: linear-gradient(135deg, #4fd1c5 0%, #38b2ac 100%) !important;
                                             <form method="post" action="{{ path('app_blog_post_comment', {'id': post.id}) }}" class="comment-form mt-4" data-post-id="{{ post.id }}">
                                                 <div class="form-group">
                                                     <textarea name="comment" 
-                                                            class="form-control comment-input" 
+class="form-control comment-input {% if app.request.method == 'POST' and comment_errors is defined %}is-invalid{% endif %}" 
                                                             placeholder="Write your comment here..."
                                                             rows="3"
                                                             style="resize: none;"></textarea>
@@ -1849,6 +1298,42 @@ $(document).ready(function() {
             .next('.invalid-feedback').hide();
     });
 });
+// Add this to your existing script
+$(document).on('click', '.generate-content-btn', function() {
+    const btn = $(this);
+    const title = $('#{{ form.title.vars.id }}').val().trim();
+    const contentField = $('#{{ form.content.vars.id }}');
+    
+    if (!title) {
+        alert('Please enter a title first');
+        return;
+    }
+
+    btn.prop('disabled', true).html(
+        '<i class="fa fa-spinner fa-spin mr-2"></i>' + btn.data('loading-text')
+    );
+
+    $.ajax({
+        url: '{{ path('app_generate_content') }}', // Use Symfony's path function
+        method: 'POST',
+        data: { title: title },
+        success: function(data) {
+            if (data.content) {
+                contentField.val(data.content);
+            } else {
+                alert('Could not generate content. Please try again.');
+            }
+        },
+        error: function() {
+            alert('Error connecting to AI service');
+        },
+        complete: function() {
+            btn.prop('disabled', false).html(
+                '<i class="fa fa-magic mr-2"></i>Generate Content'
+            );
+        }
+    });
+});
 
     </script>
     <div class="modal fade confirmation-modal" id="deletePostModal" tabindex="-1">
@@ -1877,19 +1362,3 @@ $(document).ready(function() {
 </body>
 </html>
 
-<style>
-.alert-bad-words {
-    background: linear-gradient(90deg, #ff6b6b 0%, #ff4757 100%);
-    border: none;
-    color: #fff;
-    border-radius: 8px;
-    padding: 14px 18px;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 2px 12px rgba(255,71,87,0.10);
-    animation: shake 0.5s;
-}
-</style>
