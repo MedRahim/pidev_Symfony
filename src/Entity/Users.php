@@ -4,80 +4,42 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Users
- *
- * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="email", columns={"email"})})
- * @ORM\Entity
- */
+#[ORM\Table(name: 'users', uniqueConstraints: [
+    new ORM\UniqueConstraint(name: 'email', columns: ['email'])
+])]
+#[ORM\Entity]
 class Users
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="username", type="string", length=255, nullable=false)
-     */
-    private $username;
+    #[ORM\Column(name: 'username', type: 'string', length: 255, nullable: false)]
+    private string $username;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=255, nullable=false)
-     */
-    private $email;
+    #[ORM\Column(name: 'email', type: 'string', length: 255, nullable: false)]
+    private string $email;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="password", type="string", length=255, nullable=false)
-     */
-    private $password;
+    #[ORM\Column(name: 'password', type: 'string', length: 255, nullable: false)]
+    private string $password;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="eco_km", type="integer", options={"default"=0})
-     */
-    private $ecoKm = 0;
+    #[ORM\Column(name: 'eco_km', type: 'integer', options: ['default' => 0])]
+    private int $ecoKm = 0;
 
-    /**
-     * @var array
-     *
-     * @ORM\Column(name="modes_used", type="json", options={"default"="[]"})
-     */
-    private $modesUsed = [];
+    #[ORM\Column(name: 'modes_used', type: 'json', options: ['default' => '[]'])]
+    private array $modesUsed = [];
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="trips_count", type="integer", options={"default"=0})
-     */
-    private $tripsCount = 0;
+    #[ORM\Column(name: 'trips_count', type: 'integer', options: ['default' => 0])]
+    private int $tripsCount = 0;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="co2_saved", type="integer", options={"default"=0})
-     */
-    private $co2Saved = 0;
+    #[ORM\Column(name: 'co2_saved', type: 'integer', options: ['default' => 0])]
+    private int $co2Saved = 0;
 
-    /**
- * @var array
- *
- * @ORM\Column(name="garden", type="json", options={"default"="[]"})
- */
-private $garden = [];
+    #[ORM\Column(name: 'garden', type: 'json', options: ['default' => '[]'])]
+    private array $garden = [];
 
-    // Getters/Setters existants...
+    // Getters/Setters...
 
     public function getEcoKm(): int
     {
@@ -122,57 +84,53 @@ private $garden = [];
         $this->co2Saved = $co2Saved;
         return $this;
     }
-    
-public function getGarden(): array
-{
-    return $this->garden;
+
+    public function getGarden(): array
+    {
+        return $this->garden;
+    }
+
+    public function setGarden(array $garden): self
+    {
+        $this->garden = $garden;
+        return $this;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+        return $this;
+    }
 }
-
-public function setGarden(array $garden): self
-{
-    $this->garden = $garden;
-    return $this;
-}
-
-public function getId(): ?int
-{
-    return $this->id;
-}
-
-public function getUsername(): ?string
-{
-    return $this->username;
-}
-
-public function setUsername(string $username): static
-{
-    $this->username = $username;
-
-    return $this;
-}
-
-public function getEmail(): ?string
-{
-    return $this->email;
-}
-
-public function setEmail(string $email): static
-{
-    $this->email = $email;
-
-    return $this;
-}
-
-public function getPassword(): ?string
-{
-    return $this->password;
-}
-
-public function setPassword(string $password): static
-{
-    $this->password = $password;
-
-    return $this;
-}
-}
-

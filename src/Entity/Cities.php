@@ -4,36 +4,20 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Cities
- *
- * @ORM\Table(name="cities")
- * @ORM\Entity
- */
+#[ORM\Table(name: 'cities')]
+#[ORM\Entity]
 class Cities
 {
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=100, nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $name;
+    #[ORM\Column(name: 'name', type: 'string', length: 100, nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    private string $name;
 
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="latitude", type="float", precision=10, scale=0, nullable=false)
-     */
-    private $latitude;
+    #[ORM\Column(name: 'latitude', type: 'float', precision: 10, scale: 0, nullable: false)]
+    private float $latitude;
 
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="longitude", type="float", precision=10, scale=0, nullable=false)
-     */
-    private $longitude;
+    #[ORM\Column(name: 'longitude', type: 'float', precision: 10, scale: 0, nullable: false)]
+    private float $longitude;
 
     public function getName(): ?string
     {
@@ -48,7 +32,6 @@ class Cities
     public function setLatitude(float $latitude): static
     {
         $this->latitude = $latitude;
-
         return $this;
     }
 
@@ -60,9 +43,6 @@ class Cities
     public function setLongitude(float $longitude): static
     {
         $this->longitude = $longitude;
-
         return $this;
     }
-
-
 }

@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérification de réservation #{{ reservation.id }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="h5 mb-0">Vérification de réservation</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="h6">Détails de la réservation</h3>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Numéro:</span>
+                            <strong>#{{ reservation.id }}</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Statut:</span>
+                            <span class="badge bg-{{ reservation.status == 'confirmed' ? 'success' : 'warning' }}">
+                                {{ reservation.status|capitalize }}
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Paiement:</span>
+                            <span class="badge bg-{{ reservation.paymentStatus == 'paid' ? 'success' : 'danger' }}">
+                                {{ reservation.paymentStatus|capitalize }}
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Date:</span>
+                            <strong>{{ reservation.reservationTime|date('d/m/Y H:i') }}</strong>
+                        </li>
+                    </ul>
+
+                    <h3 class="h6">Détails du trajet</h3>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>{{ reservation.trip.departure }} → {{ reservation.trip.destination }}</strong>
+                        </li>
+                        <li class="list-group-item">
+                            Départ: {{ reservation.trip.departureTime|date('d/m/Y H:i') }}
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Sièges:</span>
+                            <strong>{{ reservation.seatNumber }} ({{ reservation.seatType }})</strong>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <div class="mb-4">
+                        <img src="{{ path('app_reservations_qrcode', {'id': reservation.id}) }}" 
+                             alt="QR Code"
+                             class="img-fluid"
+                             style="max-width: 250px;">
+                    </div>
+
+                    {% if reservation.status == 'confirmed' and reservation.paymentStatus == 'paid' %}
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle-fill"></i> Réservation valide
+                        </div>
+                        <button class="btn btn-success">
+                            <i class="bi bi-check-lg"></i> Valider l'entrée
+                        </button>
+                    {% else %}
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Réservation non valide
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

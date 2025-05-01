@@ -5,144 +5,109 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
-/**
- * @ORM\Entity(repositoryClass="App\Repository\TripsRepository")
- * @ORM\Table(name="trips")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\TripsRepository')]
+#[ORM\Table(name: 'trips')]
+#[ORM\HasLifecycleCallbacks]
 class Trips
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     * @Assert\NotBlank(message="Le lieu de départ est obligatoire")
-     * @Assert\Length(
-     *      min=2,
-     *      max=100,
-     *      minMessage="Le lieu de départ doit faire au moins {{ limit }} caractères",
-     *      maxMessage="Le lieu de départ ne peut pas dépasser {{ limit }} caractères"
-     * )
-     * @Assert\Regex(
-     *     pattern="/^[a-zA-ZÀ-ÿ\s\-\']+$/u",
-     *     message="Le lieu ne doit contenir que des lettres, espaces et tirets"
-     * )
-     */
-    private $departure;
+    #[ORM\Column(type: 'string', length: 100)]
+    #[Assert\NotBlank(message: 'Le lieu de départ est obligatoire')]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: 'Le lieu de départ doit faire au moins {{ limit }} caractères',
+        maxMessage: 'Le lieu de départ ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-ZÀ-ÿ\s\-\']+$/u',
+        message: 'Le lieu ne doit contenir que des lettres, espaces et tirets'
+    )]
+    private string $departure;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     * @Assert\NotBlank(message="La destination est obligatoire")
-     * @Assert\Length(
-     *      min=2,
-     *      max=100,
-     *      minMessage="La destination doit faire au moins {{ limit }} caractères",
-     *      maxMessage="La destination ne peut pas dépasser {{ limit }} caractères"
-     * )
-     * @Assert\Regex(
-     *     pattern="/^[a-zA-ZÀ-ÿ\s\-\']+$/u",
-     *     message="La destination ne doit contenir que des lettres, espaces et tirets"
-     * )
-     */
-    private $destination;
+    #[ORM\Column(type: 'string', length: 100)]
+    #[Assert\NotBlank(message: 'La destination est obligatoire')]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: 'La destination doit faire au moins {{ limit }} caractères',
+        maxMessage: 'La destination ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-ZÀ-ÿ\s\-\']+$/u',
+        message: 'La destination ne doit contenir que des lettres, espaces et tirets'
+    )]
+    private string $destination;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @Assert\NotBlank(message="L'heure de départ est obligatoire")
-     * @Assert\GreaterThan(
-     *     value="now",
-     *     message="La date de départ doit être dans le futur"
-     * )
-     */
-    private $departureTime;
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\NotBlank(message: 'L\'heure de départ est obligatoire')]
+    #[Assert\GreaterThan(
+        value: 'now',
+        message: 'La date de départ doit être dans le futur'
+    )]
+    private \DateTimeInterface $departureTime;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @Assert\NotBlank(message="L'heure d'arrivée est obligatoire")
-     * @Assert\GreaterThan(
-     *     propertyPath="departureTime",
-     *     message="L'heure d'arrivée doit être après l'heure de départ"
-     * )
-     */
-    private $arrivalTime;
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\NotBlank(message: 'L\'heure d\'arrivée est obligatoire')]
+    #[Assert\GreaterThan(
+        propertyPath: 'departureTime',
+        message: 'L\'heure d\'arrivée doit être après l\'heure de départ'
+    )]
+    private \DateTimeInterface $arrivalTime;
 
-    /**
-     * @ORM\Column(type="decimal", precision=10, scale=2)
-     * @Assert\NotBlank(message="Le prix est obligatoire")
-     * @Assert\Positive(message="Le prix doit être positif")
-     * @Assert\LessThanOrEqual(
-     *     value=10000,
-     *     message="Le prix ne peut pas dépasser {{ compared_value }}€"
-     * )
-     */
-    private $price;
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
+    #[Assert\NotBlank(message: 'Le prix est obligatoire')]
+    #[Assert\Positive(message: 'Le prix doit être positif')]
+    #[Assert\LessThanOrEqual(
+        value: 10000,
+        message: 'Le prix ne peut pas dépasser {{ compared_value }}€'
+    )]
+    private string $price;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $transportName;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $transportName = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $createdAt;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $updatedAt;
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $updatedAt;
 
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\PositiveOrZero(message="La distance doit être positive")
-     */
-    private $distance = 0.0;
+    #[ORM\Column(type: 'float')]
+    #[Assert\PositiveOrZero(message: 'La distance doit être positive')]
+    private float $distance = 0.0;
 
-    /**
-     * @ORM\Column(type="integer", options={"default": 50})
-     * @Assert\NotBlank(message="La capacité est obligatoire")
-     * @Assert\Positive(message="La capacité doit être positive")
-     * @Assert\LessThanOrEqual(
-     *     value=200,
-     *     message="La capacité ne peut pas dépasser {{ compared_value }} places"
-     * )
-     */
-    private $capacity = 50;
+    #[ORM\Column(type: 'integer', options: ['default' => 50])]
+    #[Assert\NotBlank(message: 'La capacité est obligatoire')]
+    #[Assert\Positive(message: 'La capacité doit être positive')]
+    #[Assert\LessThanOrEqual(
+        value: 200,
+        message: 'La capacité ne peut pas dépasser {{ compared_value }} places'
+    )]
+    private int $capacity = 50;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="TransportTypes")
-     * @ORM\JoinColumn(name="transport_id", referencedColumnName="transport_id")
-     */
-    private $transport;
+    #[ORM\ManyToOne(targetEntity: 'TransportTypes')]
+    #[ORM\JoinColumn(name: 'transport_id', referencedColumnName: 'transport_id')]
+    private ?TransportTypes $transport = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
-    
-    /**
- * @ORM\PrePersist
- */
-
- public const PREMIUM_SEATS_COUNT = 10;
+    public const PREMIUM_SEATS_COUNT = 10;
     public const PREMIUM_MULTIPLIER = 1.5;
-    
-public function setTimestamps(): void
-{
-    $this->createdAt = new \DateTime();
-    $this->updatedAt = new \DateTime();
-}
 
-  
+    #[ORM\PrePersist]
+    public function setTimestamps(): void
+    {
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+    }
 
-    /**
-     * @ORM\PreUpdate
-     */
+    #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void
     {
         $this->updatedAt = new \DateTime();
@@ -212,11 +177,9 @@ public function setTimestamps(): void
 
     public function getTransportName(): string
     {
-        // Retourne le nom du transport ou 'bus' par défaut
         return $this->transportName ?? ($this->transport ? $this->transport->getName() : 'bus');
     }
   
-    
     public function setTransportName(string $transportName): static
     {
         $this->transportName = $transportName;
@@ -272,25 +235,27 @@ public function setTimestamps(): void
     }
 
     public function getImage(): ?string
-{
-    return $this->image;
-}
-
-public function setImage(?string $image): self
-{
-    $this->image = $image;
-    return $this;
-}
-public function updateCapacity(int $reservedSeats): void
-{
-    if ($this->capacity >= $reservedSeats) {
-        $this->capacity -= $reservedSeats;
-    } else {
-        throw new \Exception("Il n'y a pas assez de places disponibles.");
+    {
+        return $this->image;
     }
-}
-public function getAvailableSeats(): int
-{
-    return $this->capacity - $this->reservations->count();
-}
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+        return $this;
+    }
+
+    public function updateCapacity(int $reservedSeats): void
+    {
+        if ($this->capacity >= $reservedSeats) {
+            $this->capacity -= $reservedSeats;
+        } else {
+            throw new \Exception("Il n'y a pas assez de places disponibles.");
+        }
+    }
+
+    public function getAvailableSeats(): int
+    {
+        return $this->capacity - $this->reservations->count();
+    }
 }

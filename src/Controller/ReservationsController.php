@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 // Ajoutez ce use statement avec les autres imports
+// En haut du fichier avec les autres use statements
+use App\Service\QrCodeService;  // <-- Ajoutez cette ligne
 use App\Entity\Trips;
-
+use App\Service\QrCodeGenerator;
 use Psr\Log\LoggerInterface;
 use App\Entity\Reservations;
 use App\Form\FrontReservationType;
@@ -16,6 +18,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Users;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Endroid\QrCode\Builder\BuilderInterface;
+use Endroid\QrCode\Writer\Result\ResultInterface;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use Endroid\QrCode\Writer\PngWriter;
+use App\Service\NgrokService;
+
 
 #[Route('/reservations')]
 class ReservationsController extends AbstractController
@@ -473,4 +484,27 @@ public function edit(Request $request, Reservations $reservation, EntityManagerI
         }
     }
 
+    #[Route('/{id}/qrcode', name: 'app_reservations_qrcode', methods: ['GET'])]
+    public function showQrCode(Reservations $reservation, QrCodeService $qrCodeService): Response
+    {
+        if ($reservation->getUser()->getId() !== self::FIXED_USER_ID) {
+            throw $this->createAccessDeniedException();
+        }
+        
+        return new Response(
+            $qrCodeService->generateQrCode($reservation),
+            Response::HTTP_OK,
+            ['Content-Type' => 'image/svg+xml']
+        );
+    }
+    #[Route('/reservation/{id}/ticket', name: 'app_reservation_ticket')]
+    public function digitalTicket(Reservations $reservation, NgrokService $ngrokService): Response
+    {
+        $ngrokUrl = $ngrokService->getPublicUrl();
+        
+        return $this->render('FrontOffice/reservations/digital_ticket.html.twig', [
+            'reservation' => $reservation,
+            'ngrok_url' => $ngrokUrl
+        ]);
+    }
 }

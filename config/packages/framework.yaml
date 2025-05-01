@@ -1,22 +1,31 @@
-# see https://symfony.com/doc/current/reference/configuration/framework.html
+# config/packages/framework.yaml
 framework:
     secret: '%env(APP_SECRET)%'
+    # Enable or disable annotations
     annotations: false
+    # Enable or disable HTTP method override
     http_method_override: false
+    # Handle all throwables
     handle_all_throwables: true
 
-    # Enables session support. Note that the session will ONLY be started if you read or write from it.
-    # Remove or comment this section to explicitly disable session support.
+    # Session configuration
     session:
         handler_id: null
         cookie_secure: auto
         cookie_samesite: lax
 
-    #esi: true
-    #fragments: true
+    # PHP errors handling
     php_errors:
         log: true
 
+    # Trusted hosts configuration (including Ngrok URL)
+    trusted_hosts:
+        - ^localhost$
+        - ^127\.0\.0\.1$
+        - ^[a-zA-Z0-9-]+\.ngrok-free\.app$  # Accepte tous les sous-domaines Ngrok
+        - ^[a-zA-Z0-9-]+\.ngrok\.io$       # Alternative pour d'autres URLs Ngrok
+
+# Test environment specific configuration
 when@test:
     framework:
         test: true

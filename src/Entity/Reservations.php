@@ -8,10 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-/**
- * @ORM\Entity(repositoryClass=ReservationsRepository::class)
- * @ORM\Table(name="reservations")
- */
+#[ORM\Entity(repositoryClass: ReservationsRepository::class)]
+#[ORM\Table(name: 'reservations')]
 class Reservations
 {
     public const STATUS_CONFIRMED = 'confirmed';
@@ -22,66 +20,46 @@ class Reservations
     public const PAYMENT_PENDING  = 'pending';
     public const PAYMENT_FAILED   = 'failed';
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $reservationTime = null;
 
-    /**
-     * @ORM\Column(type="string", length=20, options={"default":"pending"})
-     */
+    #[ORM\Column(type: 'string', length: 20, options: ['default' => 'pending'])]
     private ?string $status = self::STATUS_PENDING;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private int $transportId;
 
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @Assert\NotBlank(message="Le nombre de sièges est obligatoire.")
-     * @Assert\Positive(message="Le nombre de sièges doit être un entier positif.")
-     * @Assert\Range(
-     *     min=1,
-     *     notInRangeMessage="Vous devez réserver au moins {{ min }} siège."
-     * )
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank(message: 'Le nombre de sièges est obligatoire.')]
+    #[Assert\Positive(message: 'Le nombre de sièges doit être un entier positif.')]
+    #[Assert\Range(
+        min: 1,
+        notInRangeMessage: 'Vous devez réserver au moins {{ min }} siège.'
+    )]
     private int $seatNumber;
 
-    /**
-     * @ORM\Column(type="string", length=20, nullable=true)
-     *
-     * @Assert\NotBlank(message="Le type de siège est obligatoire.")
-     * @Assert\Choice(
-     *     choices={"Standard", "Premium"},
-     *     message="Le type de siège doit être Standard ou Premium."
-     * )
-     */
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    #[Assert\NotBlank(message: 'Le type de siège est obligatoire.')]
+    #[Assert\Choice(
+        choices: ['Standard', 'Premium'],
+        message: 'Le type de siège doit être Standard ou Premium.'
+    )]
     private ?string $seatType = null;
 
-    /**
-     * @ORM\Column(type="string", length=20, options={"default":"pending"})
-     */
+    #[ORM\Column(type: 'string', length: 20, options: ['default' => 'pending'])]
     private ?string $paymentStatus = self::PAYMENT_PENDING;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Trips::class)
-     * @ORM\JoinColumn(nullable=false, name="trip_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: Trips::class)]
+    #[ORM\JoinColumn(nullable: false, name: 'trip_id', referencedColumnName: 'id')]
     private ?Trips $trip = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Users::class)
-     * @ORM\JoinColumn(nullable=true, name="user_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\JoinColumn(nullable: true, name: 'user_id', referencedColumnName: 'id')]
     private ?Users $user = null;
 
     public function getId(): ?int
@@ -177,12 +155,10 @@ class Reservations
         return $this;
     }
 
-    /**
-     * @Assert\Callback
-     */
+    #[Assert\Callback]
     public function validateSeatNumber(ExecutionContextInterface $context): void
     {
-        // Si aucun trip n’est lié, on skippe la vérif
+        // Si aucun trip n'est lié, on skippe la vérif
         if (null === $this->trip) {
             return;
         }
@@ -195,5 +171,18 @@ class Reservations
                 ->setParameter('{{ limit }}', (string) $capacity)
                 ->addViolation();
         }
+    }
+
+    public function getQrCodeContent(): string
+    {
+        return json_encode([
+            'reservation_id' => $this->getId(),
+            'user_id' => $this->getUser() ? $this->getUser()->getId() : null,
+            'trip_id' => $this->getTrip() ? $this->getTrip()->getId() : null,
+            'seat_number' => $this->getSeatNumber(),
+            'seat_type' => $this->getSeatType(),
+            'status' => $this->getStatus(),
+            'reservation_time' => $this->getReservationTime() ? $this->getReservationTime()->format('Y-m-d H:i:s') : null,
+        ]);
     }
 }

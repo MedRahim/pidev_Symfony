@@ -135,6 +135,10 @@
     .bs-tooltip-top .tooltip-arrow::before {
       border-top-color: var(--dark);
     }
+    .btn-qrcode { 
+  background-color: #6a1b9a; 
+  color: white; 
+}
   </style>
 {% endblock %}
 
@@ -250,7 +254,15 @@ href="{{ path('app_trips_index') }}" class="btn btn-primary shadow-sm rounded-pi
                          title="Modifier">
                         <i class="bi bi-pencil-fill"></i>
                       </a>
-                      
+                     {# Bouton QR Code dans la colonne Actions #}
+<a href="{{ path('app_reservations_qrcode', {'id': reservation.id}) }}"
+   class="action-btn btn-qrcode"
+   data-bs-toggle="tooltip"
+   data-bs-placement="top"
+   title="QR Code"
+   target="_blank">
+  <i class="bi bi-qr-code"></i>
+</a>
                       {# Bouton Payer (si en attente) #}
                       {% if reservation.status == 'pending' %}
                         <a href="{{ path('app_reservations_pay_pending', {'id': reservation.id}) }}"

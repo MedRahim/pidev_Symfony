@@ -13,20 +13,19 @@ class UserProgress
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(targetEntity: Users::class)]
+    #[ORM\OneToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Users $user = null;
+    private Users $user;
 
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     private int $progress = 0;
 
-    // Getters et setters
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?Users
+    public function getUser(): Users
     {
         return $this->user;
     }

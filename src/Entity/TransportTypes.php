@@ -5,43 +5,30 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * TransportTypes
- *
- * @ORM\Table(name="transport_types", indexes={@ORM\Index(name="idx_transport_id", columns={"transport_id"})})
- * @ORM\Entity
- */
+#[ORM\Table(name: 'transport_types')]
+#[ORM\Index(name: 'idx_transport_id', columns: ['transport_id'])]
+#[ORM\Entity]
 class TransportTypes
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="transport_id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $transportId;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(name: 'transport_id', type: Types::INTEGER)]
+    private ?int $transportId = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=50, nullable=false)
-     */
-    private $name;
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 50, nullable: false)]
+    private string $name;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="description", type="text", length=65535, nullable=true, options={"default"="NULL"})
-     */
-    private $description = 'NULL';
+    #[ORM\Column(
+        name: 'description', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
+    private ?string $description = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="capacity", type="integer", nullable=false)
-     */
-    private $capacity;
+    #[ORM\Column(name: 'capacity', type: Types::INTEGER, nullable: false)]
+    private int $capacity;
 
     public function getTransportId(): ?int
     {
@@ -56,7 +43,6 @@ class TransportTypes
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -68,7 +54,6 @@ class TransportTypes
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -80,9 +65,6 @@ class TransportTypes
     public function setCapacity(int $capacity): static
     {
         $this->capacity = $capacity;
-
         return $this;
     }
-
-
 }

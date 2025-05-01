@@ -5,71 +5,71 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Villes
- *
- * @ORM\Table(name="villes")
- * @ORM\Entity
- */
+#[ORM\Table(name: 'villes')]
+#[ORM\Entity]
 class Villes
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
+    #[ORM\Column(name: 'id', type: Types::INTEGER, nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nom", type="string", length=100, nullable=false)
-     */
-    private $nom;
+    #[ORM\Column(name: 'nom', type: Types::STRING, length: 100, nullable: false)]
+    private string $nom;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="histoire", type="text", length=65535, nullable=true, options={"default"="NULL"})
-     */
-    private $histoire = 'NULL';
+    #[ORM\Column(
+        name: 'histoire', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
+    private ?string $histoire = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="anecdotes", type="text", length=65535, nullable=true, options={"default"="NULL"})
-     */
-    private $anecdotes = 'NULL';
+    #[ORM\Column(
+        name: 'anecdotes', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
+    private ?string $anecdotes = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="activites", type="text", length=65535, nullable=true, options={"default"="NULL"})
-     */
-    private $activites = 'NULL';
+    #[ORM\Column(
+        name: 'activites', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
+    private ?string $activites = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="gastronomie", type="text", length=65535, nullable=true, options={"default"="NULL"})
-     */
-    private $gastronomie = 'NULL';
+    #[ORM\Column(
+        name: 'gastronomie', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
+    private ?string $gastronomie = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="nature", type="text", length=65535, nullable=true, options={"default"="NULL"})
-     */
-    private $nature = 'NULL';
+    #[ORM\Column(
+        name: 'nature', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
+    private ?string $nature = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="histoire_interactive", type="text", length=65535, nullable=true, options={"default"="NULL"})
-     */
-    private $histoireInteractive = 'NULL';
+    #[ORM\Column(
+        name: 'histoire_interactive', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
+    private ?string $histoireInteractive = null;
 
     public function getId(): ?int
     {
@@ -84,7 +84,6 @@ class Villes
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -96,7 +95,6 @@ class Villes
     public function setHistoire(?string $histoire): static
     {
         $this->histoire = $histoire;
-
         return $this;
     }
 
@@ -108,7 +106,6 @@ class Villes
     public function setAnecdotes(?string $anecdotes): static
     {
         $this->anecdotes = $anecdotes;
-
         return $this;
     }
 
@@ -120,7 +117,6 @@ class Villes
     public function setActivites(?string $activites): static
     {
         $this->activites = $activites;
-
         return $this;
     }
 
@@ -132,7 +128,6 @@ class Villes
     public function setGastronomie(?string $gastronomie): static
     {
         $this->gastronomie = $gastronomie;
-
         return $this;
     }
 
@@ -144,7 +139,6 @@ class Villes
     public function setNature(?string $nature): static
     {
         $this->nature = $nature;
-
         return $this;
     }
 
@@ -156,9 +150,6 @@ class Villes
     public function setHistoireInteractive(?string $histoireInteractive): static
     {
         $this->histoireInteractive = $histoireInteractive;
-
         return $this;
     }
-
-
 }
