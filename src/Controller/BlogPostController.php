@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Routing\Attribute\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use App\Service\ContentFilterService;
+use App\Service\NewsApiService;
 
 
 
@@ -27,7 +28,8 @@ final class BlogPostController extends AbstractController
         Request $request,
         BlogPostRepository $blogPostRepository,
         EntityManagerInterface $entityManager,
-        \Knp\Component\Pager\PaginatorInterface $paginator
+        \Knp\Component\Pager\PaginatorInterface $paginator,
+        NewsApiService $newsApiService
     ): Response {
         $blogPost = new BlogPost();
         $form = $this->createForm(BlogPostType::class, $blogPost);
@@ -102,6 +104,15 @@ final class BlogPostController extends AbstractController
             $editForms[$post->getId()] = $this->createForm(BlogPostType::class, $post)->createView();
         }
 
+        // Fetch news articles and ensure we always have an array
+        $newsQuery = $currentCategory ?: $searchTerm ?: '';
+        $newsArticles = $newsApiService->fetchNews($newsQuery, 5);
+        
+        // If we got an error message instead of articles array, use empty array
+        if (!is_array($newsArticles) || (is_array($newsArticles) && isset($newsArticles['message']))) {
+            $newsArticles = [];
+        }
+
         return $this->render('FrontOffice/blog.html.twig', [
             'form' => $form->createView(),
             'blog_posts' => $pagination,
@@ -110,7 +121,8 @@ final class BlogPostController extends AbstractController
             'editForms' => $editForms,
             'current_category' => $currentCategory,
             'selected_recent' => $selectedRecent,
-            'search_term' => $searchTerm
+            'search_term' => $searchTerm,
+            'news_articles' => $newsArticles,
         ]);
     }
 

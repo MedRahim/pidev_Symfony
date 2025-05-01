@@ -1,161 +1,237 @@
 <!doctype html>
-    <html class="no-js" lang="zxx">
+<html class="no-js" lang="zxx">
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="csrf-token-edit" content="{{ csrf_token('edit-comment') }}">
-        <meta name="csrf-token-delete-post" content="{{ csrf_token('delete') }}">
-        <meta name="csrf-token-delete" content="{{ csrf_token('delete-comment') }}">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Directory HTML-5 Template </title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="csrf-token-edit" content="{{ csrf_token('edit-comment') }}">
+    <meta name="csrf-token-delete-post" content="{{ csrf_token('delete') }}">
+    <meta name="csrf-token-delete" content="{{ csrf_token('delete-comment') }}">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Directory HTML-5 Template </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
 
-        <!-- CSS here -->
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/owl.carousel.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slicknav.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/animate.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/magnific-popup.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/fontawesome-all.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/themify-icons.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/responsive.css') }}">
-    <style>
-            /* Enhanced Blog Styles */
-            .btn {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        position: relative;
+    <!-- CSS here -->
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/owl.carousel.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slicknav.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/animate.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/magnific-popup.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/fontawesome-all.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/themify-icons.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/responsive.css') }}">
+<style>
+
+:root {
+        --primary-color: #4a90e2;
+        --secondary-color: #6c5ce7;
+        --accent-color: #ff4757;
+        --text-color: #2d3436;
+        --light-bg: #f8f9fa;
+        --border-radius: 12px;
+        --box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+.btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+border-radius: 8px;
+font-weight: 600;
+letter-spacing: 0.5px;
+position: relative;
+overflow: hidden;
+border-radius: 8px;
+font-weight: 600;
+letter-spacing: 0.5px;
+position: relative;
+overflow: hidden;
+border-radius: 8px;
+font-weight: 600;
+letter-spacing: 0.5px;
+position: relative;
+overflow: hidden;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 6px rgba(102, 126, 234, 0.1);
+    padding: 12px 28px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(102, 126, 234, 0.2);
+}
+
+        .blog_item{
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 2rem;
         overflow: hidden;
-    }
-    .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        box-shadow: 0 4px 6px rgba(102, 126, 234, 0.1);
-        padding: 12px 28px;
+        position: relative;
     }
 
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(102, 126, 234, 0.2);
+       .blog_item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
     }
 
-            .blog_item {
-                position: relative;
-                margin-right: 50px; /* Space for the menu */
-                background: #fff;
-                border-radius: 16px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-                padding: 15px;
-                margin-bottom: 30px;
-            }
-
-            .blog_item:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 12px 40px rgba(0,0,0,0.12);
-            }
-
-            .blog_item_img {
-                border-radius: 12px;
-                overflow: hidden;
-                margin: -15px -15px 15px -15px;
-            }
-
-            .blog_item_img img {
-                transition: transform 0.4s ease;
-                height: 400px;
-                object-fit: cover;
-            }
-
-            .blog_item:hover .blog_item_img img {
-                transform: scale(1.05);
-            }
-
-            /* Comments Section */
-            .comments-container {
-                max-height: 0;
-                overflow: hidden;
-                transition: max-height 0.3s ease-out;
-            }
-
-            .comments-container.expanded {
-                max-height: 1000px; /* Reduced from 2000px for better transition */
-            }
-
-            .comment-form {
-                opacity: 1; /* Remove the opacity transition */
-                transform: none;
-            }
-
-            .comment-actions {
-                opacity: 1;
-                position: static;
-                transform: none;
-                display: flex;
-                gap: 8px;
-            }
-
-            .comment {
-                transition: all 0.3s ease;
-            }
-
-            .comment:hover {
-                background-color: rgba(0,0,0,0.02);
-            }
-            /* Comment Action Buttons */
-    .comment-actions button {
-    min-width: 80px; /* Ensure enough space for text */
-        padding: 8px 12px;
-        color: white !important; /* Force white text */
-        font-size: 0.85rem;
-        font-weight: 500;
+    .blog_item_img {
+        height: 400px;
+        overflow: hidden;
+        position: relative;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
     }
 
-    .comment-actions button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    .blog_item_img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .comment-actions button i {
-        font-size: 14px;
-        margin-right: 6px;
+    .blog_item:hover .blog_item_img img {
+        transform: scale(1.05);
     }
 
-    /* Edit/Save Buttons */
-    .edit-comment-btn, .save-edit-btn {
-    background: linear-gradient(135deg, #4fd1c5 0%, #38b2ac 100%) !important;
-        border-color: #38b2ac;
+        /* Comments Section */
+        .comments-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
 
+        .comments-container.expanded {
+            max-height: 1000px; /* Reduced from 2000px for better transition */
+        }
+
+        .comment-form {
+            opacity: 1; /* Remove the opacity transition */
+            transform: none;
+        }
+
+        .comment-actions {
+            opacity: 1;
+            position: static;
+            transform: none;
+            display: flex;
+            gap: 8px;
+        }
+
+        .comment {
+        padding: 1rem;
+        background: var(--light-bg);
+        border-radius: var(--border-radius);
+        margin-bottom: 1rem;
+        transition: background 0.2s ease;
     }
-
-    /* Delete/Cancel Buttons */
-    .delete-comment-btn, .cancel-edit-btn {
-        background: linear-gradient(135deg, #fc8181 0%, #f56565 100%) !important;
-        border-color: #f56565;
-    }
-
-    /* Modal Buttons */
-    .modal .btn-success {
-        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-    }
-
-    .modal .btn-danger {
-        background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-    }
-
-    /* Comment Submit Button */
-    .comment-form .btn-primary {
-        padding: 12px 24px;
-        font-size: 0.9rem;
-        display: inline-flex;
+.comment-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        display: flex;
         align-items: center;
+        justify-content: center;
+        color: white;
+        flex-shrink: 0;
     }
+        .comment:hover {
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    /* Professional Confirmation Modal */
+    .confirmation-modal .modal-content {
+        border: none;
+        border-radius: var(--border-radius);
+    }
+
+    .confirmation-modal .modal-header {
+        border: none;
+        padding: 2rem 2rem 0;
+        justify-content: center;
+    }
+
+    .confirmation-modal .modal-body {
+        text-align: center;
+        padding: 1rem 2rem 2rem;
+    }
+
+    .confirmation-modal .modal-icon {
+        font-size: 3rem;
+        color: var(--accent-color);
+        margin-bottom: 1rem;
+    }
+
+    .confirmation-modal .btn-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+    }
+        /* Comment Action Buttons */
+.comment-actions button {
+min-width: 80px; /* Ensure enough space for text */
+    padding: 8px 12px;
+    color: white !important; /* Force white text */
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.comment-actions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.comment-actions button i {
+    font-size: 14px;
+    margin-right: 6px;
+}
+
+/* Edit/Save Buttons */
+.edit-comment-btn, .save-edit-btn {
+background: linear-gradient(135deg, #4fd1c5 0%, #38b2ac 100%) !important;
+    border-color: #38b2ac;
+
+}
+
+/* Delete/Cancel Buttons */
+.delete-comment-btn, .cancel-edit-btn {
+    background: linear-gradient(135deg, #fc8181 0%, #f56565 100%) !important;
+    border-color: #f56565;
+}
+
+/* Modal Buttons */
+.modal .btn-success {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+}
+
+.modal .btn-danger {
+    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+}
+
+/* Comment Submit Button */
+.comment-form .btn-primary {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+}
     /* Add to your existing styles */
 @keyframes shake {
     0% { transform: translateX(0); }
@@ -176,54 +252,54 @@
     margin-top: 10px;
 }
 
-    /* Hover Effects for All Buttons */
-    .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
+/* Hover Effects for All Buttons */
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
 
-    /* Button Icons */
-    .btn i {
-        transition: transform 0.3s ease;
-    }
+/* Button Icons */
+.btn i {
+    transition: transform 0.3s ease;
+}
 
-    .btn:hover i {
-        transform: translateX(3px);
-    }
+.btn:hover i {
+    transform: translateX(3px);
+}
 
-    /* Loading State */
-    .btn-loading {
-        position: relative;
-        opacity: 0.8;
-        pointer-events: none;
-    }
+/* Loading State */
+.btn-loading {
+    position: relative;
+    opacity: 0.8;
+    pointer-events: none;
+}
 
-    .btn-loading:after {
-        content: "";
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        margin: auto;
-        border: 3px solid transparent;
-        border-top-color: white;
-        border-radius: 50%;
-        animation: button-loading-spinner 1s ease infinite;
-    }
+.btn-loading:after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border: 3px solid transparent;
+    border-top-color: white;
+    border-radius: 50%;
+    animation: button-loading-spinner 1s ease infinite;
+}
 
-    @keyframes button-loading-spinner {
-        from { transform: rotate(0turn); }
-        to { transform: rotate(1turn); }
-    }
+@keyframes button-loading-spinner {
+    from { transform: rotate(0turn); }
+    to { transform: rotate(1turn); }
+}
 
-            @media (max-width: 768px) {
-                .blog_item_img img {
-                    height: 250px;
-                }
+        @media (max-width: 768px) {
+            .blog_item_img img {
+                height: 250px;
             }
+        }
 
     /* Category Styles */
     .cat-list li a {
@@ -267,1100 +343,1553 @@
         display: flex;
         gap: 8px;
     }
+    .comment-delete-modal .modal-content {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.comment-delete-modal .modal-body {
+    padding: 2rem 1.5rem;
+}
+
+.comment-delete-modal .btn-danger {
+    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+    padding: 0.75rem 2rem;
+}
+
+.comment-delete-modal .btn-secondary {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #e9ecef;
+}
 
     /* Three Dots Menu Styles */
     .post-actions-dropdown {
         position: relative;
     }
-
-    .three-dots-btn {
-        padding: 5px;
-        border: none;
-        background: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .three-dots-btn:hover {
-        color: #667eea !important;
-    }
-
-    .action-buttons {
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        padding: 8px;
-        z-index: 1000;
-        min-width: 120px;
-    }
-
-    .action-buttons button {
-        width: 100%;
-        text-align: left;
-        padding: 8px 12px;
-        border: none;
-        background: transparent;
-        color: #333;
-        transition: all 0.2s ease;
-        border-radius: 4px;
+    .interaction-section {
+            border-top: 1px solid rgba(0,0,0,0.08);
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+        }
+  /* Post Meta Information */
+    .post-meta {
         display: flex;
-        align-items: center;
+        gap: 1.5rem;
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin: 1rem 0;
     }
 
-    .action-buttons button:hover {
-        background: #f8f9fa;
+    .post-meta i {
+        margin-right: 0.5rem;
+        color: var(--primary-color);
     }
 
-    .action-buttons .edit-post-btn {
-        color: #1a8cd8;
-    }
 
-    .action-buttons .delete-post-btn {
-        color: #f4212e;
-    }
+.three-dots-btn {
+    padding: 5px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-    .action-buttons .edit-post-btn:hover {
-        background: rgba(26,140,216,0.1);
-    }
+.three-dots-btn:hover {
+    color: #667eea !important;
+}
 
-    .action-buttons .delete-post-btn:hover {
-        background: rgba(244,33,46,0.1);
-    }
+.action-buttons {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 8px;
+    z-index: 1000;
+    min-width: 120px;
+}
 
-    /* Modal Styles */
-    .modal-content {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
+.action-buttons button {
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    color: #333;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+}
 
-    .modal-header {
-        border-bottom: 1px solid #eee;
-        padding: 1rem 1.5rem;
-    }
+.action-buttons button:hover {
+    background: #f8f9fa;
+}
 
-    .modal-body {
-        padding: 1.5rem;
-    }
+.action-buttons .edit-post-btn {
+    color: #1a8cd8;
+}
 
-    .modal-footer {
-        border-top: 1px solid #eee;
-        padding: 1rem 1.5rem;
-    }
+.action-buttons .delete-post-btn {
+    color: #f4212e;
+}
 
-    .edit-post-form .form-control {
+.action-buttons .edit-post-btn:hover {
+    background: rgba(26,140,216,0.1);
+}
+
+.action-buttons .delete-post-btn:hover {
+    background: rgba(244,33,46,0.1);
+}
+
+/* Modal Styles */
+.modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.modal-header {
+    border-bottom: 1px solid #eee;
+    padding: 1rem 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #eee;
+    padding: 1rem 1.5rem;
+}
+
+.edit-post-form .form-control {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+}
+ .form-control {
+        border: 2px solid #e9ecef;
         border-radius: 8px;
-        border: 1px solid #ddd;
         padding: 0.75rem 1rem;
-        transition: all 0.2s ease;
+        transition: border-color 0.3s ease;
     }
 
-    .edit-post-form .form-control:focus {
-        border-color: #1a8cd8;
-        box-shadow: 0 0 0 3px rgba(26,140,216,0.1);
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: none;
     }
 
-    .edit-post-form label {
-        color: #1a1a1a;
-        margin-bottom: 0.5rem;
-    }
+.edit-post-form .form-control:focus {
+    border-color: #1a8cd8;
+    box-shadow: 0 0 0 3px rgba(26,140,216,0.1);
+}
 
-    .modal .btn {
-        padding: 0.5rem 1.5rem;
-        font-weight: 500;
+.edit-post-form label {
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+.modal .btn {
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    border-radius: 8px;
+}
+
+.modal .btn-primary {
+    background: #1a8cd8;
+    border: none;
+}
+
+.modal .btn-danger {
+    background: #f4212e;
+    border: none;
+}
+
+.modal .btn-secondary {
+    background: #eee;
+    color: #333;
+    border: none;
+}
+
+.modal .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+ .btn {
         border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-    .modal .btn-primary {
-        background: #1a8cd8;
+    .btn-primary {
+        background: var(--primary-color);
         border: none;
     }
 
-    .modal .btn-danger {
-        background: #f4212e;
+    .btn-primary:hover {
+        background: #357abd;
+        transform: translateY(-2px);
+    }
+
+    .btn-danger {
+        background: var(--accent-color);
         border: none;
     }
 
-    .modal .btn-secondary {
-        background: #eee;
-        color: #333;
-        border: none;
+    .btn-danger:hover {
+        background: #ff2d3f;
+        transform: translateY(-2px);
     }
 
-    .modal .btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    /* Loading State */
+    .btn-loading {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.8;
     }
-    </style>
 
-        <!-- Add these before your closing </head> tag -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-            
+    .btn-loading:after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
 
-    </head>
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .blog_item_img {
+            height: 250px;
+        }
+         .post-meta {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .comment-actions button span {
+            display: none;
+        }
+    }
+</style>
 
-    <body>
-        <!-- Preloader Start -->
-        <div id="preloader-active">
-            <div class="preloader d-flex align-items-center justify-content-center">
-                <div class="preloader-inner position-relative">
-                    <div class="preloader-circle"></div>
-                    <div class="preloader-img pere-text">
-                        <img src="{{ asset('FrontOffice/assets/img/logo/loder.jpg') }}" alt="">
+    <!-- Add these before your closing </head> tag -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+
+</head>
+
+<body>
+
+    <!-- Preloader Start -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                <div class="preloader-img pere-text">
+                    <img src="{{ asset('FrontOffice/assets/img/logo/loder.jpg') }}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Preloader Start -->
+    <header>
+        <!-- Header Start -->
+    <div class="header-area header-transparent">
+            <div class="main-header">
+            <div class="header-bottom  header-sticky">
+                    <div class="container-fluid">
+                        <div class="row align-items-center">
+                            <!-- Logo -->
+                            <div class="col-xl-2 col-lg-2 col-md-1">
+                                <div class="logo">
+                                <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt=""></a>
+                                </div>
+                            </div>
+                            <div class="col-xl-10 col-lg-10 col-md-8">
+                                <!-- Main-menu -->
+                                <div class="main-menu f-right d-none d-lg-block">
+                                    <nav>
+                                        <ul id="navigation">                                                                                                                                     
+                                            <li><a href="{{ path('home') }}">Home</a></li>
+                                            <li><a href="{{ path('about') }}">About</a></li>
+                                            <li><a href="{{ path('contact') }}">Contact</a></li>
+                                            <li><a href="{{ path('categori') }}">Categories</a></li>
+                                            <li><a href="#">Page</a>
+                                                <ul class="submenu">
+                                                    <li><a href="{{ path('blog') }}">Blog</a></li>
+                                                    <li><a href="{{ path('blog_details') }}">Blog Details</a></li>
+                                                    <li><a href="{{ path('elements') }}">Elements</a></li>
+                                                    <li><a href="{{ path('listing_details') }}">Listing Details</a></li>
+                                                </ul>
+                                            </li>
+                                            <li class="add-list"><a href="{{ path('listing_details') }}"><i class="ti-plus"></i> Add Listing</a></li>
+                                            {#<li class="login"><a href="{{ path('login') }}"><i class="ti-user"></i> Sign in</a></li>#}
+                                            <li class="register"><a href="{{ path('register') }}"><i class="ti-pencil"></i> Register</a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                            <!-- Mobile Menu -->
+                            <div class="col-12">
+                                <div class="mobile_menu d-block d-lg-none"></div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            </div>
+    </div>
+        <!-- Header End -->
+    </header>
+<main>
+    <!-- Hero Start-->
+    <div class="hero-area2 slider-height2 hero-overly2 d-flex align-items-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="hero-cap text-center pt-50">
+                        <h2>Welcome to Our Blog</h2>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Preloader Start -->
-        <header>
-            <!-- Header Start -->
-        <div class="header-area header-transparent">
-                <div class="main-header">
-                <div class="header-bottom  header-sticky">
-                        <div class="container-fluid">
-                            <div class="row align-items-center">
-                                <!-- Logo -->
-                                <div class="col-xl-2 col-lg-2 col-md-1">
-                                    <div class="logo">
-                                    <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt=""></a>
+    </div>
+    <!--Hero End -->
+
+    <!-- Add Post Form -->
+    <section class="blog_area section-padding">
+        <div class="container">
+            <div class="row">
+                <!-- Blog Posts Section -->
+                <div class="col-lg-8 mb-5 mb-lg-0">
+                    <div class="blog_left_sidebar">
+                        <!-- Redesigned Add Post Form -->
+                        <div class="add-post-form mb-50">
+                            <div class="card shadow border-0" style="background: linear-gradient(135deg, #f8f9fa 80%, #e0e7ff 100%); border-radius: 18px; box-shadow: 0 8px 30px rgba(102,126,234,0.10);">
+                                <div class="card-header bg-white border-0 pb-0 d-flex align-items-center" style="border-radius: 18px 18px 0 0;">
+                                    <div class="mr-3" style="width: 48px; height: 48px; background: #667eea; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fa fa-pen text-white" style="font-size: 1.5rem;"></i>
                                     </div>
+                                    <h4 class="mb-0" style="font-weight: 700; color: #4a90e2;">Share a New Post</h4>
                                 </div>
-                                <div class="col-xl-10 col-lg-10 col-md-8">
-                                    <!-- Main-menu -->
-                                    <div class="main-menu f-right d-none d-lg-block">
-                                        <nav>
-                                            <ul id="navigation">                                                                                                                                     
-                                                <li><a href="{{ path('home') }}">Home</a></li>
-                                                <li><a href="{{ path('about') }}">About</a></li>
-                                                <li><a href="{{ path('contact') }}">Contact</a></li>
-                                                <li><a href="{{ path('categori') }}">Categories</a></li>
-                                                <li><a href="#">Page</a>
-                                                    <ul class="submenu">
-                                                        <li><a href="{{ path('blog') }}">Blog</a></li>
-                                                        <li><a href="{{ path('blog_details') }}">Blog Details</a></li>
-                                                        <li><a href="{{ path('elements') }}">Elements</a></li>
-                                                        <li><a href="{{ path('listing_details') }}">Listing Details</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="add-list"><a href="{{ path('listing_details') }}"><i class="ti-plus"></i> Add Listing</a></li>
-                                                {#<li class="login"><a href="{{ path('login') }}"><i class="ti-user"></i> Sign in</a></li>#}
-                                                <li class="register"><a href="{{ path('register') }}"><i class="ti-pencil"></i> Register</a></li>
-                                            </ul>
-                                        </nav>
+                                <div class="card-body" style="padding: 2rem 2rem 1.5rem 2rem;">
+                                    <div class="mb-4" style="border-bottom: 1px solid #e0e7ff;"></div>
+                                    {{ form_start(form, {'attr': {'class': 'form-contact contact_form', 'novalidate': 'novalidate'}}) }}
+                                    <div class="form-row">
+                                        <div class="form-group col-md-12">
+                                            <label class="font-weight-bold">{{ form_label(form.title) }}</label>
+                                            <div class="input-group input-group-lg">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text bg-light border-0"><i class="fa fa-heading text-primary"></i></span>
+                                                </div>
+                                                {{ form_widget(form.title, {
+                                                    'attr': {
+                                                        'class': 'form-control rounded-pill' ~ (form.title.vars.errors|length ? ' is-invalid'),
+                                                        'placeholder': 'Enter post title'
+                                                    }
+                                                }) }}
+                                                <div class="invalid-feedback">
+                                                    {{ form_errors(form.title) }}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <!-- Mobile Menu -->
-                                <div class="col-12">
-                                    <div class="mobile_menu d-block d-lg-none"></div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-12">
+                                            <label class="font-weight-bold">{{ form_label(form.content) }}</label>
+                                            <div class="input-group input-group-lg">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text bg-light border-0"><i class="fa fa-align-left text-primary"></i></span>
+                                                </div>
+                                                {{ form_widget(form.content, {
+                                                    'attr': {
+                                                        'class': 'form-control rounded-lg' ~ (form.content.vars.errors|length ? ' is-invalid'),
+                                                        'placeholder': 'Write something here...',
+                                                        'rows': 5
+                                                    }
+                                                }) }}
+                                                <div class="invalid-feedback">
+                                                    {{ form_errors(form.content) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label class="font-weight-bold">{{ form_label(form.category) }}</label>
+                                            <div class="input-group input-group-lg">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text bg-light border-0"><i class="fa fa-list text-primary"></i></span>
+                                                </div>
+                                                {{ form_widget(form.category, {
+                                                    'attr': {
+                                                        'class': 'form-control rounded-pill' ~ (form.category.vars.errors|length ? ' is-invalid'),
+                                                        'placeholder': 'Select Category'
+                                                    }
+                                                }) }}
+                                                <div class="invalid-feedback" id="addCategoryError">
+                                                    {{ form_errors(form.category) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="font-weight-bold">{{ form_label(form.imageFile) }}</label>
+                                            <div class="input-group input-group-lg">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text bg-light border-0"><i class="fa fa-image text-primary"></i></span>
+                                                </div>
+                                                {{ form_widget(form.imageFile, {
+                                                    'attr': {
+                                                        'class': 'form-control rounded-pill' ~ (form.imageFile.vars.errors|length ? ' is-invalid'),
+                                                        'placeholder': 'Upload Image'
+                                                    }
+                                                }) }}
+                                                <div class="invalid-feedback">
+                                                    {{ form_errors(form.imageFile) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row mt-4">
+                                        <div class="col text-right">
+                                            <button type="submit" class="btn btn-primary px-5 py-2" style="font-size: 1.1rem; border-radius: 24px; box-shadow: 0 4px 12px rgba(102,126,234,0.10);">
+                                                <i class="ti-arrow-right mr-2"></i>Post
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {{ form_end(form) }}
                                 </div>
                             </div>
                         </div>
-                </div>
-                </div>
-        </div>
-            <!-- Header End -->
-        </header>
-    <main>
-        <!-- Hero Start-->
-        <div class="hero-area2 slider-height2 hero-overly2 d-flex align-items-center">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="hero-cap text-center pt-50">
-                            <h2>Welcome to Our Blog</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--Hero End -->
+                        <!-- End Redesigned Add Post Form -->
 
-        <!-- Add Post Form -->
-        <section class="blog_area section-padding">
-            <div class="container">
-                <div class="row">
-                    <!-- Blog Posts Section -->
-                    <div class="col-lg-8 mb-5 mb-lg-0">
-                        <div class="blog_left_sidebar">
-                            <!-- Redesigned Add Post Form -->
-                            <div class="add-post-form mb-50">
-                                <div class="card shadow-sm border-0">
-                                    <div class="card-header bg-white border-0 pb-0">
-                                        <h4 class="mb-0"><i class="fa fa-pen mr-2 text-primary"></i>Share a New Post</h4>
+                        {% for post in blog_posts %}
+                            <article class="blog_item" data-post-id="{{ post.id }}">
+                                {% if post.imageUrl %}
+                                    <div class="blog_item_img">
+                                        <img class="card-img rounded-0" src="{{ asset('uploads/images/' ~ post.imageUrl) }}" alt="{{ post.title }}">
+                                        <a href="#" class="blog_item_date">
+                                            <h3>{{ post.postDate|date('d') }}</h3>
+                                            <p>{{ post.postDate|date('M') }}</p>
+                                        </a>
                                     </div>
-                                    <div class="card-body">
-                                        {{ form_start(form, {'attr': {'class': 'form-contact contact_form', 'novalidate': 'novalidate'}}) }}
-                                        <div class="form-row">
-                                            <div class="form-group col-md-12">
-                                                <label class="font-weight-bold">{{ form_label(form.title) }}</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text bg-light"><i class="fa fa-heading"></i></span>
-                                                    </div>
-                                                    {{ form_widget(form.title, {
-                                                        'attr': {
-                                                            'class': 'form-control',
-                                                            'placeholder': 'Enter post title'
-                                                        }
-                                                    }) }}
-                                                    <div class="invalid-feedback">
-                                                        {{ form_errors(form.title) }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group col-md-12">
-                                                <label class="font-weight-bold">{{ form_label(form.content) }}</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text bg-light"><i class="fa fa-align-left"></i></span>
-                                                    </div>
-                                                    
-                                                    {{ form_widget(form.content, {
-                                                        'attr': {
-                                                            'class': 'form-control' ~ (form.content.vars.errors|length ? ' is-invalid'),
-                                                            'placeholder': 'Write something here...',
-                                                            'rows': 5
-                                                        }
-                                                    }) }}
-                                                    <div class="invalid-feedback">
-                                                        {{ form_errors(form.content) }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <label class="font-weight-bold">{{ form_label(form.category) }}</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text bg-light"><i class="fa fa-list"></i></span>
-                                                    </div>
-                                                    {{ form_widget(form.category, {
-                                                        'attr': {
-                                                            'class': 'form-control' ~ (form.category.vars.errors|length ? ' is-invalid'),
-                                                            'placeholder': 'Select Category'
-                                                        }
-                                                    }) }}
-                                                    <div class="invalid-feedback">
-                                                        {{ form_errors(form.category) }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <label class="font-weight-bold">{{ form_label(form.imageFile) }}</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text bg-light"><i class="fa fa-image"></i></span>
-                                                    </div>
-                                                    {{ form_widget(form.imageFile, {
-                                                        'attr': {
-                                                            'class': 'form-control' ~ (form.imageFile.vars.errors|length ? ' is-invalid'),
-                                                            'placeholder': 'Upload Image'
-                                                        }
-                                                    }) }}
-                                                    <div class="invalid-feedback">
-                                                        {{ form_errors(form.imageFile) }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="col text-right">
-                                                <button type="submit" class="btn btn-primary px-4">
-                                                    <i class="ti-arrow-right mr-2"></i>Post
-                                                </button>
-                                            </div>
-                                        </div>
-                                        {{ form_end(form) }}
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Redesigned Add Post Form -->
-
-                            {% for post in blog_posts %}
-                                <article class="blog_item" data-post-id="{{ post.id }}">
-                                    {% if post.imageUrl %}
-                                        <div class="blog_item_img">
-                                            <img class="card-img rounded-0" src="{{ asset('uploads/images/' ~ post.imageUrl) }}" alt="{{ post.title }}">
-                                            <a href="#" class="blog_item_date">
-                                                <h3>{{ post.postDate|date('d') }}</h3>
-                                                <p>{{ post.postDate|date('M') }}</p>
-                                            </a>
-                                        </div>
-                                    {% endif %}
                                     
-                                    <div class="blog_details">
-                                        <div class="d-flex justify-content-between align-items-start mb-3">
-                                            <h2 class="mb-0">{{ post.title }}</h2>
-                                            <div class="post-actions-dropdown">
-                                                <button class="btn btn-link text-muted three-dots-btn" data-post-id="{{ post.id }}">
-                                                    <i class="fa fa-ellipsis-v"></i>
+                                {% endif %}
+                                
+                                <div class="blog_details">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h2 class="mb-0">{{ post.title }}</h2>
+                                        <div class="post-actions-dropdown">
+                                            <button class="btn btn-link text-muted three-dots-btn" data-post-id="{{ post.id }}">
+                                                <i class="fa fa-ellipsis-v"></i>
+                                            </button>
+                                            <div class="action-buttons" id="action-buttons-{{ post.id }}" style="display: none;">
+                                                <button class="edit-post-btn" data-post-id="{{ post.id }}">
+                                                    <i class="fa fa-edit mr-1"></i>Edit
                                                 </button>
-                                                <div class="action-buttons" id="action-buttons-{{ post.id }}" style="display: none;">
-                                                    <button class="edit-post-btn" data-post-id="{{ post.id }}">
-                                                        <i class="fa fa-edit mr-1"></i>Edit
-                                                    </button>
-                                                    <button class="delete-post-btn" data-post-id="{{ post.id }}">
-                                                        <i class="fa fa-trash mr-1"></i>Delete
-                                                    </button>
-                                                </div>
+                                                <button class="delete-post-btn" data-post-id="{{ post.id }}">
+                                                    <i class="fa fa-trash mr-1"></i>Delete
+                                                </button>
                                             </div>
                                         </div>
-                                        <div class="post-content mb-4">
-                                            {{ post.content|raw }}
-                                        </div>
-                                        <div class="post-meta mb-3">
-                                            <span class="text-muted">
-                                                <i class="fa fa-folder mr-1"></i>
-                                                {{ post.category|capitalize }}
-                                            </span>
-                                            <span class="text-muted ml-3">
-                                                <i class="fa fa-calendar mr-1"></i>
-                                                {{ post.postDate|date('d M Y, H:i') }}
-                                            </span>
-                                        </div>
+                                    </div>
+                                    <div class="post-content mb-4">
+                                        {{ post.content|raw }}
+                                    </div>
+                                    
+                                    <div class="post-meta mb-3">
+                                        <span class="text-muted">
+                                            <i class="fa fa-folder mr-1"></i>
+                                            {{ post.category|capitalize }}
+                                        </span>
+                                        <span class="text-muted ml-3">
+                                            <i class="fa fa-calendar mr-1"></i>
+                                            {{ post.postDate|date('d M Y, H:i') }}
+                                        </span>
+                                    </div>
 
-                                        <div class="interaction-section">
-                                            <div class="d-flex align-items-center mb-3">
-                                                <form method="post" action="{{ path('app_blog_post_like', {'id': post.id}) }}" class="like-form mr-3">
-                                                    <button type="submit" class="like-btn">
-                                                        <i class="fa fa-heart"></i>
-                                                        <span class="like-count">{{ post.likes|length }}</span>
-                                                    </button>
-                                                </form>
-                                                <div class="comments-toggle text-muted" data-post="{{ post.id }}" style="cursor: pointer;">
-                                                    <i class="fa fa-comments mr-1"></i>
-                                                    <span class="comment-count">{{ post.comments|length }}</span> Comments
-                                                </div>
+                                    <div class="interaction-section">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <form method="post" action="{{ path('app_blog_post_like', {'id': post.id}) }}" class="like-form mr-3">
+                                                <button type="submit" class="like-btn">
+                                                    <i class="fa fa-heart"></i>
+                                                    <span class="like-count">{{ post.likes|length }}</span>
+                                                </button>
+                                            </form>
+                                            <div class="comments-toggle text-muted" data-post="{{ post.id }}" style="cursor: pointer;">
+                                                <i class="fa fa-comments mr-1"></i>
+                                                <span class="comment-count">{{ post.comments|length }}</span> Comments
                                             </div>
+                                        </div>
 
-                                            <!-- Comments Container -->
-                                            <div class="comments-container" id="comments-{{ post.id }}">
-                                                <div class="comments-section">
-                                                    {% if post.comments|length > 0 %}
-                                                        {% for comment in post.comments %}
-                                                            <div class="comment mb-3" data-comment-id="{{ comment.id }}">
-                                                                <div class="d-flex">
-                                                                    <div class="comment-avatar mr-3">
-                                                                        <i class="fa fa-user-circle fa-2x text-muted"></i>
+                                        <!-- Comments Container -->
+                                        <div class="comments-container" id="comments-{{ post.id }}">
+                                            <div class="comments-section">
+                                                {% if post.comments|length > 0 %}
+                                                    {% for comment in post.comments %}
+                                                        <div class="comment mb-3" data-comment-id="{{ comment.id }}">
+                                                            <div class="d-flex">
+                                                                <div class="comment-avatar mr-3">
+                                                                    <i class="fa fa-user-circle fa-2x text-muted"></i>
+                                                                </div>
+                                                                <div class="comment-content flex-grow-1">
+                                                                    <div class="d-flex justify-content-between align-items-start">
+                                                                        <p class="comment-text mb-1">{{ comment.content }}</p>
+                                                                        <div class="comment-actions">
+                                                                            <button class="btn btn-sm edit-comment-btn">
+                                                                                <i class="fa fa-edit mr-1"></i>Edit
+                                                                            </button>
+                                                                            <button class="btn btn-sm delete-comment-btn">
+                                                                                <i class="fa fa-trash mr-1"></i>Delete
+                                                                            </button>
+                                                                        </div>
                                                                     </div>
-                                                                    <div class="comment-content flex-grow-1">
-                                                                        <div class="d-flex justify-content-between align-items-start">
-                                                                            <p class="comment-text mb-1">{{ comment.content }}</p>
-                                                                            <div class="comment-actions">
-                                                                                <button class="btn btn-sm edit-comment-btn">
-                                                                                    <i class="fa fa-edit mr-1"></i>Edit
-                                                                                </button>
-                                                                                <button class="btn btn-sm delete-comment-btn">
-                                                                                    <i class="fa fa-trash mr-1"></i>Delete
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="comment-time text-muted small">
-                                                                            {{ comment.createdAt|date('d M Y, H:i') }}
-                                                                        </div>
-                                                                        <div class="edit-comment-form">
-                                                                            <div class="input-group mt-2">
-                                                                                <textarea class="form-control form-control-sm">{{ comment.content }}</textarea>
-                                                                                <div class="input-group-append">
-                                                                                    <button class="btn btn-sm btn-primary save-edit-btn">Save</button>
-                                                                                    <button class="btn btn-sm btn-secondary cancel-edit-btn">Cancel</button>
-                                                                                </div>
+                                                                    <div class="comment-time text-muted small">
+                                                                        {{ comment.createdAt|date('d M Y, H:i') }}
+                                                                    </div>
+                                                                    <div class="edit-comment-form">
+                                                                        <div class="input-group mt-2">
+                                                                            <textarea class="form-control form-control-sm">{{ comment.content }}</textarea>
+                                                                            <div class="input-group-append">
+                                                                                <button class="btn btn-sm btn-primary save-edit-btn">Save</button>
+                                                                                <button class="btn btn-sm btn-secondary cancel-edit-btn">Cancel</button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        {% endfor %}
-                                                    {% else %}
-                                                        <div class="no-comments text-muted">
-                                                            No comments yet. Be the first to share your thoughts!
                                                         </div>
-                                                    {% endif %}
-                                                </div>
-
-                                                <form method="post" action="{{ path('app_blog_post_comment', {'id': post.id}) }}" class="comment-form mt-4" data-post-id="{{ post.id }}">
-                                                    <div class="form-group">
-                                                        <textarea name="comment" 
-                                                                class="form-control comment-input" 
-                                                                placeholder="Write your comment here..."
-                                                                rows="3"
-                                                                style="resize: none;"></textarea>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <div class="no-comments text-muted">
+                                                        No comments yet. Be the first to share your thoughts!
                                                     </div>
-                                                    <button type="submit" class="btn btn-primary">
-                                                        Post Comment <i class="ti-arrow-right ml-2"></i>
-                                                    </button>
-                                                </form>
+                                                {% endif %}
                                             </div>
+
+                                            <form method="post" action="{{ path('app_blog_post_comment', {'id': post.id}) }}" class="comment-form mt-4" data-post-id="{{ post.id }}">
+                                                <div class="form-group">
+                                                    <textarea name="comment" 
+                                                            class="form-control comment-input" 
+                                                            placeholder="Write your comment here..."
+                                                            rows="3"
+                                                            style="resize: none;"></textarea>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">
+                                                    Post Comment <i class="ti-arrow-right ml-2"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
-                                </article>
-                            {% else %}
-                                <div class="alert alert-info">No posts available yet. Be the first to share!</div>
-                            {% endfor %}
-                        </div>
-                    </div>
+                                </div>
+                            </article>
+                        {% else %}
+                            <div class="alert alert-info">No posts available yet. Be the first to share!</div>
+                        {% endfor %}
+                    </
+                di                            <div class="alert alert-info">{{ 'blog.post.no_posts'|trans }}</div>
+v>
+                </div>
 
-                    <!-- Sidebar Section -->
-                    <div class="col-lg-4">
-                        <div class="blog_right_sidebar">
-                            <!-- Search Widget -->
-                            <aside class="single_sidebar_widget search_widget">
-                                <form method="get" action="{{ path('app_blog_post_index') }}">
-                                    <div class="form-group">
-                                        <div class="input-group mb-3">
-                                            <input type="text" name="search" class="form-control" placeholder="Search Keyword"
-                                                value="{{ search_term }}">
-                                            {% if current_category %}
-                                                <input type="hidden" name="category" value="{{ current_category }}">
-                                            {% endif %}
-                                            <div class="input-group-append">
-                                                <button class="btns" type="submit"><i class="ti-search"></i></button>
-                                            </div>
+                <!-- Sidebar Section -->
+                <div class="col-lg-4">
+                    <div class="blog_right_sidebar">
+                        <!-- Search Widget -->
+                        <aside class="single_sidebar_widget search_widget">
+                            <form method="get" action="{{ path('app_blog_post_index') }}">
+                                <div class="form-group">
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Search Keyword"
+                                            value="{{ search_term }}">
+                                        {% if current_category %}
+                                            <input type="hidden" name="category" value="{{ current_category }}">
+                                        {% endif %}
+                                        <div class="input-group-append">
+                                            <button class="btns" type="submit"><i class="ti-search"></i></button>
                                         </div>
                                     </div>
-                                </form>
-                            </aside>
+                                </div>
+                            </form>
+                        </aside>
 
-                            <!-- Categories Widget -->
-                            <aside class="single_sidebar_widget post_category_widget">
-                                <h4 class="widget_title">Categories</h4>
-                                <ul class="list cat-list">
+                        <!-- Categories Widget -->
+                        <aside class="single_sidebar_widget post_category_widget">
+                            <h4 class="widget_title">Categories</h4>
+                            <ul class="list cat-list">
+                                <li>
+                                    <a href="{{ path('app_blog_post_index', {'search': search_term}) }}" 
+                                       class="d-flex {% if not current_category %}active{% endif %}">
+                                        <p>All Categories</p>
+                                    </a>
+                                </li>
+                                {% for category in categories %}
                                     <li>
-                                        <a href="{{ path('app_blog_post_index', {'search': search_term}) }}" 
-                                           class="d-flex {% if not current_category %}active{% endif %}">
-                                            <p>All Categories</p>
+                                        <a href="{{ path('app_blog_post_index', {
+                                            'category': category,
+                                            'search': search_term
+                                        }) }}" 
+                                           class="d-flex {% if current_category == category %}active{% endif %}">
+                                            <p>{{ category|capitalize }}</p>
                                         </a>
                                     </li>
-                                    {% for category in categories %}
-                                        <li>
-                                            <a href="{{ path('app_blog_post_index', {
-                                                'category': category,
-                                                'search': search_term
-                                            }) }}" 
-                                               class="d-flex {% if current_category == category %}active{% endif %}">
-                                                <p>{{ category|capitalize }}</p>
+                                {% endfor %}
+                            </ul>
+                        </aside>
+
+                        <!-- Recent Posts Widget -->
+                        <aside class="single_sidebar_widget popular_post_widget">
+                            <h3 class="widget_title">Recent Posts</h3>
+                            {% for recent in recent_posts %}
+                                <div class="media post_item {% if selected_recent == recent.id %}active{% endif %}" 
+                                     onclick="window.location.href='{{ path('app_blog_post_index', {
+                                         'recent': recent.id,
+                                         'category': current_category,
+                                         'search': search_term
+                                     }) }}'"
+                                     style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s ease;
+                                            {% if selected_recent == recent.id %}background-color: rgba(102, 126, 234, 0.1);{% endif %}">
+                                    {% if recent.imageUrl %}
+                                        <img src="{{ asset('uploads/images/' ~ recent.imageUrl) }}" 
+                                             alt="{{ recent.title }}" 
+                                             style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                    {% endif %}
+                                    <div class="media-body">
+                                        <h3 style="font-size: 14px; margin-bottom: 5px; 
+                                                   color: {% if selected_recent == recent.id %}#667eea{% else %}#333{% endif %};">
+                                            {{ recent.title }}
+                                        </h3>
+                                        <p style="font-size: 12px; color: #666;">
+                                            <i class="fa fa-calendar mr-1"></i>
+                                            {{ recent.postDate|date('d M Y') }}
+                                        </p>
+                                        <p style="font-size: 12px; color: #666;">
+                                            <i class="fa fa-folder mr-1"></i>
+                                            {{ recent.category|capitalize }}
+                                        </p>
+                                    </div>
+                                </div>
+                                {% if not loop.last %}
+                                    <hr style="margin: 10px 0;">
+                                {% endif %}
+                            {% else %}
+                                <p class="text-muted">No recent posts available.</p>
+                            {% endfor %}
+                            
+                            {% if selected_recent or current_category or search_term %}
+                                <div class="mt-3">
+                                    <a href="{{ path('app_blog_post_index') }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fa fa-times mr-1"></i> Clear Filters
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </aside>
+
+                        <!-- News Widget -->
+                        <aside class="single_sidebar_widget news_widget">
+                            <h3 class="widget_title">Related News</h3>
+                            {% if news_articles is iterable and news_articles|length > 0 %}
+                                <ul class="list-unstyled">
+                                    {% for news in news_articles %}
+                                        <li class="mb-3">
+                                            <a href="{{ news.link ?? news.source_url ?? '#' }}" target="_blank" style="font-weight:600; color:#4a90e2; text-decoration:none;">
+                                                {{ news.title|slice(0, 80) ~ (news.title|length > 80 ? '...' : '') }}
                                             </a>
+                                            <div style="font-size:12px; color:#888;">
+                                                {{ news.pubDate|date('d M Y, H:i') }}
+                                            </div>
+                                            {% if news.image_url %}
+                                                <img src="{{ news.image_url }}" alt="news image" style="width:100%; max-width:120px; border-radius:6px; margin-top:5px;">
+                                            {% endif %}
                                         </li>
                                     {% endfor %}
                                 </ul>
-                            </aside>
-
-                            <!-- Recent Posts Widget -->
-                            <aside class="single_sidebar_widget popular_post_widget">
-                                <h3 class="widget_title">Recent Posts</h3>
-                                {% for recent in recent_posts %}
-                                    <div class="media post_item {% if selected_recent == recent.id %}active{% endif %}" 
-                                         onclick="window.location.href='{{ path('app_blog_post_index', {
-                                             'recent': recent.id,
-                                             'category': current_category,
-                                             'search': search_term
-                                         }) }}'"
-                                         style="cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s ease;
-                                                {% if selected_recent == recent.id %}background-color: rgba(102, 126, 234, 0.1);{% endif %}">
-                                        {% if recent.imageUrl %}
-                                            <img src="{{ asset('uploads/images/' ~ recent.imageUrl) }}" 
-                                                 alt="{{ recent.title }}" 
-                                                 style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
-                                        {% endif %}
-                                        <div class="media-body">
-                                            <h3 style="font-size: 14px; margin-bottom: 5px; 
-                                                       color: {% if selected_recent == recent.id %}#667eea{% else %}#333{% endif %};">
-                                                {{ recent.title }}
-                                            </h3>
-                                            <p style="font-size: 12px; color: #666;">
-                                                <i class="fa fa-calendar mr-1"></i>
-                                                {{ recent.postDate|date('d M Y') }}
-                                            </p>
-                                            <p style="font-size: 12px; color: #666;">
-                                                <i class="fa fa-folder mr-1"></i>
-                                                {{ recent.category|capitalize }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    {% if not loop.last %}
-                                        <hr style="margin: 10px 0;">
-                                    {% endif %}
-                                {% else %}
-                                    <p class="text-muted">No recent posts available.</p>
-                                {% endfor %}
-                                
-                                {% if selected_recent or current_category or search_term %}
-                                    <div class="mt-3">
-                                        <a href="{{ path('app_blog_post_index') }}" class="btn btn-outline-primary btn-sm">
-                                            <i class="fa fa-times mr-1"></i> Clear Filters
-                                        </a>
-                                    </div>
-                                {% endif %}
-                            </aside>
-                        </div>
+                            {% else %}
+                                <p class="text-muted">No related news found.</p>
+                            {% endif %}
+                        </aside>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
-    <footer>
-        <!-- Footer Start-->
-        <div class="footer-area">
-            <div class="container">
-            <div class="footer-top footer-padding">
-                    <div class="row justify-content-between">
-                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="single-footer-caption mb-30">
-                                    <!-- logo -->
-                                    <div class="footer-logo">
-                                        <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo2_footer.png') }}" alt=""></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>All packages</h4>
-                                    <ul>
-                                        <li><a href="#">Package-1</a></li>
-                                        <li><a href="#">Package-2</a></li>
-                                        <li><a href="#">Package-3</a></li>
-                                        <li><a href="#">Custome</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>Quick Link</h4>
-                                    <ul>
-                                        <li><a href="#">Contact Us</a></li>
-                                        <li><a href="#">About Us</a></li>
-                                        <li><a href="#">News & Articles</a></li>
-                                        <li><a href="#">Privacy Policy</a></li>     
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>+1 514 648 256</h4>
-                                    <ul>
-                                        <li><a href="#">youremail@gmail.com</a></li>
-                                    </ul>
-                                    <p>123 East 26th Street, Fifth Floor, New York, NY 10011</p>
+        </div>
+    </section>
+</main>
+
+<!-- Single Comment Delete Confirmation Modal (move outside the loop) -->
+<div class="modal fade comment-delete-modal" id="deleteCommentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0" style="background: linear-gradient(135deg, #f8f9fa 80%, #e0e7ff 100%); border-radius: 18px;">
+            <div class="modal-header justify-content-center border-0 pb-0">
+                <div class="modal-icon text-center w-100">
+                    <i class="fas fa-exclamation-circle text-danger" style="font-size: 3rem;"></i>
+                </div>
+            </div>
+            <div class="modal-body text-center">
+                <h3 class="mb-3" style="color: #f4212e; font-weight: 700;">Delete Comment</h3>
+                <p class="text-muted">Are you sure you want to delete this comment? <br>This action cannot be undone.</p>
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <button type="button" class="btn btn-lg btn-secondary px-4" data-dismiss="modal" style="border-radius: 8px; background: #e9ecef; color: #333;">
+                        <i class="fa fa-times mr-2"></i>Cancel
+                    </button>
+                    <button type="button" class="btn btn-lg btn-danger px-4" id="confirmDeleteComment" style="border-radius: 8px; background: linear-gradient(135deg, #ff6b6b, #ff4757);">
+                        <i class="fa fa-trash mr-2"></i><span class="btn-text">Delete</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <!-- Footer Start-->
+    <div class="footer-area">
+        <div class="container">
+        <div class="footer-top footer-padding">
+                <div class="row justify-content-between">
+                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                        <div class="single-footer-caption mb-50">
+                            <div class="single-footer-caption mb-30">
+                                <!-- logo -->
+                                <div class="footer-logo">
+                                    <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo2_footer.png') }}" alt=""></a>
                                 </div>
                             </div>
                         </div>
                     </div>
-            </div>
-                <div class="footer-bottom">
-                    <div class="row d-flex justify-content-between align-items-center">
-                        <div class="col-xl-9 col-lg-9 ">
-                            <div class="footer-copy-right">
-                                <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-    Copyright &copy;
-    <!-- Edit Post Modal -->
-<div class="modal fade" id="editPostModal" tabindex="-1" role="dialog" aria-labelledby="editPostModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editPostModalLabel">Edit Post</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
+                        <div class="single-footer-caption mb-50">
+                            <div class="footer-tittle">
+                                <h4>All packages</h4>
+                                <ul>
+                                    <li><a href="#">Package-1</a></li>
+                                    <li><a href="#">Package-2</a></li>
+                                    <li><a href="#">Package-3</a></li>
+                                    <li><a href="#">Custome</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+                        <div class="single-footer-caption mb-50">
+                            <div class="footer-tittle">
+                                <h4>Quick Link</h4>
+                                <ul>
+                                    <li><a href="#">Contact Us</a></li>
+                                    <li><a href="#">About Us</a></li>
+                                    <li><a href="#">News & Articles</a></li>
+                                    <li><a href="#">Privacy Policy</a></li>     
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
+                        <div class="single-footer-caption mb-50">
+                            <div class="footer-tittle">
+                                <h4>+1 514 648 256</h4>
+                                <ul>
+                                    <li><a href="#">youremail@gmail.com</a></li>
+                                </ul>
+                                <p>123 East 26th Street, Fifth Floor, New York, NY 10011</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+            <div class="footer-bottom">
+                <div class="row d-flex justify-content-between align-items-center">
+                    <div class="col-xl-9 col-lg-9 ">
+                        <div class="footer-copy-right">
+                            <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;
+<!-- Edit Post Modal -->
+<div class="modal fade" id="editPostModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow-lg border-0" style="background: linear-gradient(135deg, #f8f9fa 80%, #e0e7ff 100%); border-radius: 18px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title" style="color: #4a90e2; font-weight: 700;"><i class="fa fa-edit mr-2"></i>Edit Post</h5>
+                <button type="button" class="close" data-dismiss="modal" style="font-size: 2rem; color: #aaa;">
+                    <span>&times;</span>
                 </button>
             </div>
-            <form id="editPostForm" enctype="multipart/form-data">
+            <form id="editPostForm" class="needs-validation" novalidate>
                 <div class="modal-body">
                     <input type="hidden" id="editPostId" name="id">
                     <div class="form-group">
-                        <label for="editTitle">Title</label>
-                        <input type="text" class="form-control" id="editTitle" name="title" required>
+                        <label for="editTitle" style="font-weight: 600; color: #333;"><i class="fa fa-heading mr-2 text-primary"></i>Title</label>
+                        <input type="text" class="form-control" id="editTitle" name="title" required minlength="5" maxlength="255">
+                        <div class="invalid-feedback" id="titleError">
+                            Please provide a valid title (5-255 characters).
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="editContent">Content</label>
-                        <textarea class="form-control" id="editContent" name="content" rows="5" required></textarea>
+                        <label for="editContent" style="font-weight: 600; color: #333;"><i class="fa fa-align-left mr-2 text-primary"></i>Content</label>
+                        <textarea class="form-control" id="editContent" name="content" rows="5" required minlength="10"></textarea>
+                        <div class="invalid-feedback" id="contentError">
+                            Please provide valid content (minimum 10 characters).
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="editCategory">Category</label>
+                        <label for="editCategory" style="font-weight: 600; color: #333;"><i class="fa fa-list mr-2 text-primary"></i>Category</label>
                         <select class="form-control" id="editCategory" name="category" required>
                             {% for category in categories %}
                                 <option value="{{ category }}">{{ category }}</option>
                             {% endfor %}
                         </select>
+                        <div class="invalid-feedback" id="editCategoryError">
+                            Please select a category.
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="editImage">Image</label>
-                        <input type="file" class="form-control-file" id="editImage" name="imageFile">
+                        <label for="editImage" style="font-weight: 600; color: #333;"><i class="fa fa-image mr-2 text-primary"></i>Image</label>
+                        <input type="file" class="form-control-file" id="editImage" name="imageFile" accept="image/*">
+                        <div class="invalid-feedback" id="imageError">
+                            Please provide a valid image file.
+                        </div>
+                        <small class="form-text text-muted">Leave empty to keep the current image.</small>
                     </div>
+                    <div id="generalError" class="alert alert-danger" style="display: none;"></div>
                     <input type="hidden" name="_token" value="{{ csrf_token('blog_post') }}">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-link text-muted" data-dismiss="modal" style="font-weight: 600;">
+                        <i class="fa fa-times mr-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px;">
+                        <i class="fa fa-save mr-2"></i><span class="btn-text">Save Changes</span>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-    <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
     <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-3">
-                            <!-- Footer Social -->
-                            <div class="footer-social f-right">
-                                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fas fa-globe"></i></a>
-                                <a href="#"><i class="fab fa-instagram"></i></a>
-                            </div>
                         </div>
                     </div>
-            </div>
-            </div>
+                    <div class="col-xl-3 col-lg-3">
+                        <!-- Footer Social -->
+                        <div class="footer-social f-right">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-globe"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
         </div>
-        <!-- Footer End-->
-    </footer>
-    <!-- Scroll Up -->
-    <div id="back-top" >
-        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+        </div>
     </div>
+    <!-- Footer End-->
+</footer>
+<!-- Scroll Up -->
+<div id="back-top" >
+    <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+</div>
 
-    <!-- JS here -->
-        <!-- All JS Custom Plugins Link Here here -->
-        <script src="{{ asset('FrontOffice/assets/js/vendor/modernizr-3.5.0.min.js') }}"></script>
-        <!-- Jquery, Popper, Bootstrap -->
-        <script src="{{ asset('FrontOffice/assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/popper.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/bootstrap.min.js') }}"></script>
-        <!-- Jquery Mobile Menu -->
-        <script src="{{ asset('FrontOffice/assets/js/jquery.slicknav.min.js') }}"></script>
+<!-- JS here -->
+    <!-- All JS Custom Plugins Link Here here -->
+    <script src="{{ asset('FrontOffice/assets/js/vendor/modernizr-3.5.0.min.js') }}"></script>
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="{{ asset('FrontOffice/assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/popper.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/bootstrap.min.js') }}"></script>
+    <!-- Jquery Mobile Menu -->
+    <script src="{{ asset('FrontOffice/assets/js/jquery.slicknav.min.js') }}"></script>
 
-        <!-- Jquery Slick , Owl-Carousel Plugins -->
-        <script src="{{ asset('FrontOffice/assets/js/owl.carousel.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/slick.min.js') }}"></script>
-        <!-- One Page, Animated-HeadLin -->
-        <script src="{{ asset('FrontOffice/assets/js/wow.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/animated.headline.js') }}"></script>
+    <!-- Jquery Slick , Owl-Carousel Plugins -->
+    <script src="{{ asset('FrontOffice/assets/js/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/slick.min.js') }}"></script>
+    <!-- One Page, Animated-HeadLin -->
+    <script src="{{ asset('FrontOffice/assets/js/wow.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/animated.headline.js') }}"></script>
+    
+    <!-- Nice-select, sticky -->
+    <script src="{{ asset('FrontOffice/assets/js/jquery.nice-select.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.sticky.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.magnific-popup.js') }}"></script>
+
+    <!-- contact js -->
+    <script src="{{ asset('FrontOffice/assets/js/contact.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.form.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/mail-script.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.ajaxchimp.min.js') }}"></script>
+    
+    <!-- Jquery Plugins, main Jquery -->    
+    <script src="{{ asset('FrontOffice/assets/js/plugins.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/main.js') }}"></script>
+    <script>
+$(document).ready(function() {
+    // Toggle Comments Section
+    $('.comments-toggle').on('click', function() {
+        const postId = $(this).data('post');
+        const container = $(`#comments-${postId}`);
+        container.toggleClass('expanded');
+    });
+
+    // Edit Comment
+    $(document).on('click', '.edit-comment-btn', function() {
+        const commentDiv = $(this).closest('.comment');
+        const commentText = commentDiv.find('.comment-text');
+        const editForm = commentDiv.find('.edit-comment-form');
+        const commentActions = commentDiv.find('.comment-actions');
         
-        <!-- Nice-select, sticky -->
-        <script src="{{ asset('FrontOffice/assets/js/jquery.nice-select.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/jquery.sticky.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/jquery.magnific-popup.js') }}"></script>
+        commentText.hide();
+        commentActions.hide();
+        editForm.show();
+    });
 
-        <!-- contact js -->
-        <script src="{{ asset('FrontOffice/assets/js/contact.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/jquery.form.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/jquery.validate.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/mail-script.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/jquery.ajaxchimp.min.js') }}"></script>
+    // Cancel Edit
+    $(document).on('click', '.cancel-edit-btn', function() {
+        const commentDiv = $(this).closest('.comment');
+        const commentText = commentDiv.find('.comment-text');
+        const editForm = commentDiv.find('.edit-comment-form');
+        const commentActions = commentDiv.find('.comment-actions');
         
-        <!-- Jquery Plugins, main Jquery -->    
-        <script src="{{ asset('FrontOffice/assets/js/plugins.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/main.js') }}"></script>
-        <script>
-    $(document).ready(function() {
-        // Toggle Comments Section
-        $('.comments-toggle').on('click', function() {
-            const postId = $(this).data('post');
-            const container = $(`#comments-${postId}`);
-            container.toggleClass('expanded');
-        });
+        commentText.show();
+        commentActions.show();
+        editForm.hide();
+    });
 
-        // Edit Comment
-        $(document).on('click', '.edit-comment-btn', function() {
-            const commentDiv = $(this).closest('.comment');
-            const commentText = commentDiv.find('.comment-text');
-            const editForm = commentDiv.find('.edit-comment-form');
-            const commentActions = commentDiv.find('.comment-actions');
-            
-            commentText.hide();
-            commentActions.hide();
-            editForm.show();
-        });
-
-        // Cancel Edit
-        $(document).on('click', '.cancel-edit-btn', function() {
-            const commentDiv = $(this).closest('.comment');
-            const commentText = commentDiv.find('.comment-text');
-            const editForm = commentDiv.find('.edit-comment-form');
-            const commentActions = commentDiv.find('.comment-actions');
-            
-            commentText.show();
-            commentActions.show();
-            editForm.hide();
-        });
-
-        // Save Edit
-        $(document).on('click', '.save-edit-btn', function() {
-            const commentDiv = $(this).closest('.comment');
-            const commentId = commentDiv.data('comment-id');
-            const content = commentDiv.find('.edit-comment-form textarea').val().trim();
-            
-            if(!content) return;
-            
-            $.ajax({
-                url: `/comment/comment/${commentId}/edit`,
-                method: 'POST',
-                data: { 
-                    content: content,
-                    _token: document.querySelector('meta[name="csrf-token-edit"]').getAttribute('content')
-                },
-                success: function(data) {
-                    if(data.success) {
-                        commentDiv.find('.comment-text').text(data.comment.content);
-                        
-                        commentDiv.find('.comment-text').show();
-                        commentDiv.find('.comment-actions').show();
-                        commentDiv.find('.edit-comment-form').hide();
-                    }
+    // Save Edit
+    $(document).on('click', '.save-edit-btn', function() {
+        const commentDiv = $(this).closest('.comment');
+        const commentId = commentDiv.data('comment-id');
+        const content = commentDiv.find('.edit-comment-form textarea').val().trim();
+        
+        if(!content) return;
+        
+        $.ajax({
+            url: `/comment/comment/${commentId}/edit`,
+            method: 'POST',
+            data: { 
+                content: content,
+                _token: document.querySelector('meta[name="csrf-token-edit"]').getAttribute('content')
+            },
+            success: function(data) {
+                if(data.success) {
+                    commentDiv.find('.comment-text').text(data.comment.content);
+                    
+                    commentDiv.find('.comment-text').show();
+                    commentDiv.find('.comment-actions').show();
+                    commentDiv.find('.edit-comment-form').hide();
                 }
-            });
+            }
         });
+    });
 
-        // Function to update comment count
-        function updateCommentCount(postElement, change) {
-            const commentCountElement = postElement.find('.comment-count');
-            const commentsToggle = postElement.find('.comments-toggle');
-            let currentCount = parseInt(commentCountElement.text()) || 0;
-            currentCount += change;
-            
-            // Update the count
-            commentCountElement.text(currentCount);
-            
-            // Update the comments text (singular/plural)
-            const commentsText = currentCount === 1 ? ' Comment' : ' Comments';
-            commentsToggle.html(`
-                <i class="fa fa-comments mr-1"></i>
-                <span class="comment-count">${currentCount}</span>${commentsText}
-            `);
-            
-            return currentCount;
-        }
+    // Function to update comment count
+    function updateCommentCount(postElement, change) {
+        const commentCountElement = postElement.find('.comment-count');
+        const commentsToggle = postElement.find('.comments-toggle');
+        let currentCount = parseInt(commentCountElement.text()) || 0;
+        currentCount += change;
+        
+        // Update the count
+        commentCountElement.text(currentCount);
+        
+        // Update the comments text (singular/plural)
+        const commentsText = currentCount === 1 ? ' Comment' : ' Comments';
+        commentsToggle.html(`
 
-        // Delete Comment
-        $(document).on('click', '.delete-comment-btn', function() {
-            if(!confirm('Are you sure you want to delete this comment?')) return;
-            
-            const commentDiv = $(this).closest('.comment');
-            const commentId = commentDiv.data('comment-id');
-            const postElement = commentDiv.closest('.blog_item');
-            
-            $.ajax({
-                url: `/comment/comment/${commentId}/delete`,
-                method: 'POST',
-                data: {
-                    _token: $('meta[name="csrf-token-delete"]').attr('content')
-                },
-                success: function(data) {
-                    if(data.success) {
-                        commentDiv.fadeOut(300, function() {
-                            $(this).remove();
-                            
-                            // Update comment count
-                            const remainingCount = updateCommentCount(postElement, -1);
-                            
-                            // Add "no comments" message if this was the last comment
-                            const commentsSection = postElement.find('.comments-section');
-                            if(remainingCount === 0) {
-                                commentsSection.html(`
-                                    <div class="no-comments text-muted">
-                                        No comments yet. Be the first to share your thoughts!
-                                    </div>
-                                `);
-                            }
-                        });
-                    } else {
-                        alert(data.message || 'Error deleting comment');
-                    }
-                },
-                error: function(xhr) {
-                    alert(xhr.responseJSON?.message || 'Error deleting comment. Please try again.');
-                }
-            });
-        });
+            <i class="fa fa-comments mr-1"></i>
+            <span class="comment-count">${currentCount}</span>${commentsText}
+        `);
+        
+        return currentCount;
+    }
 
-        // Like functionality
-        $('.like-form').on('submit', function(e) {
-            e.preventDefault();
-            const form = $(this);
-            const url = form.attr('action');
-            
-            $.ajax({
-                url: url,
-                method: 'POST',
-                success: function(data) {
-                    if(data.success) {
-                        const likeCount = form.find('.like-count');
-                        likeCount.text(data.likes);
-                        
-                        if(data.liked) {
-                            form.find('i').addClass('text-danger');
-                        }
-                    }
-                }
-            });
-        });
-
-        // Handle comment form submission
-        $('.comment-form').on('submit', function(e) {
-            e.preventDefault();
-            const form = $(this);
-            const postId = form.data('post-id');
-            const textarea = form.find('.comment-input');
-            const content = textarea.val().trim();
-            const postElement = form.closest('.blog_item');
-            
-            if (!content) return;
-
-            $.ajax({
-    url: form.attr('action'),
-    method: 'POST',
-    data: {
-        comment: content,
-        _token: $('meta[name="csrf-token-edit"]').attr('content')
-    },
-                success: function(data) {
-                    if (data.success) {
-                        // Clear the textarea
-                        textarea.val('');
-
+    // Delete Comment
+    let commentToDelete = null;
+    $(document).on('click', '.delete-comment-btn', function() {
+        commentToDelete = $(this).closest('.comment');
+        $('#deleteCommentModal').modal('show');
+    });
+    $('#confirmDeleteComment').on('click', function() {
+        if (!commentToDelete) return;
+        const commentDiv = commentToDelete;
+        const commentId = commentDiv.data('comment-id');
+        const postElement = commentDiv.closest('.blog_item');
+        $(this).prop('disabled', true).html('<span class="btn-text">Deleting...</span><div class="spinner"></div>');
+        $.ajax({
+            url: `/comment/comment/${commentId}/delete`,
+            method: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token-delete"]').attr('content')
+            },
+            success: function(data) {
+                if(data.success) {
+                    commentDiv.fadeOut(300, function() {
+                        $(this).remove();
                         // Update comment count
-                        updateCommentCount(postElement, 1);
+                        const remainingCount = updateCommentCount(postElement, -1);
+                        // Add "no comments" message if this was the last comment
+                        const commentsSection = postElement.find('.comments-section');
+                        if(remainingCount === 0) {
+                            commentsSection.html(`
+                                <div class="no-comments text-muted">
+                                    No comments yet. Be the first to share your thoughts!
+                                </div>
+                            `);
+                        }
+                    });
+                    $('#deleteCommentModal').modal('hide');
+                } else {
+                    alert(data.message || 'Error deleting comment');
+                }
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || 'Error deleting comment. Please try again.');
+            },
+            complete: function() {
+                $('#confirmDeleteComment').prop('disabled', false).html('<i class="fa fa-trash mr-2"></i><span class="btn-text">Delete</span>');
+                commentToDelete = null;
+            }
+        });
+    });
 
-                        // Remove "no comments" message if it exists
-                        const commentsSection = form.closest('.comments-container').find('.comments-section');
-                        commentsSection.find('.no-comments').remove();
+    // Like functionality
+    $('.like-form').on('submit', function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const url = form.attr('action');
+        
+        $.ajax({
+            url: url,
+            method: 'POST',
+            success: function(data) {
+                if(data.success) {
+                    const likeCount = form.find('.like-count');
+                    likeCount.text(data.likes);
+                    
+                    if(data.liked) {
+                        form.find('i').addClass('text-danger');
+                    }
+                }
+            }
+        });
+    });
 
-                        // Add the new comment to the list
-                        const newComment = `
-                            <div class="comment mb-3" data-comment-id="${data.comment.id}">
-                                <div class="d-flex">
-                                    <div class="comment-avatar mr-3">
-                                        <i class="fa fa-user-circle fa-2x text-muted"></i>
+    // Handle comment form submission
+    $('.comment-form').on('submit', function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const postId = form.data('post-id');
+        const textarea = form.find('.comment-input');
+        const content = textarea.val().trim();
+        const postElement = form.closest('.blog_item');
+        
+        if (!content) return;
+
+        $.ajax({
+            url: form.attr('action'),
+            method: 'POST',
+            data: {
+                comment: content,
+                _token: $('meta[name="csrf-token-edit"]').attr('content')
+            },
+            success: function(data) {
+                if (data.success) {
+                    // Clear the textarea
+                    textarea.val('');
+
+                    // Update comment count
+                    updateCommentCount(postElement, 1);
+
+                    // Remove "no comments" message if it exists
+                    const commentsSection = form.closest('.comments-container').find('.comments-section');
+                    commentsSection.find('.no-comments').remove();
+
+                    // Add the new comment to the list
+                    const newComment = `
+                        <div class="comment mb-3" data-comment-id="${data.comment.id}">
+                            <div class="d-flex">
+                                <div class="comment-avatar mr-3">
+                                    <i class="fa fa-user-circle fa-2x text-muted"></i>
+                                </div>
+                                <div class="comment-content flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <p class="comment-text mb-1">${data.comment.content}</p>
+                                        <div class="comment-actions">
+                                            <button class="btn btn-sm edit-comment-btn">
+                                                <i class="fa fa-edit mr-1"></i>Edit
+                                            </button>
+                                            <button class="btn btn-sm delete-comment-btn">
+                                                <i class="fa fa-trash mr-1"></i>Delete
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="comment-content flex-grow-1">
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <p class="comment-text mb-1">${data.comment.content}</p>
-                                            <div class="comment-actions">
-                                                <button class="btn btn-sm edit-comment-btn">
-                                                    <i class="fa fa-edit mr-1"></i>Edit
-                                                </button>
-                                                <button class="btn btn-sm delete-comment-btn">
-                                                    <i class="fa fa-trash mr-1"></i>Delete
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="comment-time text-muted small">
-                                            ${data.comment.createdAt}
-                                        </div>
-                                        <div class="edit-comment-form">
-                                            <div class="input-group mt-2">
-                                                <textarea class="form-control form-control-sm">${data.comment.content}</textarea>
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-sm btn-primary save-edit-btn">Save</button>
-                                                    <button class="btn btn-sm btn-secondary cancel-edit-btn">Cancel</button>
-                                                </div>
+                                    <div class="comment-time text-muted small">
+                                        ${data.comment.createdAt}
+                                    </div>
+                                    <div class="edit-comment-form">
+                                        <div class="input-group mt-2">
+                                            <textarea class="form-control form-control-sm">${data.comment.content}</textarea>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-sm btn-primary save-edit-btn">Save</button>
+                                                <button class="btn btn-sm btn-secondary cancel-edit-btn">Cancel</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        `;
-                        commentsSection.append(newComment);
-                    }
-                    else {
-            // Show error message
-            const errorHtml = `
-                <div class="alert alert-danger mt-2">
-                    ${data.message}
-                </div>
-            `;
-            
-            form.find('.alert-danger').remove();
-            form.prepend(errorHtml);
-            
-            // Shake animation for attention
-            form.find('.alert-danger').css('animation', 'shake 0.5s');
-        }
-
-                },
-                error: function(xhr) {
-                    alert('Error adding comment. Please try again.');
+                        </div>
+                    `;
+                    commentsSection.append(newComment);
+                    // Remove any previous error
+                    form.find('.alert-bad-words').remove();
                 }
-            });
-        });
+                else {
+        // Show error message (bad words or other error)
+        const errorHtml = `
+            <div class="alert alert-bad-words mt-2 animate__animated animate__shakeX">
+                <i class="fa fa-exclamation-triangle mr-2"></i> ${data.message}
+            </div>
+        `;
+        form.find('.alert-bad-words').remove();
+        form.prepend(errorHtml);
+        // Optionally, focus the textarea
+        textarea.focus();
+    }
 
-        // Three dots menu functionality
-        $(document).on('click', '.three-dots-btn', function(e) {
-            e.stopPropagation();
-            const postId = $(this).data('post-id');
-            const actionButtons = $(`#action-buttons-${postId}`);
-            
-            // Hide all other action buttons
-            $('.action-buttons').not(actionButtons).hide();
-            
-            // Toggle current action buttons
-            actionButtons.toggle();
-        });
-
-        // Close action buttons when clicking outside
-        $(document).on('click', function(e) {
-            if (!$(e.target).closest('.post-actions-dropdown').length) {
-                $('.action-buttons').hide();
+            },
+            error: function(xhr) {
+                alert('Error adding comment. Please try again.');
             }
-        });
-
-        // Edit post functionality
-        $(document).on('click', '.edit-post-btn', function() {
-            const postId = $(this).data('post-id');
-            const postElement = $(`.blog_item[data-post-id="${postId}"]`);
-            
-            // Store original values in data attributes
-            const form = $('#editPostForm');
-            form.data('original-title', postElement.find('h2').text().trim());
-            form.data('original-content', postElement.find('.post-content').html().trim());
-            form.data('original-category', postElement.find('.post-meta .text-muted:first').text().trim());
-            
-            // Populate form fields
-            $('#editPostId').val(postId);
-            $('#editTitle').val(form.data('original-title'));
-            $('#editContent').val(form.data('original-content'));
-            $('#editCategory').val(form.data('original-category'));
-            
-            // Show the modal
-            $('#editPostModal').modal('show');
-        });
-
-        // Handle edit form submission
-        $('#editPostForm').on('submit', function(e) {
-            e.preventDefault();
-            const form = $(this);
-            const formData = new FormData();
-            const postId = $('#editPostId').val();
-
-            // Only append changed fields to formData
-            const title = $('#editTitle').val();
-            const content = $('#editContent').val();
-            const category = $('#editCategory').val();
-            const imageFile = $('#editImage')[0].files[0];
-
-            if (title !== form.data('original-title')) {
-                formData.append('title', title);
-            }
-            if (content !== form.data('original-content')) {
-                formData.append('content', content);
-            }
-            if (category !== form.data('original-category')) {
-                formData.append('category', category);
-            }
-            if (imageFile) {
-                formData.append('imageFile', imageFile);
-            }
-
-            // Always append the CSRF token
-            formData.append('_token', $('input[name="_token"]').val());
-
-            // Only proceed if there are changes
-            if (formData.has('title') || formData.has('content') || formData.has('category') || formData.has('imageFile')) {
-                $.ajax({
-                    url: `/blog/edit/${postId}`,
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        if (response.success) {
-                            const postElement = $(`.blog_item[data-post-id="${postId}"]`);
-                            
-                            // Only update changed fields in the UI
-                            if (formData.has('title')) {
-                                postElement.find('h2').text(response.post.title);
-                            }
-                            if (formData.has('content')) {
-                                postElement.find('.post-content').html(response.post.content);
-                            }
-                            if (formData.has('category')) {
-                                postElement.find('.post-meta .text-muted:first').text(response.post.category);
-                            }
-                            if (response.post.imageUrl) {
-                                postElement.find('.blog_item_img img')
-                                    .attr('src', `/uploads/images/${response.post.imageUrl}`);
-                            }
-                            
-                            $('#editPostModal').modal('hide');
-                        }
-                    },
-                    error: function(xhr) {
-                        const errors = xhr.responseJSON?.errors || ['Unknown error'];
-                        alert('Error:\n' + errors.join('\n'));
-                    }
-                });
-            } else {
-                // If no changes were made, just close the modal
-                $('#editPostModal').modal('hide');
-            }
-        });
-
-        // Delete post functionality
-        $(document).on('click', '.delete-post-btn', function() {
-            const postId = $(this).data('post-id');
-            $('#deletePostModal').data('post-id', postId).modal('show');
-        });
-
-        // Confirm delete
-        $('#confirmDeletePost').on('click', function() {
-            const postId = $('#deletePostModal').data('post-id');
-            
-            $.ajax({
-                url: `/blog/${postId}`,
-                method: 'POST',
-                data: {
-                    _token: $('meta[name="csrf-token-delete-post"]').attr('content')
-                },
-                success: function(response) {
-                    if (response.success) {
-                        $(`.blog_item[data-post-id="${postId}"]`).fadeOut(300, function() {
-                            $(this).remove();
-                        });
-                        $('#deletePostModal').modal('hide');
-                    } else {
-                        alert(response.message || 'Error deleting post');
-                    }
-                },
-                error: function(xhr) {
-                    alert(xhr.responseJSON?.message || 'Error deleting post. Please try again.');
-                }
-            });
         });
     });
+
+    // Three dots menu functionality
+    $(document).on('click', '.three-dots-btn', function(e) {
+        e.stopPropagation();
+        const postId = $(this).data('post-id');
+        const actionButtons = $(`#action-buttons-${postId}`);
+        
+        // Hide all other action buttons
+        $('.action-buttons').not(actionButtons).hide();
+        
+        // Toggle current action buttons
+        actionButtons.toggle();
+    });
+
+    // Close action buttons when clicking outside
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.post-actions-dropdown').length) {
+            $('.action-buttons').hide();
+        }
+    });
+
+    // Edit post functionality
+    $(document).on('click', '.edit-post-btn', function() {
+        const postId = $(this).data('post-id');
+        const postElement = $(`.blog_item[data-post-id="${postId}"]`);
+        
+        // Store original values in data attributes
+        const form = $('#editPostForm');
+        form.data('original-title', postElement.find('h2').text().trim());
+        form.data('original-content', postElement.find('.post-content').html().trim());
+        
+        // Find the category text and extract it properly
+        const categoryText = postElement.find('.post-meta span:has(i.fa-folder)').text()
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, ' '); // Normalize whitespace
+        
+        // Set form values
+        $('#editPostId').val(postId);
+        $('#editTitle').val(form.data('original-title'));
+        $('#editContent').val(form.data('original-content'));
+        
+        // Set the category value - match exactly with the available options
+        const categorySelect = $('#editCategory');
+        categorySelect.find('option').each(function() {
+            if (categoryText.includes($(this).val())) {
+                categorySelect.val($(this).val());
+                return false;
+            }
+        });
+        
+        // Show the modal
+        $('#editPostModal').modal('show');
+    });
+
+    // Handle edit form submission
+    $('#editPostForm').on('submit', function(e) {
+    e.preventDefault();
+    const form = $(this);
+    const formData = new FormData();
+    const postId = $('#editPostId').val();
+    
+    // Reset previous error states
+    $('.invalid-feedback').hide();
+    $('.form-control').removeClass('is-invalid');
+    $('#generalError').hide();
+    
+    // Get form values
+    const title = $('#editTitle').val().trim();
+    const content = $('#editContent').val().trim();
+    const category = $('#editCategory').val();
+    const imageFile = $('#editImage')[0].files[0];
+
+    // Client-side validation
+    let hasErrors = false;
+
+    // Title validation (5-255 characters)
+    if (!title) {
+        $('#titleError').text('The title cannot be blank.').show();
+        $('#editTitle').addClass('is-invalid');
+        hasErrors = true;
+    } else if (title.length < 5) {
+        $('#titleError').text('The title must exceed 5 characters.').show();
+        $('#editTitle').addClass('is-invalid');
+        hasErrors = true;
+    } else if (title.length > 255) {
+        $('#titleError').text('The title cannot exceed 255 characters.').show();
+        $('#editTitle').addClass('is-invalid');
+        hasErrors = true;
+    }
+
+    // Content validation (minimum 10 characters)
+    if (!content) {
+        $('#contentError').text('The content cannot be blank.').show();
+        $('#editContent').addClass('is-invalid');
+        hasErrors = true;
+    } else if (content.length < 10) {
+        $('#contentError').text('The content must exceed 10 characters.').show();
+        $('#editContent').addClass('is-invalid');
+        hasErrors = true;
+    }
+
+    // Category validation
+    if (!category) {
+        $('#editCategoryError').text('Please select a category.').show();
+        $('#editCategory').addClass('is-invalid');
+        hasErrors = true;
+    } else if (!$('#editCategory option').filter(function() {
+    return $(this).val() === category;
+}).length) {
+    $('#editCategoryError').text('Please select a valid category.').show();
+    $('#editCategory').addClass('is-invalid');
+    hasErrors = true;
+}
+
+// Stop here if we have client-side validation errors
+if (hasErrors) {
+    submitBtn.prop('disabled', false).html(originalBtnText);
+    return;
+}
+
+// Add form field validation listeners
+$('#editCategory').on('change', function() {
+    const value = $(this).val();
+    if (!value) {
+        $(this).addClass('is-invalid');
+        $('#editCategoryError').text('Please select a category.').show();
+    } else {
+        $(this).removeClass('is-invalid');
+        $('#editCategoryError').hide();
+    }
+});
+
+    // Append form data
+    formData.append('title', title);
+    formData.append('content', content);
+    formData.append('category', category);
+    if (imageFile) {
+        formData.append('imageFile', imageFile);
+    }
+    formData.append('_token', $('input[name="_token"]').val());
+
+    // Disable submit button and show loading state
+    const submitBtn = form.find('button[type="submit"]');
+    const originalBtnText = submitBtn.html();
+    submitBtn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin mr-2"></i>Saving...');
+
+    $.ajax({
+        url: `/blog/edit/${postId}`,
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.success) {
+                const postElement = $(`.blog_item[data-post-id="${postId}"]`);
+                
+                // Update post content in the UI
+                postElement.find('h2').text(response.post.title);
+                postElement.find('.post-content').html(response.post.content);
+                postElement.find('.post-meta .text-muted:first').text(response.post.category);
+                if (response.post.imageUrl) {
+                    postElement.find('.blog_item_img img')
+                        .attr('src', `/uploads/images/${response.post.imageUrl}`);
+                }
+                
+                $('#editPostModal').modal('hide');
+                
+                // Show success message
+                const successAlert = $('<div class="alert alert-success alert-dismissible fade show" role="alert">')
+                    .text('Post updated successfully!')
+                    .append('<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>');
+                postElement.before(successAlert);
+                setTimeout(() => successAlert.alert('close'), 3000);
+            }
+        },
+        error: function(xhr) {
+            // Handle validation errors from server
+            const errors = xhr.responseJSON?.errors || {};
+            
+            // Display validation errors
+            if (errors.title) {
+                $('#titleError').text(errors.title).show();
+                $('#editTitle').addClass('is-invalid');
+            }
+            if (errors.content) {
+                $('#contentError').text(errors.content).show();
+                $('#editContent').addClass('is-invalid');
+            }
+            if (errors.category) {
+                $('#editCategoryError').text(errors.category).show();
+                $('#editCategory').addClass('is-invalid');
+            }
+            if (errors.imageFile) {
+                $('#imageError').text(errors.imageFile).show();
+                $('#editImage').addClass('is-invalid');
+            }
+            
+            // If we have a general error message
+            if (xhr.responseJSON?.message) {
+                $('#generalError').text(xhr.responseJSON.message).show();
+            }
+        },
+        complete: function() {
+            // Re-enable submit button
+            submitBtn.prop('disabled', false).html(originalBtnText);
+        }
+    });
+});
+
+// Delete post functionality
+$(document).on('click', '.delete-post-btn', function() {
+           const postId = $(this).data('post-id');
+const $modal = $('#deletePostModal');
+const $confirmBtn = $modal.find('#confirmDeletePost');
+
+$modal.data('post-id', postId);
+$confirmBtn.prop('disabled', false);
+$confirmBtn.html('<span class="btn-text">Delete Permanently</span>');
+$modal.modal('show');
+});
+
+// Confirm delete
+$('#confirmDeletePost').on('click', function() {
+            const $btn = $(this);
+
+    const postId = $('#deletePostModal').data('post-id');
+     $btn.prop('disabled', true).html('<span class="btn-text">Deleting...</span><div class="spinner"></div>');
+
+    $.ajax({
+        url: `/blog/${postId}`,
+        method: 'POST',
+        data: {
+            _token: $('meta[name="csrf-token-delete-post"]').attr('content')
+        },
+        success: function(response) {
+            if (response.success) {
+                $(`.blog_item[data-post-id="${postId}"]`).fadeOut(300, function() {
+                    $(this).remove();
+                });
+                $('#deletePostModal').modal('hide');
+            } else {
+                alert(response.message || 'Error deleting post');
+            }
+        },
+        error: function(xhr) {
+            alert(xhr.responseJSON?.message || 'Error deleting post. Please try again.');
+        }
+    });
+});
+});
+
+// Add Post Form Validation
+$(document).ready(function() {
+    const addPostForm = $('form.form-contact');
+    
+    // Category validation
+    $('#{{ form.category.vars.id }}').on('change', function() {
+        const value = $(this).val();
+        if (!value) {
+            $(this).addClass('is-invalid');
+            $('#addCategoryError').text('Please select a category.').show();
+        } else {
+            $(this).removeClass('is-invalid');
+            $('#addCategoryError').hide();
+        }
+    });
+
+    addPostForm.on('submit', function(e) {
+        e.preventDefault();
+        
+        // Reset previous error states
+        $('.invalid-feedback').hide();
+        $('.form-control').removeClass('is-invalid');
+        
+        // Get form values
+        const title = $('#{{ form.title.vars.id }}').val().trim();
+        const content = $('#{{ form.content.vars.id }}').val().trim();
+        const category = $('#{{ form.category.vars.id }}').val();
+        const imageFile = $('#{{ form.imageFile.vars.id }}')[0].files[0];
+        
+        // Client-side validation
+        let hasErrors = false;
+        
+        // Category validation
+        if (!category) {
+            $('#{{ form.category.vars.id }}').addClass('is-invalid');
+            $('#addCategoryError').text('Please select a category.').show();
+            hasErrors = true;
+        }
+
+        // Title validation (5-255 characters)
+        if (!title) {
+            $('#{{ form.title.vars.id }}').addClass('is-invalid')
+                .next('.invalid-feedback').text('The title cannot be blank.').show();
+            hasErrors = true;
+        } else if (title.length < 5) {
+            $('#{{ form.title.vars.id }}').addClass('is-invalid')
+                .next('.invalid-feedback').text('The title must exceed 5 characters.').show();
+            hasErrors = true;
+        } else if (title.length > 255) {
+            $('#{{ form.title.vars.id }}').addClass('is-invalid')
+                .next('.invalid-feedback').text('The title cannot exceed 255 characters.').show();
+            hasErrors = true;
+        }
+
+        // Content validation (minimum 10 characters)
+        if (!content) {
+            $('#{{ form.content.vars.id }}').addClass('is-invalid')
+                .next('.invalid-feedback').text('The content cannot be blank.').show();
+            hasErrors = true;
+        } else if (content.length < 10) {
+            $('#{{ form.content.vars.id }}').addClass('is-invalid')
+                .next('.invalid-feedback').text('The content must exceed 10 characters.').show();
+            hasErrors = true;
+        }
+
+        // If we have validation errors, stop form submission
+        if (hasErrors) {
+            $('html, body').animate({
+                scrollTop: $('.is-invalid').first().offset().top - 100
+            }, 500);
+            return;
+        }
+
+        // If validation passes, submit the form
+        const formData = new FormData(this);
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalBtnText = submitBtn.html();
+        
+        // Show loading state
+        submitBtn.prop('disabled', true)
+            .html('<i class="fa fa-spinner fa-spin mr-2"></i>Posting...');
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                // Redirect or refresh the page on success
+                window.location.reload();
+            },
+            error: function(xhr) {
+                // Handle server-side validation errors
+                const errors = xhr.responseJSON?.errors || {};
+                
+                if (errors.title) {
+                    $('#{{ form.title.vars.id }}').addClass('is-invalid')
+                        .next('.invalid-feedback').text(errors.title).show();
+                }
+                if (errors.content) {
+                    $('#{{ form.content.vars.id }}').addClass('is-invalid')
+                        .next('.invalid-feedback').text(errors.content).show();
+                }
+                if (errors.category) {
+                    $('#{{ form.category.vars.id }}').addClass('is-invalid')
+                        .next('.invalid-feedback').text(errors.category).show();
+                }
+                if (errors.imageFile) {
+                    $('#{{ form.imageFile.vars.id }}').addClass('is-invalid')
+                        .next('.invalid-feedback').text(errors.imageFile).show();
+                }
+            },
+            complete: function() {
+                // Re-enable submit button
+                submitBtn.prop('disabled', false).html(originalBtnText);
+            }
+        });
+    });
+
+    // Clear validation states when user starts typing/changing values
+    $('.form-control').on('input change', function() {
+        $(this).removeClass('is-invalid')
+            .next('.invalid-feedback').hide();
+    });
+});
+
     </script>
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deletePostModal" tabindex="-1" role="dialog" aria-labelledby="deletePostModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deletePostModalLabel">Confirm Delete</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+    <div class="modal fade confirmation-modal" id="deletePostModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0" style="background: linear-gradient(135deg, #f8f9fa 80%, #e0e7ff 100%); border-radius: 18px;">
+                <div class="modal-header justify-content-center border-0 pb-0">
+                    <div class="modal-icon">
+                        <i class="fas fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this post? This action cannot be undone.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeletePost">Delete</button>
+                <div class="modal-body text-center">
+                    <h5 class="modal-title mb-3" style="color: #f4212e; font-weight: 700;">Confirm Deletion</h5>
+                    <p class="text-muted">Are you sure you want to delete this post? <br>This action cannot be undone.</p>
+                    <div class="btn-group d-flex justify-content-center gap-3 mt-4">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="border-radius: 8px; background: #e9ecef; color: #333;">
+                            <i class="fa fa-times mr-2"></i>Cancel
+                        </button>
+                        <button type="button" class="btn btn-danger" id="confirmDeletePost" style="border-radius: 8px; background: linear-gradient(135deg, #ff6b6b, #ff4757);">
+                            <i class="fa fa-trash mr-2"></i><span class="btn-text">Delete Permanently</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    </body>
-    </html>
+</body>
+</html>
+
+<style>
+.alert-bad-words {
+    background: linear-gradient(90deg, #ff6b6b 0%, #ff4757 100%);
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 12px rgba(255,71,87,0.10);
+    animation: shake 0.5s;
+}
+</style>
