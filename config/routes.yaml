@@ -42,10 +42,9 @@ app_trips_search:
 
 2fa_login:
     path: /2fa
-    defaults:
-        _controller: scheb_two_factor.form_controller:form
+    controller: Scheb\TwoFactorBundle\Controller\FormController::form
 
-2fa_login_check:
+2fa_check:
     path: /2fa_check
 
 app_verify_email:

@@ -10,8 +10,10 @@ use App\Repository\UserRepository;
 use App\Service\EmailService;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
+use Endroid\QrCode\Builder\Builder;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Psr\Log\LoggerInterface;
+use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\Google\GoogleAuthenticatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,6 +38,7 @@ final class UserController extends AbstractController
         $this->userRepository = $userRepository;
         $this->emailService = $emailService;
     }
+
     #[Route(name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
@@ -77,6 +80,7 @@ final class UserController extends AbstractController
 //            'users' => $userRepository->findAll(),
 //        ]);
 //    }
+
 
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(
@@ -331,22 +335,69 @@ final class UserController extends AbstractController
                 return $this->redirectToRoute('app_user_login');
             }
 
-            // Login successful - do something with the user
             $session->set('user_id', $user->getId());
 
-            if($user->getRoles()[0] == 'ROLE_USER'){
-                $this->addFlash('success', 'Login successful!');
-                return $this->redirectToRoute('app_user_index');
-            }else{
-                $this->addFlash('success', 'Login successful!');
+            if ($user->isGoogleAuthenticatorEnabled()) {
+                return $this->redirectToRoute('2fa_verify_code');
+            }
+
+            $this->addFlash('success', 'Login successful!');
+
+            if (in_array('ROLE_ADMIN', $user->getRoles())) {
                 return $this->redirectToRoute('admin');
             }
 
+            return $this->redirectToRoute('app_user_index');
         }
+
         return $this->render('user/login.html.twig', [
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/2fa/verify', name: '2fa_verify_code', methods: ['GET', 'POST'])]
+    public function verifyCode(
+        Request $request,
+        SessionInterface $session,
+        GoogleAuthenticatorInterface $googleAuthenticator,
+        EntityManagerInterface $entityManager,
+        UserRepository $userRepository
+    ): Response {
+        $userId = $session->get('user_id');
+        if (!$userId) {
+            return $this->redirectToRoute('app_user_login');
+        }
+
+        $user = $userRepository->find($userId);
+        if (!$user) {
+            return $this->redirectToRoute('app_user_login');
+        }
+
+        if ($request->isMethod('POST')) {
+            $code = $request->request->get('code');
+
+            if ($googleAuthenticator->checkCode($user, $code)) {
+                // 2FA verified
+                $session->set('2fa_verified', true);
+
+                $this->addFlash('success', '2FA verification successful!');
+
+                // Redirect based on role or your logic
+                if (in_array('ROLE_ADMIN', $user->getRoles())) {
+                    return $this->redirectToRoute('admin');
+                }
+
+                return $this->redirectToRoute('app_user_index');
+            } else {
+                $this->addFlash('error', 'Invalid 2FA code.');
+            }
+        }
+
+        return $this->render('security/verify_2fa.html.twig', [
+            'email' => $user->getEmail(),
+        ]);
+    }
+
 
     #[Route('/logoutuser', name: 'app_logoutuser')]
     public function logout(SessionInterface $session): RedirectResponse

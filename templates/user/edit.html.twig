@@ -3,6 +3,28 @@
 {% block title %}Edit {{ user.Name }}{% endblock %}
 
 {% block body %}
+    <div class="container mt-4">
+        <h2>Security Settings</h2>
+
+        {% if user %}
+            {% if not user.isGoogleAuthenticatorEnabled %}
+                <div class="alert alert-info">
+                    <p>Two-factor authentication is currently <strong>disabled</strong>.</p>
+                    <a href="{{ path('app_enable_2fa') }}" class="btn btn-primary">
+                        Enable 2FA
+                    </a>
+                </div>
+            {% else %}
+                <div class="alert alert-success">
+                    <p>Two-factor authentication is <strong>enabled</strong>.</p>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-warning">
+                You must be logged in to view this page.
+            </div>
+        {% endif %}
+    </div>
     <div class="container-fluid p-3 mt-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1 class="h4 mb-0 fw-bold">Edit User: {{ user.Name }}</h1>

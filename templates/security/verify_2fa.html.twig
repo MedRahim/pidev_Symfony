@@ -1,0 +1,18 @@
+{% extends 'FrontOffice/base.html.twig' %}
+
+{% block body %}
+    <h1>Two-Factor Authentication</h1>
+    <p>Please enter the verification code from your authenticator app for {{ email }}.</p>
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    <form method="post">
+        <div>
+            <label for="code">Authentication Code:</label>
+            <input type="text" id="code" name="code" required autofocus />
+        </div>
+        <button type="submit">Verify</button>
+    </form>
+{% endblock %}

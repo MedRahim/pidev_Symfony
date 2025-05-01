@@ -12,6 +12,7 @@
         "doctrine/doctrine-bundle": "^2.14",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
+        "endroid/qr-code": "^6.0",
         "hwi/oauth-bundle": "^2.3",
         "knplabs/knp-paginator-bundle": "^6.0",
         "knpuniversity/oauth2-client-bundle": "^2.18",

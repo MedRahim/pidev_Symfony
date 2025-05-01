@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use League\OAuth2\Client\Provider\GoogleUser;
+use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,44 +52,45 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             new UserBadge($accessToken->getToken(), function() use ($accessToken, $client) {
                 /** @var GoogleUser $googleUser */
                 $googleUser = $client->fetchUserFromToken($accessToken);
-
                 $email = $googleUser->getEmail();
 
-                // 1. Check if user already exists with this Google ID
                 $existingUser = $this->entityManager->getRepository(User::class)
                     ->findOneBy(['googleId' => $googleUser->getId()]);
 
                 if ($existingUser) {
+                    // Update last login information
+                    $existingUser->setLastLoginDate(new \DateTime());
+                    $this->entityManager->flush();
                     return $existingUser;
                 }
 
-                // 2. Check if user exists with this email
                 $user = $this->entityManager->getRepository(User::class)
                     ->findOneBy(['Email' => $email]);
 
                 if (!$user) {
-                    // 3. Create new user
                     $user = new User();
-                    $user->setEmail($email);
-                    $user->setGoogleId($googleUser->getId());
-                    $user->setName($googleUser->getName());
-                    $user->setAvatar($googleUser->getAvatar());
-                    $user->setIsVerified(true);
-                    $user->setCreatedAt(new \DateTime());
-                    $birthday = new \DateTime('1990-01-01');
-                    $user->setBirthday($birthday);
+                    $user->setEmail($email)
+                        ->setGoogleId($googleUser->getId())
+                        ->setName($googleUser->getName())
+                        ->setAvatar($googleUser->getAvatar())
+                        ->setIsVerified(true)
+                        ->setCreatedAt(new \DateTime())
+                        ->setBirthday(new \DateTime('1990-01-01'))
+                        ->setCIN('00000000')
+                        ->setPassword(bin2hex(random_bytes(16)))
+                        ->setPhone('0000000000')
+                        ->setAddress('to be updated')
+                        ->setGoogleAuthenticatorSecret(null);
 
-                    // Set default values for required fields
-                    $user->setCIN('00000000'); // Temporary value - prompt user to update
-                    $tempPassword = bin2hex(random_bytes(16)); // 32-character random string
-                    $user->setPassword($tempPassword);
-                    $user->setPhone('0000000000');
-                    $user->setAddress('to be updated');
-
+                    $user->setIsGoogleAuthenticatorEnabled('false');
                 } else {
-                    // 4. Update existing user with Google ID
+                    // Merge Google account with existing account
                     $user->setGoogleId($googleUser->getId());
                 }
+
+                // Update common fields for both new and existing users
+                $user->setLastLoginDate(new \DateTime())
+                    ->setFailedLoginAttempts(0);
 
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
@@ -100,7 +102,6 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // Update last login date
         $user = $token->getUser();
 
         if ($user instanceof User) {
@@ -108,20 +109,34 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             $this->entityManager->flush();
         }
 
-        // Redirect if CIN is temporary
-        if ($user->getCIN() === '00000000') {
-
+        // Handle CIN check first
+        if ($user instanceof User && $user->getCIN() === '00000000') {
             $request->getSession()->set('pending_user_id', $user->getId());
             return new RedirectResponse(
                 $this->router->generate('app_user_complete_profile')
             );
         }
 
+        // Set user ID in session
         $request->getSession()->set('user_id', $user->getId());
+
+        // ✅ Check if 2FA is enabled and redirect if necessary
+        if (
+            $user instanceof TwoFactorInterface &&
+            $user->isGoogleAuthenticatorEnabled() &&
+            !$request->getSession()->get('2fa_verified', false)
+        ) {
+            return new RedirectResponse(
+                $this->router->generate('2fa_verify_code')
+            );
+        }
+
+        // ✅ Default success redirect
         return new RedirectResponse(
-            $this->router->generate('home') // Change to your desired route
+            $this->router->generate('app_user_index')
         );
     }
+
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {

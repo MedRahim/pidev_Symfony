@@ -1,10 +1,9 @@
-# config/packages/scheb_2fa.yaml
 scheb_two_factor:
     google:
         enabled: true
-        server_name: Your App Name
-        issuer: Your Company Name
+        server_name: "mdintech"  # Replace with your actual app name
+        issuer: "pidevSymfony"   # Replace with your organization name
         template: security/2fa_form.html.twig
     security_tokens:
-        - Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken
-        - Symfony\Component\Security\Core\Authentication\Token\RememberMeToken
+        - Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken
+        - Symfony\Component\Security\Http\Authenticator\Token\RememberMeToken
