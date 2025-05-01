@@ -1,3 +1,9 @@
+{% set sliderMin = 0 %}
+{% set sliderMax = 1000 %}
+{% set sliderFrom = minPrice is defined and minPrice is not null ? minPrice : sliderMin %}
+{% set sliderTo = maxPrice is defined and maxPrice is not null ? maxPrice : sliderMax %}
+{% set newestProductDate = products|last.createdAt %}
+
 <!doctype html>
 <html class="no-js" lang="zxx">
     <head>
@@ -7,310 +13,362 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="manifest" href="site.webmanifest">
-            <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
 
-            <!-- CSS here -->
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/owl.carousel.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slicknav.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/flaticon.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/price_rangs.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/animate.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/magnific-popup.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/fontawesome-all.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/themify-icons.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
-   </head>
+        <!-- CSS here -->
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/owl.carousel.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slicknav.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/flaticon.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/price_rangs.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/animate.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/magnific-popup.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/fontawesome-all.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/themify-icons.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+    </head>
 
-   <body>
-    <!-- Preloader Start -->
-    <div id="preloader-active">
-        <div class="preloader d-flex align-items-center justify-content-center">
-            <div class="preloader-inner position-relative">
-                <div class="preloader-circle"></div>
-                <div class="preloader-img pere-text">
-                    <img src="{{ asset('FrontOffice/assets/img/logo/loder.jpg') }}" alt="">
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Preloader Start -->
-    <header>
-        <!-- Header Start -->
-       <div class="header-area header-transparent">
-            <div class="main-header">
-               <div class="header-bottom  header-sticky">
-                    <div class="container-fluid">
-                        <div class="row align-items-center">
-                            <!-- Logo -->
-                            <div class="col-xl-2 col-lg-2 col-md-1">
-                                <div class="logo">
-                                  <a href="index.html"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt=""></a>
-                                </div>
-                            </div>
-                            <div class="col-xl-10 col-lg-10 col-md-8">
-                                <!-- Main-menu -->
-                                <div class="main-menu f-right d-none d-lg-block">
-                                    <nav>
-                                        <ul id="navigation">                                                                                                                                    
-                                            <li><a href="{{ asset('FrontOffice/index.html.twig') }}">Home</a></li>
-                                            <li><a href="{{ asset('FrontOffice/about.html.twig') }}">About</a></li>
-                                            <li><a href="{{ asset('FrontOffice/categori.html.twig') }}">Categories</a></li>
-                                            <li><a href="{{ asset('FrontOffice/market.html.twig') }}">Market</a></li>
-                                            <li><a href="#">Page</a>
-                                                <ul class="submenu">
-                                                    <li><a href="{{ asset('FrontOffice/blog.html.twig') }}">Blog</a></li>
-                                                    <li><a href="{{ asset('FrontOffice/blog-details.html.twig') }}">Blog Details</a></li>
-                                                    <li><a href="{{ asset('FrontOffice/elements.html.twig') }}">Element</a></li>
-                                                    <li><a href="{{ asset('FrontOffice/listing-details.html.twig') }}">Listing Details</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="{{ asset('FrontOffice/contact.html.twig') }}">Contact</a></li>
-                                            <li class="add-list"><a href="listing_details.html"><i class="ti-plus"></i> add Listing</a></li>
-                                            <li class="login"><a href="#">
-                                                <i class="ti-user"></i> Sign in or Register</a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                            <!-- Mobile Menu -->
-                            <div class="col-12">
-                                <div class="mobile_menu d-block d-lg-none"></div>
-                            </div>
-                        </div>
-                    </div>
-               </div>
-            </div>
-       </div>
-        <!-- Header End -->
-    </header>
-    <main>
-
-        <!-- Hero Start-->
-        <div class="hero-area3 hero-overly2 d-flex align-items-center">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-xl-8 col-lg-9">
-                        <div class="hero-cap text-center pt-50 pb-20">
-                            <h2>Our Market</h2>
-                        </div>
-                        <!-- Advanced Filter Section -->
-                        <form method="get" action="{{ path('app_product_listing') }}" id="product-filter-form" class="search-box search-box2 mt-4">
-                            <div class="input-form">
-                                <input type="text" id="search-name" name="name" placeholder="Search by Name" value="{{ searchName|default('') }}">
-                            </div>
-                            <!-- Filter button -->
-                            <div class="search-form">
-                                <button type="submit" class="btn btn-primary px-3 py-1" style="width: 100%; height: 100%;">
-                                    Filter
-                                </button>
-                            </div>
-                        </form>
+    <body>
+        <!-- Preloader Start -->
+        <div id="preloader-active">
+            <div class="preloader d-flex align-items-center justify-content-center">
+                <div class="preloader-inner position-relative">
+                    <div class="preloader-circle"></div>
+                    <div class="preloader-img pere-text">
+                        <img src="{{ asset('FrontOffice/assets/img/logo/loder.jpg') }}" alt="">
                     </div>
                 </div>
             </div>
         </div>
-        <!--Hero End -->
-
-        <!-- listing Area Start -->
-        <div class="listing-area pt-120 pb-120">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-xl-10 col-lg-10">
-                        <div class="row">
-                            <div class="col-lg-12 d-flex justify-content-between align-items-center mb-3">
-                                <div class="count mb-0">
-                                    <!-- Optional count or title -->
+        <!-- Preloader Start -->
+        <header>
+            <!-- Header Start -->
+            <div class="header-area header-transparent">
+                <div class="main-header">
+                    <div class="header-bottom  header-sticky">
+                        <div class="container-fluid">
+                            <div class="row align-items-center">
+                                <!-- Logo -->
+                                <div class="col-xl-2 col-lg-2 col-md-1">
+                                    <div class="logo">
+                                        <a href="index.html"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt=""></a>
+                                    </div>
                                 </div>
-                                <!-- Pannier Button -->
-                                <a href="{{ path('app_order_pannier') }}" class="btn btn-warning btn-lg" style="display: flex; align-items: center; gap: 8px;">
-                                    <i class="fa fa-shopping-cart"></i> Cart
-                                </a>
+                                <div class="col-xl-10 col-lg-10 col-md-8">
+                                    <!-- Main-menu -->
+                                    <div class="main-menu f-right d-none d-lg-block">
+                                        <nav>
+                                            <ul id="navigation">                                                                                                                                    
+                                                <li><a href="{{ asset('FrontOffice/index.html.twig') }}">Home</a></li>
+                                                <li><a href="{{ asset('FrontOffice/about.html.twig') }}">About</a></li>
+                                                <li><a href="{{ asset('FrontOffice/categori.html.twig') }}">Categories</a></li>
+                                                <li><a href="{{ asset('FrontOffice/market.html.twig') }}">Market</a></li>
+                                                <li><a href="#">Page</a>
+                                                    <ul class="submenu">
+                                                        <li><a href="{{ asset('FrontOffice/blog.html.twig') }}">Blog</a></li>
+                                                        <li><a href="{{ asset('FrontOffice/blog-details.html.twig') }}">Blog Details</a></li>
+                                                        <li><a href="{{ asset('FrontOffice/elements.html.twig') }}">Element</a></li>
+                                                        <li><a href="{{ asset('FrontOffice/listing-details.html.twig') }}">Listing Details</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li><a href="{{ asset('FrontOffice/contact.html.twig') }}">Contact</a></li>
+                                                <li class="add-list"><a href="listing_details.html"><i class="ti-plus"></i> add Listing</a></li>
+                                                <li class="login"><a href="#">
+                                                    <i class="ti-user"></i> Sign in or Register</a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                                <!-- Mobile Menu -->
+                                <div class="col-12">
+                                    <div class="mobile_menu d-block d-lg-none"></div>
+                                </div>
                             </div>
                         </div>
-                        <!-- listing Details Stat-->
-                        <div class="listing-details-area">
-                            <div class="container">
-                                <div class="row justify-content-center">
-                                    {% if products is defined and products is not empty %}
-                                        {% for product in products %}
-                                            <div class="col-lg-5 mb-4">
-                                                <div class="single-listing shadow-sm p-3 rounded">
-                                                    <div class="list-img text-center">
-                                                        <img src="{{ product.imagePath ? asset(product.imagePath) : asset('FrontOffice/assets/img/default-product.jpg') }}" alt="{{ product.name }}" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+            <!-- Header End -->
+        </header>
+        <main>
+
+            <!-- Hero Start-->
+            <div class="hero-area3 hero-overly2 d-flex align-items-center">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-8 col-lg-9">
+                            <div class="hero-cap text-center pt-50 pb-20">
+                                <h2>Our Market</h2>
+                            </div>
+                            <!-- Advanced Filter Section -->
+                            <form method="get" action="{{ path('app_product_listing') }}" id="product-filter-form" class="search-box search-box2 mt-4 p-4 rounded shadow-lg bg-white">
+                                <div class="row g-3">
+                                    <!-- Search by Name -->
+                                    <div class="col-md-4">
+                                        <label for="search-name" class="form-label fw-bold">Search by Name</label>
+                                        <input type="text" id="search-name" name="name" class="form-control" placeholder="Enter product name" value="{{ searchName|default('') }}">
+                                    </div>
+                                    <!-- Filter by Category -->
+                                    <div class="col-md-4">
+                                        <label for="search-category" class="form-label fw-bold">Filter by Category</label>
+                                        <select id="search-category" name="category" class="form-select">
+                                            <option value="">All Categories</option>
+                                            {% for category in categories %}
+                                                <option value="{{ category }}" {% if selectedCategory == category %}selected{% endif %}>
+                                                    {{ category }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <!-- Filter by Price Range -->
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold">Price Range</label>
+                                        <div class="price-range-container p-3 bg-light rounded">
+                                            <div class="price-display mb-3">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="min-price">
+                                                        <span class="text-muted">Min:</span>
+                                                        <span class="fw-bold ms-2" id="min-price-display">DT {{ minPrice|default(sliderMin) }}</span>
                                                     </div>
-                                                    <div class="list-caption mt-3">
-                                                        <h5 class="text-center">{{ product.name }}</h5>
-                                                        <p class="text-muted text-center">{{ product.description }}</p>
-                                                        <p class="text-center"><strong>Price:</strong> {{ product.price }} DT</p>
-                           
-                                                        <div class="d-flex justify-content-center align-items-center mt-2">
-                                                            <input
-                                                                type="number"
-                                                                class="form-control me-2"
-                                                                style="width: 80px;"
-                                                                min="1"
-                                                                max="{{ product.stock }}"
-                                                                value="1"
-                                                                id="quantity-{{ product.id }}"
-                                                            />
-                                                            <button
-                                                                class="btn btn-primary buy-btn"
-                                                                data-product-id="{{ product.id }}"
-                                                                data-toggle="modal"
-                                                                data-target="#orderModal"
-                                                            >
-                                                                Buy
-                                                            </button>
-                                                        </div>
+                                                    <div class="max-price">
+                                                        <span class="text-muted">Max:</span>
+                                                        <span class="fw-bold ms-2" id="max-price-display">DT {{ maxPrice|default(sliderMax) }}</span>
                                                     </div>
                                                 </div>
                                             </div>
-                                        {% endfor %}
-                                    {% else %}
-                                        <p class="text-center">No products available.</p>
-                                    {% endif %}
+                                            <div id="price-slider" class="mb-3"></div>
+                                            <input type="hidden" id="min-price" name="minPrice" value="{{ minPrice|default(sliderMin) }}">
+                                            <input type="hidden" id="max-price" name="maxPrice" value="{{ maxPrice|default(sliderMax) }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Filter Button -->
+                                <div class="row mt-4">
+                                    <div class="col-md-12 text-center">
+                                        <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow-sm">Apply Filters</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Hero End -->
+
+            <!-- listing Area Start -->
+            <div class="listing-area pt-120 pb-120">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-10 col-lg-10">
+                            <div class="row">
+                                <div class="col-lg-12 d-flex justify-content-between align-items-center mb-3">
+                                    <div class="count mb-0">
+                                        <!-- Optional count or title -->
+                                    </div>
+                                    <!-- Pannier Button -->
+                                    <a href="{{ path('app_order_pannier') }}" class="btn btn-warning btn-lg position-relative" style="display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa fa-shopping-cart"></i> Cart
+                                        {% if confirmedOrderCount > 0 %}
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                {{ confirmedOrderCount }}
+                                                <span class="visually-hidden">confirmed orders</span>
+                                            </span>
+                                        {% endif %}
+                                    </a>
                                 </div>
                             </div>
-                        </div>
-                        <!-- listing Details End -->
-                        <!--Pagination Start  -->
-                        <div class="pagination-area pt-70 text-center">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-xl-12">
-                                        <div class="single-wrap d-flex justify-content-center">
-                                            <nav aria-label="Page navigation example">
-                                                <ul class="pagination justify-content-start">
-                                                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                                                    <li class="page-item"><a class="page-link" href="#">02</a></li>
-                                                    <li class="page-item"><a class="page-link" href="#">03</a></li>
-                                                    <li class="page-item"><a class="page-link" href="#"><span class="ti-angle-right"></span></a></li>
-                                                </ul>
-                                            </nav>
+                            <!-- listing Details Stat-->
+                            <div class="listing-details-area">
+                                <div class="container">
+                                    <div class="row justify-content-center">
+                                        {% if products is defined and products is not empty %}
+                                            {% for product in products %}
+                                                <div class="col-lg-4 col-md-6 mb-4">
+                                                    <div class="single-listing shadow-lg p-4 rounded-lg bg-white position-relative">
+                                                        {% if product.createdAt == newestProductDate %}
+                                                            <div class="new-badge position-absolute top-0 start-0 p-2 bg-danger text-white" style="transform: rotate(-45deg); transform-origin: 0 0; width: 100px; text-align: center; font-weight: bold; font-size: 1.2rem; z-index: 1;">
+                                                                NEW
+                                                            </div>
+                                                        {% endif %}
+                                                        <div class="list-img text-center mb-3">
+                                                            <img src="{{ product.imagePath ? asset(product.imagePath) : asset('FrontOffice/assets/img/default-product.jpg') }}" 
+                                                                 alt="{{ product.name }}" 
+                                                                 class="img-fluid rounded" 
+                                                                 style="max-height: 200px; object-fit: cover;">
+                                                        </div>
+                                                        <div class="list-caption text-center">
+                                                            <h5 class="font-weight-bold text-dark">{{ product.name }}</h5>
+                                                            <p class="text-muted">{{ product.description }}</p>
+                                                            <p class="text-primary font-weight-bold">Price: {{ product.price }} DT</p>
+                                                            <div class="d-flex justify-content-center align-items-center mt-3">
+                                                                <input
+                                                                    type="number"
+                                                                    class="form-control me-2"
+                                                                    style="width: 80px; border-radius: 20px;"
+                                                                    min="1"
+                                                                    max="{{ product.stock }}"
+                                                                    value="1"
+                                                                    id="quantity-{{ product.id }}"
+                                                                />
+                                                                <button
+                                                                    class="btn btn-outline-primary buy-btn"
+                                                                    data-product-id="{{ product.id }}"
+                                                                    data-toggle="modal"
+                                                                    data-target="#orderModal"
+                                                                    style="border-radius: 20px; font-weight: 600;"
+                                                                >
+                                                                    Buy
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p class="text-center">No products available.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- listing Details End -->
+                            <!--Pagination Start  -->
+                            <div class="pagination-area pt-70 text-center">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-xl-12">
+                                            <div class="single-wrap d-flex justify-content-center">
+                                                <nav aria-label="Page navigation example">
+                                                    <ul class="pagination justify-content-start">
+                                                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">02</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">03</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#"><span class="ti-angle-right"></span></a></li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <!--Pagination End  -->
                         </div>
-                        <!--Pagination End  -->
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- listing-area Area End -->
+            <!-- listing-area Area End -->
 
-    </main>
-    <footer>
-        <!-- Footer Start-->
-        <div class="footer-area">
-            <div class="container">
-               <div class="footer-top footer-padding">
-                    <div class="row justify-content-between">
-                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="single-footer-caption mb-30">
-                                    <!-- logo -->
-                                    <div class="footer-logo">
-                                        <a href="index.html"><img src="{{ asset('FrontOffice/assets/img/logo/logo2_footer.png') }}" alt=""></a>
+        </main>
+        <footer>
+            <!-- Footer Start-->
+            <div class="footer-area">
+                <div class="container">
+                    <div class="footer-top footer-padding">
+                        <div class="row justify-content-between">
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="single-footer-caption mb-30">
+                                        <!-- logo -->
+                                        <div class="footer-logo">
+                                            <a href="index.html"><img src="{{ asset('FrontOffice/assets/img/logo/logo2_footer.png') }}" alt=""></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="footer-tittle">
+                                        <h4>Quick Link</h4>
+                                        <ul>
+                                            <li><a href="#">Home</a></li>
+                                            <li><a href="#">Market</a></li>
+                                            <li><a href="#">About</a></li>
+                                            <li><a href="#">Contact</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="footer-tittle">
+                                        <h4>Categories</h4>
+                                        <ul>
+                                            <li><a href="#">Reasonable Hotel</a></li>
+                                            <li><a href="#">Popular Restaurant</a></li>
+                                            <li><a href="#">Easy Shopping</a></li>
+                                            <li><a href="#">Night Life</a></li>    
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="footer-tittle">
+                                        <h4>Download App</h4>
+                                        <ul>
+                                            <li class="app-log"><a href="#"><img src="{{ asset('FrontOffice/assets/img/gallery/app-logo.png') }}" alt=""></a></li>
+                                            <li><a href="#"><img src="{{ asset('FrontOffice/assets/img/gallery/app-logo2.png') }}" alt=""></a></li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>Quick Link</h4>
-                                    <ul>
-                                        <li><a href="#">Home</a></li>
-                                        <li><a href="#">Market</a></li>
-                                        <li><a href="#">About</a></li>
-                                        <li><a href="#">Contact</a></li>
-                                    </ul>
+                    </div>
+                    <div class="footer-bottom">
+                        <div class="row d-flex justify-content-between align-items-center">
+                            <div class="col-xl-9 col-lg-8">
+                                <div class="footer-copy-right">
+                                    <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>Categories</h4>
-                                    <ul>
-                                        <li><a href="#">Reasonable Hotel</a></li>
-                                        <li><a href="#">Popular Restaurant</a></li>
-                                        <li><a href="#">Easy Shopping</a></li>
-                                        <li><a href="#">Night Life</a></li>    
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>Download App</h4>
-                                    <ul>
-                                        <li class="app-log"><a href="#"><img src="{{ asset('FrontOffice/assets/img/gallery/app-logo.png') }}" alt=""></a></li>
-                                        <li><a href="#"><img src="{{ asset('FrontOffice/assets/img/gallery/app-logo2.png') }}" alt=""></a></li>
-                                    </ul>
+                            <div class="col-xl-3 col-lg-4">
+                                <!-- Footer Social -->
+                                <div class="footer-social f-right">
+                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                    <a href="#"><i class="fas fa-globe"></i></a>
+                                    <a href="#"><i class="fab fa-instagram"></i></a>
                                 </div>
                             </div>
                         </div>
                     </div>
-               </div>
-                <div class="footer-bottom">
-                    <div class="row d-flex justify-content-between align-items-center">
-                        <div class="col-xl-9 col-lg-8">
-                            <div class="footer-copy-right">
-                                <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-  Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-4">
-                            <!-- Footer Social -->
-                            <div class="footer-social f-right">
-                                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fas fa-globe"></i></a>
-                                <a href="#"><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-               </div>
+                </div>
             </div>
+            <!-- Footer End-->
+        </footer>
+        <!-- Scroll Up -->
+        
+        <div id="back-top" >
+            <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
         </div>
-        <!-- Footer End-->
-    </footer>
-    <!-- Scroll Up -->
-    <div id="back-top" >
-        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
-    </div>
 
 
-    <!-- JS here -->
-            <!-- All JS Custom Plugins Link Here here -->
+        <!-- JS here -->
+        <!-- All JS Custom Plugins Link Here here -->
         <script src="{{ asset('FrontOffice/assets/js/vendor/modernizr-3.5.0.min.js') }}"></script>
-            <!-- Jquery, Popper, Bootstrap -->
-            <script src="{{ asset('FrontOffice/assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
+        <!-- Jquery, Popper, Bootstrap -->
+        <script src="{{ asset('FrontOffice/assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/popper.min.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/bootstrap.min.js') }}"></script>
-          <!-- Jquery Mobile Menu -->
+        <!-- Jquery Mobile Menu -->
         <script src="{{ asset('FrontOffice/assets/js/jquery.slicknav.min.js') }}"></script>
 
-            <!-- Jquery Slick , Owl-Carousel Plugins -->
+        <!-- Jquery Slick , Owl-Carousel Plugins -->
         <script src="{{ asset('FrontOffice/assets/js/owl.carousel.min.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/slick.min.js') }}"></script>
-            <!-- One Page, Animated-HeadLin -->
+        <!-- One Page, Animated-HeadLin -->
         <script src="{{ asset('FrontOffice/assets/js/wow.min.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/price-range.js') }}"></script>
-            <script src="{{ asset('FrontOffice/assets/js/animated.headline.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/animated.headline.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/jquery.magnific-popup.js') }}"></script>
 
-            <!-- Nice-select, sticky -->
+        <!-- Nice-select, sticky -->
         <script src="{{ asset('FrontOffice/assets/js/jquery.nice-select.min.js') }}"></script>
-            <script src="{{ asset('FrontOffice/assets/js/jquery.sticky.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/jquery.sticky.js') }}"></script>
        
         <!-- contact js -->
         <script src="{{ asset('FrontOffice/assets/js/contact.js') }}"></script>
@@ -319,123 +377,305 @@
         <script src="{{ asset('FrontOffice/assets/js/mail-script.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/jquery.ajaxchimp.min.js') }}"></script>
        
-            <!-- Jquery Plugins, main Jquery -->      
+        <!-- Jquery Plugins, main Jquery -->
         <script src="{{ asset('FrontOffice/assets/js/plugins.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/main.js') }}"></script>
        
-    <!-- Order Confirmation Modal -->
-    <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="orderModalLabel">Order Summary</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div id="orderSummary">
-              <p>Your order has been placed successfully!</p>
-              <div class="order-details">
-                <p><strong>Unit Price:</strong> <span id="unitPrice"></span> DT</p>
-                <p><strong>Quantity:</strong> <span id="orderQuantity"></span></p>
-                <p><strong>Total Price:</strong> <span id="totalPrice"></span> DT</p>
-              </div>
+        <!-- Order Confirmation Modal -->
+        <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="orderModalLabel">Order Summary</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="orderSummary">
+                            <p>Your order has been placed successfully!</p>
+                            <div class="order-details">
+                                <p><strong>Unit Price:</strong> <span id="unitPrice"></span> DT</p>
+                                <p><strong>Quantity:</strong> <span id="orderQuantity"></span></p>
+                                <p><strong>Total Price:</strong> <span id="totalPrice"></span> DT</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
         </div>
-      </div>
-    </div>
 
-    {% set sliderMin = 0 %}
-    {% set sliderMax = 1000 %}
-    {% set sliderFrom = minPrice is defined and minPrice is not null ? minPrice : sliderMin %}
-    {% set sliderTo = maxPrice is defined and maxPrice is not null ? maxPrice : sliderMax %}
+        <script>
+            $(function(){
+                var $slider = $('.js-range-slider');
+                if ($slider.length && typeof $.fn.ionRangeSlider === 'function') {
+                    var sliderInstance = $slider.ionRangeSlider({
+                        type: 'double',
+                        min: {{ sliderMin }},
+                        max: {{ sliderMax }},
+                        from: {{ sliderFrom }},
+                        to: {{ sliderTo }},
+                        prefix: "$",
+                        onStart: updateInputs,
+                        onChange: updateInputs,
+                        onFinish: updateInputs
+                    }).data("ionRangeSlider");
 
-    <script>
-      $(function(){
-        var $slider = $('.js-range-slider');
-        if ($slider.length && typeof $.fn.ionRangeSlider === 'function') {
-          var sliderInstance = $slider.ionRangeSlider({
-            type: 'double',
-            min: {{ sliderMin }},
-            max: {{ sliderMax }},
-            from: {{ sliderFrom }},
-            to: {{ sliderTo }},
-            prefix: "$",
-            onStart: updateInputs,
-            onChange: updateInputs,
-            onFinish: updateInputs
-          }).data("ionRangeSlider");
+                    // Ensure hidden fields are updated on page load
+                    $('#amount-from').val({{ sliderFrom }});
+                    $('#amount-to').val({{ sliderTo }});
+                    $('#min_price').val({{ sliderFrom }});
+                    $('#max_price').val({{ sliderTo }});
+                }
 
-          // Ensure hidden fields are updated on page load
-          $('#amount-from').val({{ sliderFrom }});
-          $('#amount-to').val({{ sliderTo }});
-          $('#min_price').val({{ sliderFrom }});
-          $('#max_price').val({{ sliderTo }});
+                function updateInputs(data) {
+                    $('#amount-from').val(data.from);
+                    $('#amount-to').val(data.to);
+                    $('#min_price').val(data.from);
+                    $('#max_price').val(data.to);
+                }
+
+                $('.buy-btn').on('click', function(e){
+                    e.preventDefault();
+
+                    const productId = $(this).data('product-id');
+                    const quantity = $('#quantity-' + productId).val();
+                    const csrfToken = '{{ csrf_token("order") }}';
+
+                    const url = '{{ path("order_create") }}';
+
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: JSON.stringify({ 
+                            productId: productId, 
+                            quantity: quantity, 
+                            _csrf_token: csrfToken 
+                        }),
+                        contentType: 'application/json',
+                        success: function(response) {
+                            if (response.success) {
+                                // Update modal with order details
+                                $('#unitPrice').text(response.data.unitPrice);
+                                $('#orderQuantity').text(response.data.quantity);
+                                $('#totalPrice').text(response.data.totalPrice);
+                                $('#orderModal').modal('show');
+                            } else {
+                                alert('Error placing order: ' + response.error);
+                            }
+                        },
+                        error: function(xhr) {
+                            alert('Request failed: ' + xhr.statusText);
+                        }
+                    });
+                });
+            });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const slider = document.getElementById('price-slider');
+                const minPriceInput = document.getElementById('min-price');
+                const maxPriceInput = document.getElementById('max-price');
+                const minPriceDisplay = document.getElementById('min-price-display');
+                const maxPriceDisplay = document.getElementById('max-price-display');
+                const form = document.getElementById('product-filter-form');
+
+                if (slider) {
+                    // Initialize the slider
+                    noUiSlider.create(slider, {
+                        start: [{{ minPrice|default(sliderMin) }}, {{ maxPrice|default(sliderMax) }}],
+                        connect: true,
+                        range: {
+                            'min': {{ sliderMin }},
+                            'max': {{ sliderMax }}
+                        },
+                        step: 1,
+                        tooltips: [true, true],
+                        format: {
+                            to: function (value) {
+                                return Math.round(value);
+                            },
+                            from: function (value) {
+                                return Number(value);
+                            }
+                        }
+                    });
+
+                    // Update display and hidden inputs when slider changes
+                    slider.noUiSlider.on('update', function (values) {
+                        const minValue = Math.round(values[0]);
+                        const maxValue = Math.round(values[1]);
+                        
+                        minPriceInput.value = minValue;
+                        maxPriceInput.value = maxValue;
+                        
+                        minPriceDisplay.textContent = `DT ${minValue}`;
+                        maxPriceDisplay.textContent = `DT ${maxValue}`;
+                    });
+
+                    // Initialize slider values from URL parameters if they exist
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const urlMinPrice = urlParams.get('minPrice');
+                    const urlMaxPrice = urlParams.get('maxPrice');
+
+                    if (urlMinPrice && urlMaxPrice) {
+                        slider.noUiSlider.set([urlMinPrice, urlMaxPrice]);
+                    }
+                }
+
+                // Handle form submission only when Apply Filters button is clicked
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get current values
+                    const minPrice = minPriceInput.value;
+                    const maxPrice = maxPriceInput.value;
+                    const searchName = document.getElementById('search-name').value;
+                    const category = document.getElementById('search-category').value;
+
+                    // Build URL with parameters
+                    let url = '{{ path("app_product_listing") }}';
+                    const params = new URLSearchParams();
+                    
+                    if (searchName) params.append('name', searchName);
+                    if (category) params.append('category', category);
+                    if (minPrice) params.append('minPrice', minPrice);
+                    if (maxPrice) params.append('maxPrice', maxPrice);
+
+                    // Redirect to the filtered URL
+                    window.location.href = url + (params.toString() ? '?' + params.toString() : '');
+                });
+            });
+        </script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
+        <style>
+        /* Elegant design for product cards */
+        .single-listing {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .single-listing:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
-        function updateInputs(data) {
-          $('#amount-from').val(data.from);
-          $('#amount-to').val(data.to);
-          $('#min_price').val(data.from);
-          $('#max_price').val(data.to);
+        /* Elegant design for the cart button */
+        .btn.btn-warning.btn-lg {
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            padding: 12px 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn.btn-warning.btn-lg:hover {
+            background-color: #ff9800;
+            transform: scale(1.05);
         }
 
-        $('.buy-btn').on('click', function(e){
-          e.preventDefault();
+        /* Styling for the search and filter section */
+.search-box {
+    border: 1px solid #ddd;
+    background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+    border-radius: 10px;
+}
+.search-box .form-label {
+    font-size: 0.9rem;
+    color: #333;
+}
+.search-box .form-control, .search-box .form-select {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+.search-box .form-control:focus, .search-box .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+.search-box .btn-primary {
+    background: linear-gradient(to right, #007bff, #0056b3);
+    border: none;
+    transition: background-color 0.3s, transform 0.2s;
+}
+.search-box .btn-primary:hover {
+    background: linear-gradient(to right, #0056b3, #003f7f);
+    transform: scale(1.05);
+}
 
-          const productId = $(this).data('product-id');
-          const quantity = $('#quantity-' + productId).val();
-          const csrfToken = '{{ csrf_token("order") }}';
+/* Price Range Slider Styles */
+.price-range-container {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    padding: 15px;
+    border-radius: 8px;
+}
 
-          const url = '{{ path("order_create") }}';
+#price-slider {
+    height: 6px;
+    margin: 15px 0;
+    cursor: pointer;
+}
 
-          $.ajax({
-            url: url,
-            method: 'POST',
-            data: JSON.stringify({ 
-              productId: productId, 
-              quantity: quantity, 
-              _csrf_token: csrfToken 
-            }),
-            contentType: 'application/json',
-            success: function(response) {
-              if (response.success) {
-                // Update modal with order details
-                $('#unitPrice').text(response.data.unitPrice);
-                $('#orderQuantity').text(response.data.quantity);
-                $('#totalPrice').text(response.data.totalPrice);
-                $('#orderModal').modal('show');
-              } else {
-                alert('Error placing order: ' + response.error);
-              }
-            },
-            error: function(xhr) {
-              alert('Request failed: ' + xhr.statusText);
-            }
-          });
-        });
-      });
-    </script>
+.noUi-connect {
+    background: #007bff;
+    cursor: pointer;
+}
 
-    <style>
-    /* Add custom style for the Pannier button */
-    .btn.btn-warning.btn-lg {
-        font-size: 1.1rem;
-        font-weight: 600;
-        border-radius: 30px;
-        padding: 10px 28px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        transition: background 0.2s;
-    }
-    .btn.btn-warning.btn-lg:hover {
-        background: #ffae00;
-        color: #fff;
-    }
-    </style>
-</body>
+.noUi-handle {
+    width: 20px;
+    height: 20px;
+    right: -10px;
+    top: -7px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #007bff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: grab;
+}
+
+.noUi-handle:active {
+    cursor: grabbing;
+}
+
+.noUi-handle:before,
+.noUi-handle:after {
+    display: none;
+}
+
+.noUi-handle:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.price-display {
+    background: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #e9ecef;
+}
+
+#min-price-display,
+#max-price-display {
+    color: #007bff;
+    font-size: 1.1rem;
+}
+
+/* Tooltip styling */
+.noUi-tooltip {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.noUi-tooltip:after {
+    content: 'DT';
+    margin-left: 2px;
+}
+        </style>
+    </body>
 </html>

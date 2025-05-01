@@ -580,6 +580,12 @@
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductModal">
                   Add New Product
                 </button>
+                <a href="{{ path('api_products_low_stock') }}" class="btn btn-warning">
+                  <i class="fas fa-exclamation-triangle"></i> View Low Stock Products
+                </a>
+                <a href="{{ path('api_invoices_stock') }}" class="btn btn-info">
+                  <i class="fas fa-file-pdf"></i> Generate Stock Invoice
+                </a>
               </div>
 
               <div class="card">
@@ -608,7 +614,11 @@
                             </div>
                           </td>
                           <td>{{ product.price }} TND</td>
-                          <td>{{ product.stock }}</td>
+                          <td>
+                            <span class="badge {% if product.stock < product.stockLimit %}bg-danger{% else %}bg-success{% endif %}">
+                              {{ product.stock }}
+                            </span>
+                          </td>
                           <td>
                             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editProductModal" data-edit-url="{{ path('app_product_edit_modal', {'id': product.id}) }}">
                               Edit

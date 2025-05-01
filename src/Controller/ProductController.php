@@ -73,50 +73,56 @@ final class ProductController extends AbstractController
     {
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
-        $form->handleRequest($request); // Handle the form submission
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handle file upload (optional)
-            $imageFile = $form->get('imagePath')->getData();
-            if ($imageFile) {
-                $newFilename = uniqid().'.'.$imageFile->guessExtension();
-                $imageFile->move(
-                    $this->getParameter('kernel.project_dir').'/public/uploads',
-                    $newFilename
-                );
-                $product->setImagePath($newFilename);
-            }
-
-            // Persist to database
             $entityManager->persist($product);
             $entityManager->flush();
 
-            // Redirect to avoid duplicate submissions
-            return $this->redirectToRoute('products_page');
+            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('product/new.html.twig', [
-            'form' => $form->createView(),
+            'product' => $product,
+            'form' => $form,
         ]);
     }
 
     #[Route('/listing', name: 'app_product_listing', methods: ['GET'])]
     public function listing(ProductRepository $productRepository, Request $request): Response
     {
-        $searchName = $request->query->get('name');
-        $minPrice = $request->query->get('min_price');
-        $maxPrice = $request->query->get('max_price');
+        $searchName = $request->query->get('name', '');
+        $selectedCategory = $request->query->get('category', '');
+        $minPrice = $request->query->get('minPrice', '');
+        $maxPrice = $request->query->get('maxPrice', '');
 
-        $minPrice = $minPrice !== null && $minPrice !== '' ? (float)$minPrice : null;
-        $maxPrice = $maxPrice !== null && $maxPrice !== '' ? (float)$maxPrice : null;
+        // Define categories manually (no database migration required)
+        $categories = ['Drinks', 'Food', 'Household products', 'Home Appliances'];
 
-        $products = $productRepository->findByNameAndPriceRange($searchName, $minPrice, $maxPrice);
+        // Define slider range
+        $sliderMin = 0; // Minimum price for the slider
+        $sliderMax = 2000; // Maximum price for the slider
+
+        // Fetch products and filter them manually
+        $products = $productRepository->findAll();
+        $filteredProducts = array_filter($products, function ($product) use ($searchName, $selectedCategory, $minPrice, $maxPrice) {
+            $matchesName = !$searchName || stripos($product->getName(), $searchName) !== false;
+            $matchesCategory = !$selectedCategory || $product->getCategory() === $selectedCategory;
+            $matchesMinPrice = !$minPrice || $product->getPrice() >= $minPrice;
+            $matchesMaxPrice = !$maxPrice || $product->getPrice() <= $maxPrice;
+
+            return $matchesName && $matchesCategory && $matchesMinPrice && $matchesMaxPrice;
+        });
 
         return $this->render('FrontOffice/market.html.twig', [
-            'products' => $products,
+            'products' => $filteredProducts,
+            'categories' => $categories, // Pass categories to the template
             'searchName' => $searchName,
+            'selectedCategory' => $selectedCategory,
             'minPrice' => $minPrice,
             'maxPrice' => $maxPrice,
+            'sliderMin' => $sliderMin, // Pass sliderMin to the template
+            'sliderMax' => $sliderMax, // Pass sliderMax to the template
         ]);
     }
 

@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class ProductType extends AbstractType
 {
@@ -40,6 +41,17 @@ class ProductType extends AbstractType
             ])
             ->add('description', TextType::class, [
                 'required' => false,
+            ])
+            ->add('category', ChoiceType::class, [
+                'choices' => [
+                    'Drinks' => 'Drinks',
+                    'Food' => 'Food',
+                    'Household products' => 'Household products',
+                    'Home Appliances' => 'Home Appliances'
+                ],
+                'required' => true,
+                'placeholder' => 'Select a category',
+                'attr' => ['class' => 'form-select']
             ]);
     }
 
