@@ -1,0 +1,50 @@
+{# templates/admin/dashboard.html.twig #}
+{% extends 'BackOffice/base.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('app') }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="my-4">Admin Dashboard</h1>
+
+        <!-- Quick Stats Row -->
+        <div class="row">
+            {# Add your stat cards here #}
+        </div>
+
+        <!-- Charts Section -->
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Registration Timeline</h6>
+                    </div>
+                    <div class="card-body">
+                        {{ render_chart(registrationChart) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">User Roles Distribution</h6>
+                    </div>
+                    <div class="card-body">
+                        {{ render_chart(rolesChart) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}

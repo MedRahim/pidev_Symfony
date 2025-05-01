@@ -170,4 +170,22 @@ class UserRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function getRegistrationTimeline(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select("DATE_FORMAT(u.createdAt, '%Y-%m') as month, COUNT(u.id) as count")
+            ->groupBy('month')
+            ->orderBy('month', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countUsersByRole(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u.roles as roles, COUNT(u.id) as count')
+            ->groupBy('u.roles')
+            ->getQuery()
+            ->getResult();
+    }
 }

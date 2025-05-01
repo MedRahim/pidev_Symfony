@@ -334,7 +334,7 @@ final class UserController extends AbstractController
             // Login successful - do something with the user
             $session->set('user_id', $user->getId());
 
-            if($user->getRole() == 'ROLE_USER'){
+            if($user->getRoles()[0] == 'ROLE_USER'){
                 $this->addFlash('success', 'Login successful!');
                 return $this->redirectToRoute('app_user_index');
             }else{
