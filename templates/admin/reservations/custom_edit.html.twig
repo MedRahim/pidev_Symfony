@@ -1,0 +1,24 @@
+{# templates/admin/reservations/custom_edit.html.twig #}
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}
+    Édition de la réservation n°{{ entity.id }}
+{% endblock %}
+
+{% block content %}
+    {{ form_start(form) }}
+        <div class="grid grid-cols-1 gap-4">
+            {{ form_row(form.trip) }}
+            {{ form_row(form.seatNumber) }}
+            {{ form_row(form.status) }}
+            {{ form_row(form.paymentStatus) }}
+            {{ form_row(form.reservationTime) }}
+        </div>
+        <div class="mt-6 flex items-center space-x-3">
+            <button type="submit" class="btn btn-primary">
+                Enregistrer
+            </button>
+            <a href="{{ returnUrl }}" class="btn btn-link">Annuler</a>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}

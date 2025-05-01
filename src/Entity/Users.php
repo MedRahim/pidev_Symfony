@@ -133,4 +133,9 @@ class Users
         $this->password = $password;
         return $this;
     }
+    public function __toString(): string
+    {
+        // Ce qui s’affiche dans les choix “Utilisateur”
+        return $this->username;
+    }
 }

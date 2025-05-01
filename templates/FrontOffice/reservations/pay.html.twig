@@ -6,30 +6,39 @@
 <div class="container py-5">
   <div class="card mx-auto" style="max-width: 500px;">
     <div class="card-header bg-primary text-white">
-      <h3 class="mb-0">Payer {{ price }} TND</h3>
+      <h3 class="mb-0">Payer {{ price }} TND</h3>
     </div>
     <div class="card-body">
       {{ include('flash_messages.html.twig') }}
 
       <form method="post">
+        <input type="hidden" name="_token" value="{{ csrf_token('payment') }}">
+        
         <div class="mb-3">
           <label for="cardNumber" class="form-label">Numéro de carte</label>
           <input type="text" class="form-control" id="cardNumber" name="cardNumber"
-                 required pattern="\d{16}" maxlength="16">
+                 required pattern="\d{16}" maxlength="16"
+                 placeholder="1234 5678 9012 3456">
         </div>
+        
         <div class="row">
           <div class="col">
             <label for="expiryDate" class="form-label">MM/AA</label>
             <input type="text" class="form-control" id="expiryDate" name="expiryDate"
-                   required pattern="(0[1-9]|1[0-2])\/\d{2}">
+                   required pattern="(0[1-9]|1[0-2])\/\d{2}"
+                   placeholder="12/25">
           </div>
           <div class="col">
             <label for="cvv" class="form-label">CVV</label>
             <input type="text" class="form-control" id="cvv" name="cvv"
-                   required pattern="\d{3,4}" maxlength="4">
+                   required pattern="\d{3,4}" maxlength="4"
+                   placeholder="123">
           </div>
         </div>
-        <button class="btn btn-success mt-4 w-100">Confirmer le paiement</button>
+        
+        <button type="submit" class="btn btn-success mt-4 w-100">
+          <i class="fas fa-lock me-2"></i> Confirmer le paiement
+        </button>
       </form>
     </div>
   </div>

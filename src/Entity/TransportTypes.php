@@ -30,12 +30,16 @@ class TransportTypes
     #[ORM\Column(name: 'capacity', type: Types::INTEGER, nullable: false)]
     private int $capacity;
 
+    public function __toString(): string
+    {
+        return $this->getName(); // Éviter les relations dans __toString()
+    }
     public function getTransportId(): ?int
     {
         return $this->transportId;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -57,7 +61,7 @@ class TransportTypes
         return $this;
     }
 
-    public function getCapacity(): ?int
+    public function getCapacity(): int
     {
         return $this->capacity;
     }

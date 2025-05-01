@@ -19,6 +19,12 @@ class Reservations
     public const PAYMENT_PAID     = 'paid';
     public const PAYMENT_PENDING  = 'pending';
     public const PAYMENT_FAILED   = 'failed';
+    public const PAYMENT_REFUNDED = 'refunded';
+
+
+    public const SEAT_STANDARD   = 'Standard';
+    public const SEAT_PREMIUM    = 'Premium';
+    public const SEAT_ECONOMIQUE = 'Économique';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -28,11 +34,8 @@ class Reservations
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $reservationTime = null;
 
-    #[ORM\Column(type: 'string', length: 20, options: ['default' => 'pending'])]
+    #[ORM\Column(type: 'string', length: 20, options: ['default' => self::STATUS_PENDING])]
     private ?string $status = self::STATUS_PENDING;
-
-    #[ORM\Column(type: 'integer')]
-    private int $transportId;
 
     #[ORM\Column(type: 'integer')]
     #[Assert\NotBlank(message: 'Le nombre de sièges est obligatoire.')]
@@ -43,15 +46,19 @@ class Reservations
     )]
     private int $seatNumber;
 
-    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    #[ORM\Column(type: 'string', length: 20)]
     #[Assert\NotBlank(message: 'Le type de siège est obligatoire.')]
     #[Assert\Choice(
-        choices: ['Standard', 'Premium'],
-        message: 'Le type de siège doit être Standard ou Premium.'
+        choices: [
+            self::SEAT_STANDARD,
+            self::SEAT_PREMIUM,
+            self::SEAT_ECONOMIQUE,
+        ],
+        message: 'Le type de siège doit être Standard, Premium ou Économique.'
     )]
-    private ?string $seatType = null;
+    private string $seatType = self::SEAT_STANDARD;
 
-    #[ORM\Column(type: 'string', length: 20, options: ['default' => 'pending'])]
+    #[ORM\Column(type: 'string', length: 20, options: ['default' => self::PAYMENT_PENDING])]
     private ?string $paymentStatus = self::PAYMENT_PENDING;
 
     #[ORM\ManyToOne(targetEntity: Trips::class)]
@@ -75,6 +82,7 @@ class Reservations
     public function setReservationTime(?\DateTimeInterface $reservationTime): static
     {
         $this->reservationTime = $reservationTime;
+
         return $this;
     }
 
@@ -86,17 +94,7 @@ class Reservations
     public function setStatus(?string $status): static
     {
         $this->status = $status;
-        return $this;
-    }
 
-    public function getTransportId(): ?int
-    {
-        return $this->transportId;
-    }
-
-    public function setTransportId(int $transportId): static
-    {
-        $this->transportId = $transportId;
         return $this;
     }
 
@@ -108,6 +106,7 @@ class Reservations
     public function setSeatNumber(int $seatNumber): static
     {
         $this->seatNumber = $seatNumber;
+
         return $this;
     }
 
@@ -116,9 +115,10 @@ class Reservations
         return $this->seatType;
     }
 
-    public function setSeatType(?string $seatType): static
+    public function setSeatType(string $seatType): static
     {
         $this->seatType = $seatType;
+
         return $this;
     }
 
@@ -130,6 +130,7 @@ class Reservations
     public function setPaymentStatus(?string $paymentStatus): static
     {
         $this->paymentStatus = $paymentStatus;
+
         return $this;
     }
 
@@ -141,6 +142,7 @@ class Reservations
     public function setTrip(?Trips $trip): static
     {
         $this->trip = $trip;
+
         return $this;
     }
 
@@ -152,13 +154,13 @@ class Reservations
     public function setUser(?Users $user): static
     {
         $this->user = $user;
+
         return $this;
     }
 
     #[Assert\Callback]
     public function validateSeatNumber(ExecutionContextInterface $context): void
     {
-        // Si aucun trip n'est lié, on skippe la vérif
         if (null === $this->trip) {
             return;
         }
@@ -176,13 +178,13 @@ class Reservations
     public function getQrCodeContent(): string
     {
         return json_encode([
-            'reservation_id' => $this->getId(),
-            'user_id' => $this->getUser() ? $this->getUser()->getId() : null,
-            'trip_id' => $this->getTrip() ? $this->getTrip()->getId() : null,
-            'seat_number' => $this->getSeatNumber(),
-            'seat_type' => $this->getSeatType(),
-            'status' => $this->getStatus(),
-            'reservation_time' => $this->getReservationTime() ? $this->getReservationTime()->format('Y-m-d H:i:s') : null,
+            'reservation_id'    => $this->getId(),
+            'user_id'           => $this->getUser()?->getId(),
+            'trip_id'           => $this->getTrip()?->getId(),
+            'seat_number'       => $this->getSeatNumber(),
+            'seat_type'         => $this->getSeatType(),
+            'status'            => $this->getStatus(),
+            'reservation_time'  => $this->getReservationTime()?->format('Y-m-d H:i:s'),
         ]);
     }
 }

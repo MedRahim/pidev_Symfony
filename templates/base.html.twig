@@ -6,12 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Agence de Voyage{% endblock %}</title>
 
-    {# 1) CSS généré par Webpack Encore (app.css inclut Bootstrap & Seatchart) #}
+    {# CSS et JS dans le head #}
     {{ encore_entry_link_tags('app') }}
+    {{ encore_entry_script_tags('app') }}
 
-    {# 2) Votre CSS perso pour surcharger ce que vous voulez #}
     <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
-
     {% block stylesheets %}{% endblock %}
   </head>
   <body>
@@ -115,9 +114,8 @@
       </div>
     </footer>
 
-    {# 3) Scripts bundlés par Encore (Stimulus, Bootstrap JS, Seatchart…) #}
+    {#  Scripts bundlés par Encore (Stimulus, Bootstrap JS, Seatchart…) #}
     {% block javascripts %}
-      {{ encore_entry_script_tags('app') }}
     {% endblock %}
   </body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-
+// src/Service/ProgressService.php
 namespace App\Service;
 
 use App\Entity\MysteryReward;
@@ -12,56 +12,56 @@ class ProgressService
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private RequestStack $requestStack,
-        private RewardConfig $rewardConfig,
+        private RequestStack          $requestStack,
+        private RewardConfig          $rewardConfig
     ) {}
 
-    public function recordTrip(Users $user, string $mode, int $distanceKm): void
+    /**
+     * Enregistre un trajet et crée une récompense si un palier est atteint.
+     */
+    public function recordTrip(Users $user, string $transportName, float $distance, int $co2Saved): void
     {
-        $co2Saved = $this->calculateCo2Saved($mode, $distanceKm);
-        
+        // 1) Stocke les stats du dernier trajet en session
         $this->requestStack->getSession()->set('last_trip_stats', [
-            'distance' => $distanceKm,
+            'mode'      => $transportName,
+            'distance'  => $distance,
             'co2_saved' => $co2Saved,
-            'mode' => $mode
         ]);
 
-        $reservationsCount = $this->em->getRepository(Reservations::class)
+        // 2) Compte les trajets confirmés
+        $count = $this->em
+            ->getRepository(Reservations::class)
             ->count(['user' => $user, 'status' => 'confirmed']);
-            
-        if ($reservationsCount > 0 && $reservationsCount % $this->rewardConfig->seuilTrips === 0) {
-            $this->createReward($user);
+
+        // 3) Vérifie le palier exact atteint (5, 10 ou 15)
+        $thresholdType = $this->rewardConfig->getThresholdType($count);
+        if (null === $thresholdType) {
+            return;
         }
-    }
 
-    private function calculateCo2Saved(string $mode, int $distance): float
-    {
-        $mode = ucfirst(strtolower($mode));
-        
-        $co2Factors = [
-            'Bus' => 0.089,
-            'Train' => 0.041,
-            'Metro' => 0.035,
-            'Tram' => 0.022,
-            'default' => 0.12
-        ];
+        // 4) Si pas déjà récompensé, on crée la récompense
+        $existing = $this->em
+            ->getRepository(MysteryReward::class)
+            ->findOneBy(['user' => $user, 'type' => $thresholdType]);
 
-        $factor = $co2Factors[$mode] ?? $co2Factors['default'];
-        return round(($co2Factors['default'] - $factor) * $distance, 2);
-    }
+        if ($existing) {
+            return;
+        }
 
-    private function createReward(Users $user): void
-    {
         $reward = new MysteryReward();
-        $reward->setUser($user);
-        $reward->setGrantedAt(new \DateTime());
-        $reward->setType($this->rewardConfig->randomType());
-        
+        $reward
+            ->setUser($user)
+            ->setGrantedAt(new \DateTime())
+            ->setType($thresholdType);
+
         $this->em->persist($reward);
-        
-        $this->requestStack->getSession()->getFlashBag()->add(
-            'reward',
-            '🎁 Félicitations ! Vous avez gagné un bon de réduction.'
-        );
+        $this->em->flush();
+
+        // 5) Stocke en session les infos pour Twig
+        $this->requestStack->getSession()->set('mystery_reward', [
+            'type'    => $thresholdType,
+            'code'    => $this->rewardConfig->randomTypeFor($thresholdType),
+            'message' => sprintf('Bravo ! Vous venez d’atteindre %d trajets.', $count),
+        ]);
     }
 }

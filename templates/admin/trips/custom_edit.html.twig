@@ -1,0 +1,28 @@
+{# templates/admin/trips/custom_edit.html.twig #}
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}
+    Éditer le trajet « {{ entity.departure }} → {{ entity.destination }} »
+{% endblock %}
+
+{% block content %}
+    <div class="max-w-2xl mx-auto p-4 bg-white rounded shadow">
+        {{ form_start(form) }}
+            <div class="space-y-4">
+                {{ form_row(form.departure) }}
+                {{ form_row(form.destination) }}
+                {{ form_row(form.departureTime) }}
+                {{ form_row(form.arrivalTime) }}
+                {{ form_row(form.image) }}
+                {{ form_row(form.price) }}
+                {{ form_row(form.capacity) }}
+                {{ form_row(form.transport) }}
+            </div>
+            <div class="mt-6 flex items-center space-x-3">
+                <button type="submit" class="btn btn-primary">{{ form.submit.vars.label }}</button>
+          <a href="{{ returnUrl }}" class="btn btn-link">Annuler</a>
+
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

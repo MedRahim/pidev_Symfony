@@ -1,0 +1,13 @@
+{% extends '@!EasyAdmin/form/bootstrap_5_layout.html.twig' %}
+
+{% block entity_widget %}
+    {{ parent() }}
+    <script>
+        document.querySelectorAll('select[data-ea-widget="ea-autocomplete"]').forEach(select => {
+            select.addEventListener('change', () => {
+                const event = new Event('change');
+                select.dispatchEvent(event);
+            });
+        });
+    </script>
+{% endblock %}

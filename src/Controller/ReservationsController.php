@@ -26,19 +26,27 @@ use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
 use App\Service\NgrokService;
+use App\Service\ProgressService;
+
+
 
 
 #[Route('/reservations')]
 class ReservationsController extends AbstractController
 {
     private const FIXED_USER_ID = 7;
+    private ProgressService $progressService;
+
+    public function __construct(ProgressService $progressService)
+    {
+        $this->progressService = $progressService;
+    }
 
     private function getFixedUser(EntityManagerInterface $em): Users
     {
-        //Get the fixed user without throwing an exception
         $user = $em->getRepository(Users::class)->find(self::FIXED_USER_ID);
         if (!$user) {
-            throw new \Exception('Fixed user not found.  Check that user ID 7 exists.');
+            throw new \Exception('Fixed user not found. Check that user ID 7 exists.');
         }
         return $user;
     }
@@ -55,7 +63,6 @@ class ReservationsController extends AbstractController
         ]);
     }
 
-    // src/Controller/ReservationsController.php
 
 
     #[Route('/new/{tripId}', name: 'app_reservations_new', methods: ['GET', 'POST'])]
@@ -129,7 +136,7 @@ class ReservationsController extends AbstractController
         LoggerInterface $logger
     ): Response {
         $session = $request->getSession();
-        $data    = $session->get('reservation_data');
+        $data = $session->get('reservation_data');
 
         if (!$data) {
             $this->addFlash('error', 'Aucune réservation en attente.');
@@ -143,9 +150,14 @@ class ReservationsController extends AbstractController
         }
 
         $selectedSeats = explode(',', $data['seat_number'] ?? '');
-        $seatCount     = count($selectedSeats);
+        $seatCount = count($selectedSeats);
 
         if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('payment', $request->request->get('_token'))) {
+                $this->addFlash('error', 'Token CSRF invalide');
+                return $this->redirectToRoute('app_reservations_payment');
+            }
+
             if ($seatCount > $trip->getCapacity()) {
                 $this->addFlash('error', 'Pas assez de places disponibles.');
                 return $this->redirectToRoute('app_reservations_new', ['tripId' => $trip->getId()]);
@@ -163,18 +175,14 @@ class ReservationsController extends AbstractController
                     ->setStatus(Reservations::STATUS_CONFIRMED)
                     ->setPaymentStatus(Reservations::PAYMENT_PAID);
 
-                // Mise à jour de la capacité
                 $trip->setCapacity($trip->getCapacity() - $seatCount);
 
-                // Persistance réservation + trip
                 $em->persist($reservation);
                 $em->persist($trip);
 
-                // Calcul CO₂
                 $co2PerKmPerSeat = 0.05;
                 $co2Saved = (int) round($trip->getDistance() * $seatCount * $co2PerKmPerSeat);
 
-                // Enregistrement progression (sans flush interne)
                 $this->progressService->recordTrip(
                     $this->getFixedUser($em),
                     $trip->getTransportName(),
@@ -182,11 +190,9 @@ class ReservationsController extends AbstractController
                     $co2Saved
                 );
 
-                // Flush + commit
                 $em->flush();
                 $em->getConnection()->commit();
 
-                // Nettoyage + log + redirection
                 $session->remove('reservation_data');
                 $logger->info('Paiement réussi', ['reservation_id' => $reservation->getId()]);
 
@@ -197,17 +203,14 @@ class ReservationsController extends AbstractController
                 $em->getConnection()->rollBack();
                 $logger->error('Erreur paiement détaillée', [
                     'message' => $e->getMessage(),
-                    'trace'   => $e->getTraceAsString(),
+                    'trace' => $e->getTraceAsString(),
                 ]);
                 $this->addFlash('error', 'Erreur lors du traitement du paiement : ' . $e->getMessage());
 
-                return $this->redirectToRoute('app_reservations_payment', [
-                    'tripId' => $trip->getId(),
-                ]);
+                return $this->redirectToRoute('app_reservations_payment');
             }
         }
 
-        // Si GET ou méthode autre que POST → affichage du formulaire de paiement
         return $this->render('FrontOffice/reservations/pay.html.twig', [
             'price' => $this->calculateReservationPrice(
                 (new Reservations())
@@ -507,4 +510,19 @@ public function edit(Request $request, Reservations $reservation, EntityManagerI
             'ngrok_url' => $ngrokUrl
         ]);
     }
+    public function dashboard(Request $request): Response
+{
+    $stats = $this->getStatsForUser($this->getUser());
+    $session = $request->getSession();
+    $newReward = $session->get('new_reward');
+    // Puis on efface pour ne pas réafficher à chaque recharge
+    $session->remove('new_reward');
+
+    return $this->render('FrontOffice/reservations/dashboard.html.twig', [
+        'stats'     => $stats,
+        'newReward' => $newReward,
+        // autres données...
+    ]);
+}
+
 }

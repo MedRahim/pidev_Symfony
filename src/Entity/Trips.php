@@ -258,4 +258,8 @@ class Trips
     {
         return $this->capacity - $this->reservations->count();
     }
+    public function __toString(): string
+    {
+        return $this->getDeparture().' → '.$this->getDestination(); // Simple
+    }
 }

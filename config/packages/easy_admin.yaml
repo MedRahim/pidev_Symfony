@@ -1,0 +1,9 @@
+easy_admin:
+    site_name: 'Admin Transport'
+    design:
+        brand_color: '#0d6efd'
+        form_theme:
+            - '@EasyAdmin/form/bootstrap_5_layout.html.twig'
+            - 'admin/form_theme.html.twig' # Ajout de la quote manquante ici
+    formats:
+        datetime: 'd/m/Y H:i'
