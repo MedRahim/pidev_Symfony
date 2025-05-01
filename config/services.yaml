@@ -119,6 +119,9 @@ services:
             $logger: '@logger'
             $twig: '@twig'
 
+    App\Security\UserChecker:
+        tags: [ security.user_checker ]
+
     App\Controller\BaseController:
         autowire: true
         autoconfigure: true

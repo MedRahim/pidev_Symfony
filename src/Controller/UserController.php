@@ -17,10 +17,14 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 
 #[Route('/user')]
 final class UserController extends AbstractController
@@ -74,42 +78,130 @@ final class UserController extends AbstractController
 //        ]);
 //    }
 
+    #[Route('/verify/email', name: 'app_verify_email')]
+    public function verifyUserEmail(
+        Request $request,
+        VerifyEmailHelperInterface $verifyEmailHelper,
+        UserRepository $userRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $id = $request->query->get('id');
+
+        if (null === $id) {
+            return $this->redirectToRoute('app_register');
+        }
+
+        $user = $userRepository->find($id);
+
+        if (!$user) {
+            return $this->redirectToRoute('app_register');
+        }
+
+        try {
+            $verifyEmailHelper->validateEmailConfirmation(
+                $request->getUri(),
+                $user->getId(),
+                $user->getEmail()
+            );
+        } catch (VerifyEmailExceptionInterface $e) {
+            $this->addFlash('error', $e->getReason());
+            return $this->redirectToRoute('app_register');
+        }
+
+        $user->setIsVerified(true);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Email verified! You can now log in.');
+        return $this->redirectToRoute('app_login');
+    }
+
+    #[Route('/check-email', name: 'app_check_email')]
+    public function checkEmail(): Response
+    {
+        return $this->render('security/check_email.html.twig', [
+            'pageTitle' => 'Check your email'
+        ]);
+    }
+
+    #[Route('/resend-verification', name: 'app_resend_verification')]
+    public function resendVerification(
+        Request $request,
+        UserRepository $userRepository,
+        VerifyEmailHelperInterface $verifyEmailHelper,
+        MailerInterface $mailer
+    ): Response {
+        $email = $request->getSession()->get('last_registered_email');
+
+        if (!$email) {
+            return $this->redirectToRoute('app_register');
+        }
+
+        $user = $userRepository->findOneBy(['Email' => $email]);
+
+        if (!$user) {
+            return $this->redirectToRoute('app_register');
+        }
+
+        try {
+            $signatureComponents = $verifyEmailHelper->generateSignature(
+                'app_verify_email',
+                $user->getId(), // 🔴 NOW HAS VALID ID
+                $user->getEmail(),
+                ['id' => $user->getId()]
+            );
+
+            $email = (new TemplatedEmail())
+                ->from('no-reply@example.com')
+                ->to($user->getEmail())
+                ->subject('Verify Your Email')
+                ->htmlTemplate('emails/verify_email.html.twig')
+                ->context([
+                    'signedUrl' => $signatureComponents->getSignedUrl(),
+                    'user' => $user,
+                ]);
+
+            $mailer->send($email);
+        } catch (\Exception $e) {
+            // 🔴 HANDLE EMAIL FAILURES
+            $this->addFlash('warning', 'Verification email could not be sent. Please contact support.');
+        }
+
+        $this->addFlash('success', 'Verification email resent!');
+        return $this->redirectToRoute('app_check_email');
+    }
+
+
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher,
         LoggerInterface $logger,
-        FileUploader $fileUploader
+        FileUploader $fileUploader,
+        VerifyEmailHelperInterface $verifyEmailHelper,
+        MailerInterface $mailer,
+        UserRepository $userRepository // 🔴 ADD THIS TO ACCESS findByEmail
     ): Response {
         $user = new User();
-        $form = $this->createForm(GoogleUserType::class, $user);
+        $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
-
-            //verify email unicity
-            $existingUser= $this->userRepository->findByEmail($user->getEmail());
+            // Email uniqueness check
+            $existingUser = $userRepository->findOneBy(['Email' => $user->getEmail()]); // 🔴 USE findOneBy instead of findByEmail unless you have a custom method
             if ($existingUser) {
                 $this->addFlash('error', 'This email address is already registered.');
                 return $this->redirectToRoute('app_user_new');
             }
 
-            // Hash the password
+            // Hash password
             $plainPassword = $form->get('Password')->getData();
             if ($plainPassword) {
-                $hashedPassword = $passwordHasher->hashPassword(
-                    $user,
-                    $plainPassword
-                );
+                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
             }
 
-            // Set role
-            $user->setRoles($user->getRoles() ?: ['ROLE_USER']);
-
-            //uploading profile picture
+            // Profile picture handling (consider moving validation to form type)
             $profilePictureFile = $form->get('profilePicture')->getData();
             if ($profilePictureFile) {
                 $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -126,27 +218,39 @@ final class UserController extends AbstractController
                 $user->setPathToPic('/uploads/profile_pictures/' . $fileName);
             }
 
-            //verifying the information
-            $logger->debug('User entity before processing:', [
-                'role' => $user->getRoles()[0],
-                'pic' => $user->getPathToPic(),
-            ]);
-
-            echo("the final user is , ". $user->getPassword());
-
-            //sending welcome email
-            $this->emailService->sendEmail(
-                $user->getEmail(),
-                'Welcome to Our Site!',
-                'Emails/welcome.html.twig',
-                ['user' => $user]
-            );
-
-            //saving the entity
+            // 🔴 PERSIST & FLUSH FIRST TO GET USER ID
             $entityManager->persist($user);
             $entityManager->flush();
+            $request->getSession()->set('last_registered_email', $user->getEmail());
 
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            // 🔴 MOVE EMAIL VERIFICATION LOGIC AFTER FLUSH
+            try {
+                $signatureComponents = $verifyEmailHelper->generateSignature(
+                    'app_verify_email',
+                    $user->getId(), // 🔴 NOW HAS VALID ID
+                    $user->getEmail(),
+                    ['id' => $user->getId()]
+                );
+
+                $email = (new TemplatedEmail())
+                    ->from('no-reply@example.com')
+                    ->to($user->getEmail())
+                    ->subject('Verify Your Email')
+                    ->htmlTemplate('emails/verify_email.html.twig')
+                    ->context([
+                        'signedUrl' => $signatureComponents->getSignedUrl(),
+                        'user' => $user,
+                    ]);
+
+                $mailer->send($email);
+            } catch (\Exception $e) {
+                // 🔴 HANDLE EMAIL FAILURES
+                $this->addFlash('warning', 'Verification email could not be sent. Please contact support.');
+                $logger->error('Email sending failed: '.$e->getMessage());
+            }
+
+            // 🔴 REMOVE DUPLICATE REDIRECT
+            return $this->redirectToRoute('app_check_email');
         }
 
         return $this->render('user/new.html.twig', [
@@ -154,6 +258,8 @@ final class UserController extends AbstractController
             'form' => $form,
         ]);
     }
+
+
 
     #[Route('/complete-profile', name: 'app_user_complete_profile', methods: ['GET', 'POST'])]
     public function completeProfile(
