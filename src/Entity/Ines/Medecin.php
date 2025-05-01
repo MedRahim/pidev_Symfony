@@ -4,6 +4,9 @@ namespace App\Entity\Ines;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
 
 #[ORM\Entity]
 class Medecin
@@ -46,6 +49,10 @@ class Medecin
     #[Assert\NotNull(message: "Le service hospitalier est obligatoire.")]
     private ?ServiceHospitalier $service = null;
     // --- Getters et Setters ---
+
+    #[ORM\OneToMany(mappedBy: "medecin", targetEntity: Rendezvous::class)]
+private Collection $rendezvous;
+
     
     public function getIdMedecin(): int
     {
@@ -101,4 +108,15 @@ class Medecin
     {
         $this->service = $service;
     }
+
+    public function getRendezvous(): Collection
+{
+    return $this->rendezvous;
+}
+
+public function __construct()
+{
+    $this->rendezvous = new ArrayCollection();
+}
+
 }

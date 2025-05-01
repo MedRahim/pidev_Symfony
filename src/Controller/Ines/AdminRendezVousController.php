@@ -11,17 +11,42 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/backoffice/rendezvous', name: 'backoffice_rendezvous_')]
 class AdminRendezVousController extends AbstractController
 {
     #[Route('/', name: 'list', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
-        $rendezvous = $entityManager->getRepository(Rendezvous::class)->findAll();
+        $status = $request->query->get('status');
+        $date = $request->query->get('date');
+        $sort = $request->query->get('sort', 'r.dateRendezVous');
+    $direction = $request->query->get('direction', 'asc');
+
+        $queryBuilder = $entityManager->getRepository(Rendezvous::class)->createQueryBuilder('r');
+
+        if ($status) {
+            $queryBuilder->where('LOWER(r.status) = LOWER(:status)')
+                         ->setParameter('status',trim($status));
+        }
+
+        if ($date) {
+            $queryBuilder->andWhere('DATE(r.dateRendezVous) = :date')
+                         ->setParameter('date', new \DateTime($date));
+        }
+
+
+        $queryBuilder->orderBy($sort, $direction);
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            5
+        );
 
         return $this->render('BackOffice/rendezvous.html.twig', [
-            'rendezvous' => $rendezvous,
+            'pagination' => $pagination,
         ]);
     }
 

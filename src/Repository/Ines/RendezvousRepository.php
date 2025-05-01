@@ -13,6 +13,11 @@ class RendezvousRepository extends ServiceEntityRepository
         parent::__construct($registry, Rendezvous::class);
     }
 
+    public function getRendezvousQueryBuilder()
+    {
+        return $this->createQueryBuilder('r');
+    }
+
     /**
      * Vérifie si un rendez-vous avec la même date et heure existe déjà
      */

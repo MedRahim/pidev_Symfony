@@ -155,65 +155,87 @@
 
 
    <!-- /Menu -->
-
-   <div class="layout-page">
-  <div class="content-wrapper">
+<div class="layout-page">
+  <div class="content-wrapper bg-light">
     <div class="container-xxl flex-grow-1 container-p-y">
-      <div class="container mt-4">
-        <h1 class="mb-4">Gestion des Médecins</h1>
+      <div class="container mt-5">
+        <div class="card shadow-lg border-0 rounded-4 p-4">
+          <h2 class="text-center mb-4 text-primary">👨‍⚕️ Gestion des Médecins</h2>
 
-        {% for message in app.flashes('success') %}
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+          {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+            </div>
+          {% endfor %}
+
+          <!-- 🔍 Barre de recherche + ➕ Ajouter Médecin -->
+          <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <input type="text" id="searchInput" class="form-control w-50" placeholder="🔎 Rechercher un médecin...">
+            <a href="{{ path('backoffice_medecin_new') }}" class="btn btn-outline-success rounded-pill">➕ Ajouter un médecin</a>
           </div>
-        {% endfor %}
 
-         <div class="mb-3">
-          <a href="{{ path('backoffice_medecin_new') }}" class="btn btn-primary">
-            <i class="bx bx-plus"></i> Ajouter un médecin
-          </a>
+          <!-- 🩺 Tableau des médecins -->
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle bg-white">
+              <thead class="table-success text-center">
+                <tr>
+                  <th>Nom</th>
+                  <th>Prénom</th>
+                  <th>Spécialité</th>
+                  <th>Contact</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for medecin in medecins %}
+                  <tr>
+                    <td>{{ medecin.nomM }}</td>
+                    <td>{{ medecin.prenomM }}</td>
+                    <td>{{ medecin.specialite }}</td>
+                    <td class="text-center">{{ medecin.contact }}</td>
+                    <td class="text-center">
+                      <a href="{{ path('backoffice_medecin_edit', {idMedecin: medecin.idMedecin}) }}"
+                         class="btn btn-sm btn-warning rounded-pill me-2">
+                        ✏️ Modifier
+                      </a>
+                      <form action="{{ path('backoffice_medecin_delete', {idMedecin: medecin.idMedecin}) }}"
+                            method="post"
+                            class="d-inline"
+                            onsubmit="return confirm('Voulez-vous vraiment supprimer ce médecin ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ medecin.idMedecin) }}">
+                        <button class="btn btn-sm btn-danger rounded-pill">🗑️ Supprimer</button>
+                      </form>
+                    </td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="5" class="text-center text-muted">Aucun médecin trouvé.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 📄 Pagination (si utilisée) -->
+          {# <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(medecins) }}
+          </div> #}
         </div>
-
-      
-
-        <table class="table table-striped">
-          <thead class="table-dark">
-            <tr>
-              <th>Nom</th>
-              <th>Prénom</th>
-              <th>Spécialité</th>
-              <th>Contact</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for medecin in medecins %}
-              <tr>
-                <td>{{ medecin.nomM }}</td>
-                <td>{{ medecin.prenomM }}</td>
-                <td>{{ medecin.specialite }}</td>
-                <td>{{ medecin.contact }}</td>
-
-                <td>
-                 <a href="{{ path('backoffice_medecin_edit', {idMedecin: medecin.idMedecin}) }}" class="btn btn-sm btn-warning">Modifier</a>
-                 
-                  <form action="{{ path('backoffice_medecin_delete', {idMedecin: medecin.idMedecin}) }}" method="post" style="display:inline-block;" onsubmit="return confirm('Voulez-vous vraiment supprimer ce médecin ?');">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ medecin.idMedecin) }}">
-                    <button class="btn btn-sm btn-danger">Supprimer</button>
-                  </form>
-                </td>
-              </tr>
-            {% else %}
-              <tr>
-                <td colspan="5" class="text-center">Aucun médecin trouvé.</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
 </div>
+
+<!-- 🔍 Script de recherche en temps réel -->
+<script>
+  document.getElementById('searchInput').addEventListener('keyup', function () {
+    let value = this.value.toLowerCase();
+    let rows = document.querySelectorAll('table tbody tr');
+    rows.forEach(row => {
+      row.style.display = row.textContent.toLowerCase().includes(value) ? '' : 'none';
+    });
+  });
+</script>
 
 </body>

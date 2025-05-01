@@ -41,10 +41,11 @@ class Rendezvous
     #[Assert\NotBlank(message: "Le statut est obligatoire.")]
     private ?string $status = null;
 
-    #[ORM\Column(name: "idMedecin", type: "integer")]
-    #[Assert\NotBlank(message: "L'identifiant du médecin est obligatoire.")]
-    #[Assert\Positive(message: "L'ID du médecin doit être un nombre positif.")]
-    private ?int $idMedecin = null;
+
+    #[ORM\ManyToOne(targetEntity: Medecin::class)]
+    #[ORM\JoinColumn(name: "idMedecin", referencedColumnName: "idMedecin", nullable: false)]
+    private ?Medecin $medecin = null;
+    
 
     // ----------------- GETTERS & SETTERS -----------------
 
@@ -102,16 +103,15 @@ class Rendezvous
         return $this;
     }
 
-    public function getIdMedecin(): ?int
-    {
-        return $this->idMedecin;
-    }
 
-    public function setIdMedecin(?int $value): self
-    {
-        $this->idMedecin = $value;
+    public function getMedecin(): ?Medecin {
+        return $this->medecin;
+    }
+    public function setMedecin(?Medecin $medecin): self {
+        $this->medecin = $medecin;
         return $this;
     }
+    
 
     // ----------------- VALIDATIONS PERSONNALISÉES -----------------
 
