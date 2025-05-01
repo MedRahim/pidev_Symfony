@@ -75,14 +75,16 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                     $user->setAvatar($googleUser->getAvatar());
                     $user->setIsVerified(true);
                     $user->setCreatedAt(new \DateTime());
-                    $user->setRoles(['ROLE_USER']);
+                    $birthday = new \DateTime('1990-01-01');
+                    $user->setBirthday($birthday);
 
                     // Set default values for required fields
-                    $user->setCIN('0000000011111'); // Temporary value - prompt user to update
-                    $user->setPhone('+000000000'); // Temporary value
-                    $user->setAddress('To be updated'); // Temporary value
-                    $user->setBirthday(new \DateTime('1990-01-01')); // Temporary value
-                    $user->setPassword('googleauth'); // Dummy password
+                    $user->setCIN('00000000'); // Temporary value - prompt user to update
+                    $tempPassword = bin2hex(random_bytes(16)); // 32-character random string
+                    $user->setPassword($tempPassword);
+                    $user->setPhone('0000000000');
+                    $user->setAddress('to be updated');
+
                 } else {
                     // 4. Update existing user with Google ID
                     $user->setGoogleId($googleUser->getId());
@@ -100,11 +102,22 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     {
         // Update last login date
         $user = $token->getUser();
+
         if ($user instanceof User) {
             $user->setLastLoginDate(new \DateTime());
             $this->entityManager->flush();
         }
 
+        // Redirect if CIN is temporary
+        if ($user->getCIN() === '00000000') {
+
+            $request->getSession()->set('pending_user_id', $user->getId());
+            return new RedirectResponse(
+                $this->router->generate('app_user_complete_profile')
+            );
+        }
+
+        $request->getSession()->set('user_id', $user->getId());
         return new RedirectResponse(
             $this->router->generate('home') // Change to your desired route
         );

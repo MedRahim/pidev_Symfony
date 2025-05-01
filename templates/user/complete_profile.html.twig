@@ -1,0 +1,68 @@
+{% extends 'FrontOffice/base.html.twig' %}
+
+{% block title %}Complete Your Profile{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h1 class="h3 mb-4 text-center">Complete Your Profile</h1>
+
+                        {% if user.avatar %}
+                            <div class="text-center mb-4">
+                                <img src="{{ user.avatar }}"
+                                     class="rounded-circle"
+                                     alt="Google Avatar"
+                                     style="width: 150px; height: 150px;">
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control"
+                                   value="{{ user.name }}" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control"
+                                   value="{{ user.email }}" disabled>
+                        </div>
+
+                        {{ form_start(form) }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.CIN) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.Phone) }}
+                            </div>
+                        </div>
+
+                        {{ form_row(form.Address) }}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.birthday) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.Password) }}
+                            </div>
+                        </div>
+
+                        {{ form_row(form.bio) }}
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                Complete Profile
+                            </button>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

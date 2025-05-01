@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\GoogleUserType;
 use App\Form\LoginFormType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
@@ -82,7 +83,7 @@ final class UserController extends AbstractController
         FileUploader $fileUploader
     ): Response {
         $user = new User();
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(GoogleUserType::class, $user);
         $form->handleRequest($request);
 
 
@@ -151,6 +152,52 @@ final class UserController extends AbstractController
         return $this->render('user/new.html.twig', [
             'user' => $user,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/complete-profile', name: 'app_user_complete_profile', methods: ['GET', 'POST'])]
+    public function completeProfile(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher,
+        UserRepository $userRepository,
+        SessionInterface $session
+    ): Response {
+        /** @var User $user */
+        $userId = $request->getSession()->get('pending_user_id');
+
+        if (!$userId) {
+            $this->addFlash('error', 'Session expired. Please login again.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        /** @var User $user */
+        $user = $userRepository->find($userId);
+
+        $form = $this->createForm(GoogleUserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Handle password
+            $plainPassword = $form->get('Password')->getData();
+            $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+            $user->setPassword($hashedPassword);
+
+            // Verify CIN was changed
+            if ($user->getCIN() === '00000000') {
+                $this->addFlash('error', 'You must provide a valid CIN');
+                return $this->redirectToRoute('app_user_complete_profile');
+            }
+
+            $entityManager->flush();
+            $this->addFlash('success', 'Profile completed successfully!');
+            $session->set('user_id', $user->getId());
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('user/complete_profile.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user
         ]);
     }
 
