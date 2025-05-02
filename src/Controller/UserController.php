@@ -273,6 +273,9 @@ final class UserController extends AbstractController
         UserRepository $userRepository,
         SessionInterface $session
     ): Response {
+        // Debug session
+        dump($request->getSession()->all());
+
         /** @var User $user */
         $userId = $request->getSession()->get('pending_user_id');
 
@@ -284,25 +287,52 @@ final class UserController extends AbstractController
         /** @var User $user */
         $user = $userRepository->find($userId);
 
+        // Debug user
+        dump($user);
+
         $form = $this->createForm(GoogleUserType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Handle password
-            $plainPassword = $form->get('Password')->getData();
-            $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
-            $user->setPassword($hashedPassword);
+        // Debug form submission
+        if ($request->isMethod('POST')) {
+            dump('Form submitted:', $form->isSubmitted());
+            dump('Form valid:', $form->isValid());
+            dump('Form errors:', $form->getErrors(true));
+            dump('Request data:', $request->request->all());
+        }
 
-            // Verify CIN was changed
-            if ($user->getCIN() === '00000000') {
-                $this->addFlash('error', 'You must provide a valid CIN');
-                return $this->redirectToRoute('app_user_complete_profile');
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                // Handle password only if provided
+                $plainPassword = $form->get('Password')->getData();
+                if (!empty($plainPassword)) {
+                    $plainPassword = $form->get('Password')->getData();
+                    $this->addFlash('error', 'Submitted password: ' . ($plainPassword ?: '[empty]'));
+                    $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+                    $user->setPassword($hashedPassword);
+                }
+
+                // Verify CIN was changed
+                if ($user->getCIN() === '00000000') {
+                    $this->addFlash('error', 'You must provide a valid CIN');
+                    return $this->redirectToRoute('app_user_complete_profile');
+                }
+
+                $user->setIsGoogleAuthenticatorEnabled(false);
+                $entityManager->flush();
+                $this->addFlash('success', 'Profile completed successfully!');
+                $session->remove('pending_user_id');
+                $session->set('user_id', $user->getId());
+                return $this->redirectToRoute('home');
+            } else {
+                $plainPassword = $form->get('Password')->getData();
+                $this->addFlash('error', 'Submitted password: ' . ($plainPassword ?: '[empty]'));
+
+                // Form is invalid - debug why
+                foreach ($form->getErrors(true) as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
             }
-
-            $entityManager->flush();
-            $this->addFlash('success', 'Profile completed successfully!');
-            $session->set('user_id', $user->getId());
-            return $this->redirectToRoute('home');
         }
 
         return $this->render('user/complete_profile.html.twig', [
@@ -420,6 +450,12 @@ final class UserController extends AbstractController
         return $this->render('BackOffice/amine/showUser.html.twig', [
             'user' => $user,
         ]);
+    }
+
+    #[Route('/test', name: 'page')]
+    public function testi(): Response
+    {
+        return $this->render('FrontOffice/elements.html.twig');
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]

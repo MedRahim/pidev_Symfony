@@ -2,65 +2,218 @@
 
 {% block title %}Complete Your Profile{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6e8efb, #a777e3);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --neon-accent: #00f2fe;
+            --text-primary: #f8f9fa;
+        }
+
+        body {
+            background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-completion-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-completion-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--neon-accent);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--neon-accent);
+            box-shadow: 0 0 0 0.25rem rgba(0, 242, 254, 0.25);
+            color: white;
+        }
+
+        .form-control:disabled {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .btn-complete {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 12px 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-complete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(110, 142, 251, 0.4);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+        }
+
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step.active {
+            background: var(--neon-accent);
+            color: #121212;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <div class="container mt-5 mb-5">
+    <div class="container my-5">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow">
-                    <div class="card-body p-4">
-                        <h1 class="h3 mb-4 text-center">Complete Your Profile</h1>
+            <div class="col-md-8 col-lg-6">
+                <div class="profile-completion-card p-4 p-md-5">
+                    <!-- Progress Steps -->
 
-                        {% if user.avatar %}
-                            <div class="text-center mb-4">
-                                <img src="{{ user.avatar }}"
-                                     class="rounded-circle"
-                                     alt="Google Avatar"
-                                     style="width: 150px; height: 150px;">
-                            </div>
-                        {% endif %}
+                    {% for flashError in app.flashes('error') %}
+                        <div class="alert alert-danger">{{ flashError }}</div>
+                    {% endfor %}
 
-                        <div class="mb-3">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" class="form-control"
-                                   value="{{ user.name }}" disabled>
+                    <h1 class="h3 mb-4 text-center fw-bold">Complete Your Profile</h1>
+
+                    {% if user.avatar %}
+                        <div class="avatar-container">
+                            <img src="{{ user.avatar }}" class="avatar-img" alt="Profile Avatar">
                         </div>
+                    {% endif %}
 
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control"
-                                   value="{{ user.email }}" disabled>
-                        </div>
-
-                        {{ form_start(form) }}
-                        <div class="row">
-                            <div class="col-md-6">
-                                {{ form_row(form.CIN) }}
-                            </div>
-                            <div class="col-md-6">
-                                {{ form_row(form.Phone) }}
-                            </div>
-                        </div>
-
-                        {{ form_row(form.Address) }}
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {{ form_row(form.birthday) }}
-                            </div>
-                            <div class="col-md-6">
-                                {{ form_row(form.Password) }}
-                            </div>
-                        </div>
-
-                        {{ form_row(form.bio) }}
-
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary">
-                                Complete Profile
-                            </button>
-                        </div>
-                        {{ form_end(form) }}
+                    <div class="mb-4">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" value="{{ user.name }}" disabled>
                     </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" value="{{ user.email }}" disabled>
+                    </div>
+
+                    {{ form_start(form) }}
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            {{ form_row(form.CIN, {
+                                'attr': {'class': 'form-control', 'value': ''},
+                                'label_attr': {'class': 'form-label'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.Phone, {
+                                'attr': {'class': 'form-control', 'value': ''},
+                                'label_attr': {'class': 'form-label'}
+                            }) }}
+                        </div>
+                    </div>
+
+                    {{ form_row(form.Address, {
+                        'attr': {'class': 'form-control mb-4', 'value': ''},
+                        'label_attr': {'class': 'form-label'}
+                    }) }}
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            {{ form_row(form.birthday, {
+                                'attr': {'class': 'form-control', 'value': ''},
+                                'label_attr': {'class': 'form-label'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.Password, {
+                                'attr': {'class': 'form-control'},
+                                'label_attr': {'class': 'form-label'},
+                                'help': 'Leave blank to keep current password'
+                            }) }}
+                        </div>
+                    </div>
+
+                    {{ form_row(form.bio, {
+                        'attr': {'class': 'form-control mb-4', 'rows': 4, 'value': ''},
+                        'label_attr': {'class': 'form-label'}
+                    }) }}
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-complete">
+                            <i class="bi bi-check-circle me-2"></i> Complete Profile
+                        </button>
+                    </div>
+                    {{ form_end(form) }}
                 </div>
             </div>
         </div>

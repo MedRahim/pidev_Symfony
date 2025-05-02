@@ -124,51 +124,47 @@ class UserRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('u');
 
-        // CIN filter (exact match or regex)
+        // Normalize filters for partial matches
         if (!empty($filters['cin'])) {
-            if (str_starts_with($filters['cin'], '%')) {
-                // Handle regex-like pattern
-                $qb->andWhere('u.CIN LIKE :cin')
-                    ->setParameter('cin', str_replace('%', '', $filters['cin']).'%');
-            } else {
-                // Exact match
-                $qb->andWhere('u.CIN = :cin')
-                    ->setParameter('cin', $filters['cin']);
-            }
+            $qb->andWhere('u.CIN LIKE :cin')
+                ->setParameter('cin', '%' . $filters['cin'] . '%');
         }
 
-        // Email filter
         if (!empty($filters['email'])) {
             $qb->andWhere('u.Email LIKE :email')
-                ->setParameter('email', '%'.$filters['email'].'%');
+                ->setParameter('email', '%' . $filters['email'] . '%');
         }
 
-        // Age filter (calculated from birthday)
-        if (!empty($filters['age'])) {
-            $minDate = new \DateTime();
-            $minDate->modify('-'.(intval($filters['age'])+1).' years');
-            $maxDate = new \DateTime();
-            $maxDate->modify('-'.intval($filters['age']).' years');
+        if (!empty($filters['name'])) {
+            $qb->andWhere('u.Name LIKE :name')
+                ->setParameter('name', '%' . $filters['name'] . '%');
+        }
 
-            $qb->andWhere('u.birthday <= :minDate')
-                ->andWhere('u.birthday > :maxDate')
+        // Age filter (range-based using birthday)
+        if (!empty($filters['age'])) {
+            $minDate = (new \DateTime())->modify('-' . (intval($filters['age']) + 1) . ' years');
+            $maxDate = (new \DateTime())->modify('-' . intval($filters['age']) . ' years');
+
+            $qb->andWhere('u.birthday BETWEEN :minDate AND :maxDate')
                 ->setParameter('minDate', $minDate)
                 ->setParameter('maxDate', $maxDate);
         }
 
-        // Sorting
+        // Allowlist of fields safe to sort on
+        $sortableFields = ['CIN', 'Email', 'Name', 'birthday', 'createdAt', 'lastLoginDate'];
+
         if ($sort) {
             if ($sort === 'age') {
-                // Special handling for age sorting
                 $qb->addSelect('TIMESTAMPDIFF(YEAR, u.birthday, CURRENT_DATE()) AS HIDDEN age');
                 $qb->orderBy('age', $direction);
-            } else {
-                $qb->orderBy('u.'.$sort, $direction);
+            } elseif (in_array($sort, $sortableFields, true)) {
+                $qb->orderBy('u.' . $sort, $direction);
             }
         }
 
         return $qb->getQuery()->getResult();
     }
+
 
     public function getRegistrationTimeline(): array
     {

@@ -54,3 +54,5 @@ app_verify_email:
 app_check_email:
     path: /check-email
     controller: App\Controller\UserController::checkEmail
+
+

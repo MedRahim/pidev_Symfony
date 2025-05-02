@@ -1,0 +1,22 @@
+{# templates/reset_password/email.html.twig #}
+{% block subject %}Password Reset Request{% endblock %}
+
+{% block body_html %}
+    <p>Hello!</p>
+
+    <p>To reset your password, please visit the following link:</p>
+
+    <p><a href="{{ resetUrl }}">{{ resetUrl }}</a></p>
+
+    <p>This link will expire in {{ tokenLifetime|date('g') }} hour(s).</p>
+{% endblock %}
+
+{% block body_text %}
+    Hello!
+
+    To reset your password, please visit the following link:
+
+    {{ resetUrl }}
+
+    This link will expire in {{ tokenLifetime|date('g') }} hour(s).
+{% endblock %}

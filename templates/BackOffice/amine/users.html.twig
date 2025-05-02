@@ -60,62 +60,47 @@
 
 {% block body %}
     <div class="container-fluid p-3">
-        <h1 class="h5 mb-3">User index</h1>
+        <h1 class="h5 mb-3">User Index</h1>
 
         {# Filter Form #}
         <div class="card mb-3">
-            <div class="card-body p-2">
-                <form method="get" class="row g-2">
+            <div class="card-body p-3">
+                <form method="get" class="row g-3 align-items-end">
                     <div class="col-md-3">
-                        <label for="cin-filter" class="form-label small">CIN</label>
+                        <label for="cin-filter" class="form-label">CIN</label>
                         <input type="text" name="cin" id="cin-filter" class="form-control form-control-sm"
                                value="{{ current_filters.cin ?? '' }}"
-                               placeholder="Exact or start with %">
+                               placeholder="Search by CIN">
                     </div>
                     <div class="col-md-3">
-                        <label for="email-filter" class="form-label small">Email</label>
+                        <label for="email-filter" class="form-label">Email</label>
                         <input type="text" name="email" id="email-filter" class="form-control form-control-sm"
                                value="{{ current_filters.email ?? '' }}"
-                               placeholder="Contains...">
+                               placeholder="Search by Email">
                     </div>
                     <div class="col-md-2">
-                        <label for="age-filter" class="form-label small">Age</label>
+                        <label for="age-filter" class="form-label">Age</label>
                         <input type="number" name="age" id="age-filter" class="form-control form-control-sm"
                                value="{{ current_filters.age ?? '' }}"
-                               placeholder="Exact age">
+                               placeholder="Exact Age">
                     </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary btn-sm me-2">Filter</button>
-                        <a href="{{ path('app_admin_Listusers') }}" class="btn btn-outline-secondary btn-sm">Reset</a>
+                    <div class="col-md-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                        <a href="{{ path('app_admin_Listusers') }}" class="btn btn-sm btn-outline-secondary">Reset</a>
                     </div>
                 </form>
             </div>
         </div>
 
         <div class="table-responsive">
-            <table class="table table-sm table-striped table-bordered table-hover">
-                <thead class="small">
+            <table class="table table-sm table-striped table-bordered table-hover align-middle">
+                <thead class="table-light small">
                 <tr>
                     <th class="p-1">Name</th>
-                    <th class="p-1 text-truncate" style="max-width: 120px;">Email</th>
-                    <th class="p-1">CIN</th>
+                    <th class="p-1 text-truncate" style="max-width: 140px;">Email</th>
+
                     <th class="p-1">
-                        <a href="{{ path('app_admin_Listusers', {
-                            cin: current_filters.cin,
-                            email: current_filters.email,
-                            age: current_filters.age,
-                            sort: 'age',
-                            direction: current_sort == 'age' and current_direction == 'ASC' ? 'DESC' : 'ASC'
-                        }) }}" class="text-decoration-none">
-                            Age
-                            {% if current_sort == 'age' %}
-                                {% if current_direction == 'ASC' %}
-                                    <i class="bi bi-arrow-up"></i>
-                                {% else %}
-                                    <i class="bi bi-arrow-down"></i>
-                                {% endif %}
-                            {% endif %}
-                        </a>
+                        age
                     </th>
                     <th class="p-1">Role</th>
                     <th class="p-1">Active</th>
@@ -129,19 +114,19 @@
                 <tbody>
                 {% for user in users %}
                     <tr>
-                        <td class="p-1 align-middle">{{ user.Name }}</td>
-                        <td class="p-1 align-middle text-truncate" style="max-width: 120px;">{{ user.Email }}</td>
-                        <td class="p-1 align-middle">{{ user.CIN }}</td>
-                        <td class="p-1 align-middle">
-                            {{ date().diff(date(user.birthday)).y }} years
+                        <td class="p-1">{{ user.Name }}</td>
+                        <td class="p-1 text-truncate" style="max-width: 140px;">{{ user.Email }}</td>
+
+                        <td class="p-1">
+                            {{ date().diff(user.birthday).y }} years
                         </td>
-                        <td class="p-1 align-middle">{{ user.roles[0] }}</td>
-                        <td class="p-1 align-middle">{{ user.isActive ? 'Yes' : 'No' }}</td>
-                        <td class="p-1 align-middle">{{ user.isVerified ? 'Yes' : 'No' }}</td>
-                        <td class="p-1 align-middle small">{{ user.lastLoginDate ? user.lastLoginDate|date('Y-m-d H:i') : '' }}</td>
-                        <td class="p-1 align-middle small">{{ user.createdAt ? user.createdAt|date('Y-m-d') : '' }}</td>
-                        <td class="p-1 align-middle small">{{ user.updatedAt ? user.updatedAt|date('Y-m-d') : '' }}</td>
-                        <td class="p-1 align-middle">
+                        <td class="p-1">{{ user.roles[0] }}</td>
+                        <td class="p-1">{{ user.isActive ? 'Yes' : 'No' }}</td>
+                        <td class="p-1">{{ user.isVerified ? 'Yes' : 'No' }}</td>
+                        <td class="p-1 small">{{ user.lastLoginDate ? user.lastLoginDate|date('Y-m-d H:i') : '' }}</td>
+                        <td class="p-1 small">{{ user.createdAt|date('Y-m-d') }}</td>
+                        <td class="p-1 small">{{ user.updatedAt ? user.updatedAt|date('Y-m-d') : '' }}</td>
+                        <td class="p-1">
                             <div class="btn-group btn-group-sm" role="group">
                                 <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-outline-primary btn-sm px-2">Show</a>
                             </div>
@@ -149,7 +134,7 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="11" class="p-1 text-center small">No records found</td>
+                        <td colspan="11" class="text-center text-muted p-2">No records found</td>
                     </tr>
                 {% endfor %}
                 </tbody>

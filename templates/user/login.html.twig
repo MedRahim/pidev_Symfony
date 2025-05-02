@@ -20,7 +20,6 @@
                                 'attr': {'class': 'form-control'}
                             }) }}
                             {{ form_errors(form.email) }}
-
                         </div>
 
                         <div class="mb-3">
@@ -28,32 +27,40 @@
                                 'attr': {'class': 'form-control'}
                             }) }}
                             {{ form_errors(form.password) }}
-
                         </div>
 
-                        <div class="d-grid gap-2 text-center">
-                            <button type="submit" class="btn btn-primary">LOGIN</button>
+                        <div class="mb-2 mt-4 ml-4">
+                            <div class="d-grid gap-2 col-md-6 mx-auto">
+                                <button type="submit" class="genric-btn primary-border">LOGIN</button>
+                            </div>
                         </div>
                         {{ form_end(form) }}
 
+                        <!-- Divider with "OR" -->
+                        <div class="divider d-flex align-items-center justify-content-center my-2">
+                            <hr class="w-25">
+                            <span class="px-3 text-muted">OR</span>
+                            <hr class="w-25">
+                        </div>
 
-                        <a href="{{ path('connect_google_start') }}" class="btn btn-danger w-100 mb-3">
-                            <i class="fab fa-google"></i> Login with Google
-                        </a>
+                        <!-- Centered alternative options -->
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <a href="{{ path('connect_google_start') }}" class="genric-btn success">
+                                    <i class="fab fa-google"></i> Login with Google
+                                </a>
+                            </div>
+                            <div>
+                                <a href="{{ path('app_user_new') }}" class="genric-btn link">
+                                    Don't have an account? Signup.
+                                </a>
+                            </div>
+                        </div>
 
-                        <a href="{{ path('app_user_new') }}" class="btn btn-danger w-100 mb-3">
-                            <i class="fab fa-google"></i>New user
-                        </a>
-
-
-                        {#                        <h2>Two-Factor Authentication</h2>#}
-{#                        <form action="{{ path('2fa_login_check') }}" method="post">#}
-{#                            <input type="text" name="_auth_code" autocomplete="off" placeholder="Authentication Code">#}
-{#                            <button type="submit">Verify</button>#}
-{#                        </form>#}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 {% endblock %}

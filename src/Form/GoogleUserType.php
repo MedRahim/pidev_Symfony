@@ -8,6 +8,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
@@ -19,12 +21,16 @@ class GoogleUserType extends AbstractType
     {
         $builder
             ->add('CIN', null, [
-                'label' => 'CIN/National ID',
-                'constraints' => [
-                    new NotBlank(),
-                    new Length(['min' => 8, 'max' => 8]),
-                    new Regex('/^[0-9]{8}$/')
-                ]
+                'label' => 'CIN/National ID'
+            ])
+            ->add('Name', null, [
+                'label' => 'Full Name'
+            ])
+            // Usually, email is set and should not be changed, so you can remove it or set it as disabled
+            // ->add('Email', EmailType::class, ['disabled' => true])
+            ->add('Password', PasswordType::class, [
+                'label' => 'Set a Password',
+                'required' => true // Force user to set a password if not set yet
             ])
             ->add('Phone', TelType::class)
             ->add('Address')
@@ -36,21 +42,13 @@ class GoogleUserType extends AbstractType
                 'label' => 'Biography',
                 'required' => false
             ])
-            ->add('Password', PasswordType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new NotBlank(),
-                    new Length(['min' => 8, 'max' => 32]),
-                    new Regex('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/')
-                ]
-            ]);
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,
-            'disabled_fields' => ['Name', 'Email']
         ]);
     }
 }

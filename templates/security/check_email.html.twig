@@ -1,28 +1,130 @@
-{# templates/security/check_email.html.twig #}
 {% extends 'FrontOffice/base.html.twig' %}
 
 {% block title %}Check Your Email{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --success-color: #1cc88a;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .verification-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .verification-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.2);
+        }
+
+        .email-icon {
+            font-size: 5rem;
+            color: var(--primary-color);
+            margin: 1.5rem 0;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .btn-resend {
+            background: var(--primary-color);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-resend:hover {
+            background: #3a5ccc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(78, 115, 223, 0.3);
+        }
+
+        .text-muted a {
+            color: var(--primary-color);
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .text-muted a:hover {
+            color: #3a5ccc;
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <div class="container mt-5">
+    <div class="container mt-100 mb-100">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <div class="card shadow">
-                    <div class="card-body p-4 text-center">
-                        <h1 class="h3 mb-4">Check Your Email</h1>
-                        <p class="lead">
+            <div class="col-md-8 col-lg-6 col-xl-5">
+                <div class="verification-card shadow-lg">
+                    <div class="card-body p-5 text-center">
+                        <h1 class="h3 mb-4 font-weight-bold">Check Your Email</h1>
+
+                        <div class="email-icon">
+                            <i class="bi bi-envelope-check-fill"></i>
+                        </div>
+
+                        <p class="lead mb-4">
                             We've sent a verification link to your email address.
                         </p>
-                        <p>
-                            <i class="bi bi-envelope-check fs-1 text-primary"></i>
+
+                        <div class="alert alert-light border mb-4">
+                            <i class="bi bi-info-circle me-2"></i>
+                            The link will expire in 24 hours
+                        </div>
+
+                        <p class="text-muted mb-4">
+                            Didn't receive the email?
+                            <a href="{{ path('app_resend_verification') }}" class="genric-btn primary-border">
+                                Resend Verification
+                            </a>
                         </p>
-                        <p class="text-muted">
-                            Didn't receive the email? Check your spam folder or
-                            <a href="{{ path('app_resend_verification') }}">resend verification email</a>.
-                        </p>
+
+                        <div class="mt-4 text-muted small">
+                            <i class="bi bi-shield-check me-1"></i>
+                            Check your spam folder if you can't find our email
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Add animation to the resend button
+        document.querySelector('.btn-resend').addEventListener('mouseenter', function() {
+            this.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i> Resend Verification';
+        });
+
+        document.querySelector('.btn-resend').addEventListener('mouseleave', function() {
+            this.innerHTML = 'Resend Verification';
+        });
+    </script>
 {% endblock %}
