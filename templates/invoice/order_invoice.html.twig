@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice #{{ invoiceNumber }}</title>
+    <style>
+        @page {
+            margin: 0;
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.05) 0%, rgba(255, 215, 0, 0.05) 100%);
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+            position: relative;
+            background: transparent;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+            padding: 20px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #1a237e 0%, #303f9f 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .text-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a237e;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .company-info {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: right;
+        }
+        .company-info h3 {
+            color: #1a237e;
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+    /* Add to existing styles */
+    table {
+        --table-accent: #1a237e;
+        --table-hover: rgba(26, 35, 126, 0.05);
+    }
+
+    th {
+        position: relative;
+        padding-left: 2.5rem !important;
+        border-bottom: 3px solid var(--table-accent) !important;
+    }
+
+    th i {
+    left: 15px; /* Position icon within adjusted padding */
+}
+
+    td {
+        position: relative;
+        padding: 15px 25px;
+        transition: all 0.2s ease;
+    }
+
+    td:first-child::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--table-accent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    tr:hover td:first-child::before {
+        opacity: 1;
+    }
+
+    .total-section {
+        background: linear-gradient(135deg, #1a237e 0%, #303f9f 100%);
+        padding: 25px 40px;
+    }
+
+    .total-section .total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+    }
+
+    .total-section .total:last-child {
+        border-top: 2px solid rgba(255, 215, 0, 0.3);
+        padding-top: 15px;
+        margin-top: 15px;
+    }
+
+    .total-section .total i {
+        font-size: 1.4em;
+        margin-right: 15px;
+    }
+
+        .invoice-title {
+            color: #1a237e;
+            font-size: 28px;
+            margin: 30px 0;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th {
+            background: linear-gradient(135deg, #1a237e 0%, #303f9f 100%);
+            color:rgb(30, 17, 17);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #000000;
+        }
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9ff;
+        }
+        tr:hover {
+            background-color: #f0f4ff;
+            transition: background-color 0.3s ease;
+        }
+        .total-section {
+            background: linear-gradient(135deg, #1a237e 0%, #303f9f 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-align: right;
+            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .total {
+            font-size: 18px;
+            margin: 10px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        .total:last-child {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 150px;
+            color: rgba(26, 35, 126, 0.03);
+            z-index: -1;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .product-name {
+            color: #1a237e;
+            font-weight: bold;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="watermark">INVOICE</div>
+    
+    <div class="header">
+        <div class="logo-container">
+            <div>
+                <div class="text-logo">MdinTech</div>
+                <span style="color: #ffd700; font-weight: bold;">SMART CITY</span>
+            </div>
+        </div>
+        <div class="company-info">
+            <h3>INVOICE</h3>
+            <p>Date: {{ date|date("Y-m-d") }}</p>
+            <p>Invoice #: {{ invoiceNumber }}</p>
+                        <span class="badge">Official Document</span>
+
+        </div>
+    </div>
+
+    <div class="invoice-details">
+        <table>
+            <thead>
+        <tr>
+            <th>
+                <i class="fas fa-box-open"></i>
+                Product
+            </th>
+            <th>
+                <i class="fas fa-hashtag"></i>
+                Quantity
+            </th>
+            <th>
+                <i class="fas fa-tag"></i>
+                Unit Price
+            </th>
+            <th>
+                <i class="fas fa-calculator"></i>
+                Total
+            </th>
+        </tr>
+    </thead>
+            <tbody>
+                {% for order in orders %}
+                    {% for item in order.orderItems %}
+                        <tr>
+                            <td class="product-name">{{ item.product.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.product.price|number_format(2) }}</td>
+                            <td>{{ item.priceTotal|number_format(2) }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="total-section">
+            <p class="total">Subtotal: {{ total|number_format(2) }} DT</p>
+            <p class="total">Tax (19%): {{ (total * 0.19)|number_format(2) }} DT</p>
+            <p class="total">Total Due: {{ facture|number_format(2) }} DT</p>
+        </div>
+    </div>
+     <div class="signature-section">
+        <div class="signature-box">
+            <div class="signature-line"></div>
+            <p>Authorized Signature</p>
+        </div>
+        <div class="signature-box">
+            <div class="signature-line"></div>
+            <p>Received By</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>MdinTech SMART CITY - Your Trusted Partner in Smart City Solutions</p>
+        <div class="contact-info">
+            <span class="contact-item">
+                <i class="fas fa-envelope"></i>
+                contact@mdintech.com
+            </span>
+            <span class="contact-item">
+                <i class="fas fa-phone"></i>
+                +216 XX XXX XXX
+            </span>
+            <span class="contact-item">
+                <i class="fas fa-globe"></i>
+                www.mdintech.com
+            </span>
+        </div>
+        <p>Smart City Business Center, Tunisia</p>
+    </div>
+
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</body>
+</html>

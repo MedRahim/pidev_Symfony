@@ -192,6 +192,7 @@ final class OrderController extends AbstractController
         }
 
         $order->setStatus('confirmed');
+        $order->setConfirmedAt(new \DateTime()); // Set confirmation timestamp
         $entityManager->flush();
 
 
@@ -292,7 +293,7 @@ public function paymentSuccess(Request $request, EntityManagerInterface $entityM
 {
     // Get the order IDs from the session or query parameters
     $orderIds = explode(',', $request->query->get('order_ids'));
-    
+    $orderIds = $request->query->get('order_ids'); // e.g., "1,2,3"
     // Fetch only the paid orders
     $orders = $orderRepository->findBy(['id' => $orderIds]);
     
@@ -333,6 +334,41 @@ public function paymentSuccess(Request $request, EntityManagerInterface $entityM
         $this->addFlash('success', sprintf('Deleted %d orders successfully.', count($orders)));
         return $this->redirectToRoute('app_order_pannier');
     }
+    // src/Controller/OrderController.php
+
+#[Route('/api/confirmed-orders', name: 'api_confirmed_orders', methods: ['GET'])]
+public function getConfirmedOrdersSince(Request $request, OrderRepository $orderRepository): JsonResponse
+{
+    $since = $request->query->get('since', 'now - 1 hour');
+    $sinceDate = new \DateTime($since);
+    
+    $confirmedCount = $orderRepository->countConfirmedSince($sinceDate);
+    
+    return $this->json([
+        'count' => $confirmedCount,
+        'lastChecked' => (new \DateTime())->format(\DateTime::ATOM)
+    ]);
+}
+#[Route('/mark-paid', name: 'app_order_mark_paid', methods: ['POST'])]
+public function markOrdersAsPaid(Request $request, EntityManagerInterface $entityManager, OrderRepository $orderRepository): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+    
+    if (!$this->isCsrfTokenValid('process_payment', $data['_token'])) {
+        return new JsonResponse(['success' => false, 'error' => 'Invalid CSRF token'], 403);
+    }
+
+    $orderIds = $data['orderIds'];
+    $orders = $orderRepository->findBy(['id' => $orderIds]);
+
+    foreach ($orders as $order) {
+        $order->setStatus('paid');
+    }
+
+    $entityManager->flush();
+
+    return new JsonResponse(['success' => true]);
+}
 }
 
 

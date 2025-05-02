@@ -27,6 +27,17 @@ class OrderRepository extends ServiceEntityRepository
     
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
+    public function countConfirmedSince(\DateTimeInterface $since): int
+{
+    return $this->createQueryBuilder('o')
+        ->select('COUNT(o.id)')
+        ->where('o.status = :status')
+        ->andWhere('o.confirmedAt > :since') // Changed from o.date to o.createdAt
+        ->setParameter('status', 'confirmed')
+        ->setParameter('since', $since)
+        ->getQuery()
+        ->getSingleScalarResult();
+}
     // Add custom query methods here if needed
     
 }

@@ -33,6 +33,7 @@
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
         <!-- Google Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
@@ -1118,5 +1119,68 @@
             });
 
         </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Toastr
+    toastr.options = {
+        positionClass: 'toast-bottom-right',
+        progressBar: true,
+        timeOut: 5000
+    };
+
+    let lastChecked = localStorage.getItem('lastOrderCheck') || new Date().toISOString();
+    
+    function checkConfirmedOrders() {
+        fetch(`/order/api/confirmed-orders?since=${encodeURIComponent(lastChecked)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.count > 0) {
+                    const message = `${data.count} order${data.count > 1 ? 's' : ''} confirmed!`;
+                    toastr.success(message, 'New Confirmation!', {
+                        onclick: () => {
+                            window.location.href = '{{ path('app_order_pannier') }}';
+                        }
+                    });
+                }
+                // Update last checked time
+                localStorage.setItem('lastOrderCheck', data.lastChecked);
+                lastChecked = data.lastChecked;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Check immediately and every 30 seconds
+    checkConfirmedOrders();
+    setInterval(checkConfirmedOrders, 30000);
+});
+</script>
+<style>
+/* Custom Toastr styling */
+.toast {
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.toast-success {
+    background-color: #28a745 !important;
+    border-left: 4px solid #1e7e34 !important;
+}
+
+.toast-info {
+    background-color: #17a2b8 !important;
+    border-left: 4px solid #117a8b !important;
+}
+
+.toast-close-button {
+    color: white !important;
+    opacity: 0.8 !important;
+}
+
+.toast-message {
+    font-size: 14px;
+    padding-right: 20px;
+}
+</style>
     </body>
     </html>
