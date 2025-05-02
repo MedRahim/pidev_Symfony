@@ -138,4 +138,5 @@ class Users
         // Ce qui s’affiche dans les choix “Utilisateur”
         return $this->username;
     }
+    
 }

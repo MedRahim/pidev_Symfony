@@ -1,24 +1,289 @@
 {# templates/admin/reservations/custom_edit.html.twig #}
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
+{% block head_stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .reservation-container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 2.5rem;
+            margin-top: 1.5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .header-card {
+            background: #f8f9fa;
+            border-left: 4px solid #4e73df;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .header-title {
+            font-size: 1.75rem;
+            color: #2c3e50;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-title i {
+            margin-right: 12px;
+            color: #4e73df;
+        }
+        
+        .header-meta {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .status-badge i {
+            margin-right: 6px;
+        }
+        
+        .status-confirmed {
+            background: #e6f7ee;
+            color: #28a745;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #d39e00;
+        }
+        
+        .status-cancelled {
+            background: #f8d7da;
+            color: #dc3545;
+        }
+        
+        .payment-paid {
+            background: #e7f1ff;
+            color: #0062cc;
+        }
+        
+        .payment-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .payment-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+            font-size: 0.95rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        .form-control:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.15);
+            outline: none;
+        }
+        
+        .datetime-group {
+            position: relative;
+        }
+        
+        .datetime-group i {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding-top: 1.5rem;
+            margin-top: 1rem;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background: #4e73df;
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: #3a5bc7;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            
+            .reservation-container {
+                padding: 1.5rem;
+            }
+            
+            .header-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block content_title %}
-    Édition de la réservation n°{{ entity.id }}
+    {# On laisse vide pour personnaliser dans le bloc content #}
 {% endblock %}
 
 {% block content %}
-    {{ form_start(form) }}
-        <div class="grid grid-cols-1 gap-4">
-            {{ form_row(form.trip) }}
-            {{ form_row(form.seatNumber) }}
-            {{ form_row(form.status) }}
-            {{ form_row(form.paymentStatus) }}
-            {{ form_row(form.reservationTime) }}
+    <div class="reservation-container">
+        <div class="header-card">
+            <div>
+                <h1 class="header-title">
+                    <i class="fas fa-calendar-check"></i>
+                    Réservation #{{ entity.id }}
+                </h1>
+                <div class="header-meta">
+                    Créée le {{ entity.reservationTime|date('d/m/Y à H:i') }}
+                    {% if entity.user %}
+                        par {{ entity.user.fullName }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="status-badges" style="display: flex; gap: 0.75rem;">
+                <span class="status-badge status-{{ entity.status|lower }}">
+                    <i class="fas fa-{{ entity.status == 'confirmed' ? 'check-circle' : (entity.status == 'pending' ? 'clock' : 'times-circle') }}"></i>
+                    {{ entity.status|trans }}
+                </span>
+                <span class="status-badge payment-{{ entity.paymentStatus|lower }}">
+                    <i class="fas fa-{{ entity.paymentStatus == 'paid' ? 'receipt' : (entity.paymentStatus == 'failed' ? 'exclamation-triangle' : 'clock') }}"></i>
+                    {{ entity.paymentStatus|trans }}
+                </span>
+            </div>
         </div>
-        <div class="mt-6 flex items-center space-x-3">
-            <button type="submit" class="btn btn-primary">
-                Enregistrer
-            </button>
-            <a href="{{ returnUrl }}" class="btn btn-link">Annuler</a>
-        </div>
-    {{ form_end(form) }}
+
+        {{ form_start(form) }}
+            <div class="form-grid">
+                <div class="form-group">
+                    {{ form_label(form.trip) }}
+                    {{ form_widget(form.trip, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                
+                <div class="form-group">
+                    {{ form_label(form.seatNumber) }}
+                    {{ form_widget(form.seatNumber, {
+                        'attr': {
+                            'class': 'form-control',
+                            'min': 1,
+                            'max': 50,
+                            'style': 'width: 120px'
+                        }
+                    }) }}
+                </div>
+                
+                <div class="form-group">
+                    {{ form_label(form.status) }}
+                    {{ form_widget(form.status, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                
+                <div class="form-group">
+                    {{ form_label(form.paymentStatus) }}
+                    {{ form_widget(form.paymentStatus, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                
+                <div class="form-group full-width">
+                    {{ form_label(form.reservationTime) }}
+                    <div class="datetime-group">
+                        {{ form_widget(form.reservationTime, {'attr': {'class': 'form-control'}}) }}
+                        <i class="far fa-calendar-alt"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ returnUrl }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Annuler
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> {{ form.submit.vars.label|default('Enregistrer') }}
+                </button>
+            </div>
+        {{ form_end(form) }}
+    </div>
 {% endblock %}

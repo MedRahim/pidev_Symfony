@@ -1,6 +1,4 @@
 <?php
-// src/Controller/Admin/ReservationsCrudController.php
-
 namespace App\Controller\Admin;
 
 use App\Entity\Reservations;
@@ -28,7 +26,7 @@ class ReservationsCrudController extends AbstractCrudController
     public function __construct(AdminUrlGenerator $adminUrlGenerator, EntityManagerInterface $em)
     {
         $this->adminUrlGenerator = $adminUrlGenerator;
-        $this->em               = $em;
+        $this->em = $em;
     }
 
     public static function getEntityFqcn(): string
@@ -37,39 +35,39 @@ class ReservationsCrudController extends AbstractCrudController
     }
 
     public function configureActions(Actions $actions): Actions
-    {
-        // Met à jour l'action "export" (déjà existante globalement)
-        $actions = $actions->update(
-            Crud::PAGE_INDEX,
-            'export',
-            fn(Action $a) => $a
-                ->setLabel('Exporter CSV')
-                ->linkToRoute('export_reservations_csv')
-                ->setIcon('fa fa-download')
-                ->addCssClass('btn btn-primary')
-        );
-
-        // Ajoute l'action "Éditer" custom qui pointe vers customEdit()
-        $editCustom = Action::new(Action::EDIT, 'Éditer')
-            ->linkToCrudAction('customEdit')
-            ->setCssClass('btn btn-primary');
-
-        return $actions
-            ->add(Crud::PAGE_INDEX, $editCustom)
-            ->add(Crud::PAGE_INDEX, Action::DETAIL)
-            ->add(Crud::PAGE_INDEX, Action::DELETE)
-            ->add(Crud::PAGE_NEW,   Action::SAVE_AND_RETURN)
-            ->add(Crud::PAGE_NEW,   Action::SAVE_AND_CONTINUE)
-            ->add(Crud::PAGE_EDIT,  Action::SAVE_AND_RETURN)
-            ->add(Crud::PAGE_EDIT,  Action::SAVE_AND_CONTINUE)
-            ->setPermission(Action::DELETE, 'ROLE_ADMIN');
-    }
+{
+    return $actions
+        ->add(Crud::PAGE_INDEX, Action::new('export', 'Exporter CSV')
+            ->linkToRoute('export_reservations_csv')
+            ->setIcon('fa fa-download')
+            ->addCssClass('btn btn-primary mb-2')) // Ajout de marge basse
+        
+        ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
+            return $action
+                ->linkToCrudAction('customEdit')
+                ->setLabel(' Éditer') // Espace avant pour l'icône
+                ->setIcon('fa fa-edit')
+                ->addCssClass('btn btn-primary me-2'); // Marge à droite
+        })
+        
+        ->update(Crud::PAGE_INDEX, Action::DETAIL, function (Action $action) {
+            return $action
+                ->setLabel(' Détails')
+                ->setIcon('fa fa-eye')
+                ->addCssClass('btn btn-info me-2'); // Marge à droite
+        })
+        
+        ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
+            return $action
+                ->setLabel(' Supprimer') // Texte ajouté
+                ->setIcon('fa fa-trash')
+                ->addCssClass('btn btn-danger'); 
+        });
+}
 
     public function customEdit(AdminContext $context, Request $request): Response
     {
-        /** @var Reservations $reservation */
         $reservation = $context->getEntity()->getInstance();
-
         $form = $this->createForm(ReservationsType::class, $reservation);
         $form->handleRequest($request);
 
@@ -81,23 +79,19 @@ class ReservationsCrudController extends AbstractCrudController
             $this->em->flush();
             $this->addFlash('success', 'Réservation mise à jour avec succès.');
 
-            $returnUrl = $this->adminUrlGenerator
+            return $this->redirect($this->adminUrlGenerator
                 ->setController(self::class)
                 ->setAction(Action::INDEX)
-                ->generateUrl();
-
-            return $this->redirect($returnUrl);
+                ->generateUrl());
         }
 
-        $returnUrl = $this->adminUrlGenerator
-            ->setController(self::class)
-            ->setAction(Action::INDEX)
-            ->generateUrl();
-
         return $this->render('admin/reservations/custom_edit.html.twig', [
-            'form'      => $form->createView(),
-            'entity'    => $reservation,
-            'returnUrl' => $returnUrl,
+            'form' => $form->createView(),
+            'entity' => $reservation,
+            'returnUrl' => $this->adminUrlGenerator
+                ->setController(self::class)
+                ->setAction(Action::INDEX)
+                ->generateUrl(),
         ]);
     }
 
@@ -108,22 +102,22 @@ class ReservationsCrudController extends AbstractCrudController
             ->setFormat('dd/MM/Y HH:mm');
         yield ChoiceField::new('seatType', 'Type de siège')
             ->setChoices([
-                'Standard'   => Reservations::SEAT_STANDARD,
-                'Premium'    => Reservations::SEAT_PREMIUM,
+                'Standard' => Reservations::SEAT_STANDARD,
+                'Premium' => Reservations::SEAT_PREMIUM,
                 'Économique' => Reservations::SEAT_ECONOMIQUE,
             ]);
         yield IntegerField::new('seatNumber', 'Nombre de sièges');
         yield ChoiceField::new('status', 'Statut')
             ->setChoices([
                 'En attente' => Reservations::STATUS_PENDING,
-                'Confirmée'  => Reservations::STATUS_CONFIRMED,
-                'Annulée'    => Reservations::STATUS_CANCELED,
+                'Confirmée' => Reservations::STATUS_CONFIRMED,
+                'Annulée' => Reservations::STATUS_CANCELED,
             ]);
         yield ChoiceField::new('paymentStatus', 'Paiement')
             ->setChoices([
                 'En attente' => Reservations::PAYMENT_PENDING,
-                'Payé'       => Reservations::PAYMENT_PAID,
-                'Annulé'     => Reservations::PAYMENT_FAILED,
+                'Payé' => Reservations::PAYMENT_PAID,
+                'Annulé' => Reservations::PAYMENT_FAILED,
             ]);
 
         if (Crud::PAGE_INDEX === $pageName) {
