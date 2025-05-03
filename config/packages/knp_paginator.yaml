@@ -3,4 +3,3 @@ knp_paginator:
         pagination: 'pagination.html.twig'
         sortable: '@KnpPaginator/Pagination/sortable_link.html.twig'
         filtration: '@KnpPaginator/Pagination/filtration.html.twig' # config/packages/knp_paginator.yaml
-        pagination: '@KnpPaginator/Pagination/twitter_bootstrap_v5_pagination.html.twig'
