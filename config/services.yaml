@@ -5,7 +5,9 @@ parameters:
     stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
     stripe_public_key: '%env(STRIPE_PUBLIC_KEY)%'
 
-
+framework:
+    router:
+        default_uri: '%env(resolve:APP_URL)%'
     
 services:
     # Default configuration for services in the `src/` directory
