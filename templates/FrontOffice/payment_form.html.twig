@@ -42,6 +42,146 @@
             </button>
         </form>
     </div>
+    <!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content overflow-hidden">
+            <div class="modal-header bg-success text-white border-0 position-relative">
+                <div class="position-absolute w-100 h-100 bg-white opacity-10 top-0 start-0"></div>
+                <h2 class="modal-title fw-bold">
+                    <i class="fas fa-check-circle me-2"></i>Payment Successful!
+                </h2>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body text-center py-5">
+                <div class="success-animation mb-4">
+                    <div class="checkmark-circle">
+                        <div class="checkmark draw"></div>
+                    </div>
+                </div>
+                
+                <h4 class="text-success mb-3">Thank you for your payment!</h4>
+                <p class="text-muted mb-4">
+                    <i class="fas fa-receipt me-2"></i>Your transaction was completed successfully.
+                </p>
+                
+                <div class="d-grid gap-3 col-10 mx-auto">
+                   <a href="#" id="downloadInvoice" 
+   class="btn btn-lg btn-success rounded-pill fw-bold position-relative">
+    <i class="fas fa-download me-2"></i>Download Invoice
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-white text-success">
+        <i class="fas fa-file-invoice"></i>
+    </span>
+</a>
+                    <a href="{{ path('app_order_pannier') }}" 
+                       class="btn btn-lg btn-outline-primary rounded-pill fw-bold">
+                        <i class="fas fa-shopping-basket me-2"></i>Return to Pannier
+                    </a>
+                </div>
+            </div>
+            
+            <div class="modal-footer bg-light border-0">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .success-animation {
+        position: relative;
+        margin: 0 auto;
+        width: 100px;
+        height: 100px;
+    }
+
+    .checkmark-circle {
+        width: 100px;
+        height: 100px;
+        background: #28a745;
+        border-radius: 50%;
+        position: relative;
+        animation: scaleUp 0.5s ease-in-out;
+    }
+
+    .checkmark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+        height: 50px;
+        width: 25px;
+        border-bottom: 4px solid white;
+        border-right: 4px solid white;
+        opacity: 0;
+        animation: drawCheck 0.5s 0.5s ease-out forwards;
+    }
+    .download-btn {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.download-btn:hover {
+    transform: translateY(-2px);
+    border-color: #fff;
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+}
+
+.download-btn .badge {
+    transition: all 0.3s ease;
+    font-size: 0.8em;
+    padding: 0.35em 0.65em;
+    border: 1px solid #28a745;
+}
+
+.download-btn:hover .badge {
+    transform: rotate(15deg) scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+    @keyframes scaleUp {
+        0% { transform: scale(0); }
+        70% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes drawCheck {
+        0% { height: 0; width: 0; opacity: 0; }
+        50% { height: 50px; width: 0; opacity: 1; }
+        100% { height: 50px; width: 25px; opacity: 1; }
+    }
+
+    .modal-content {
+        border: 2px solid rgba(40, 167, 69, 0.2);
+        box-shadow: 0 10px 30px rgba(40, 167, 69, 0.2);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    }
+
+    .btn-rounded-pill {
+        border-radius: 50px;
+        padding: 0.75rem 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+    }
+
+    .btn-outline-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.2);
+    }
+</style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <script>
         const stripe = Stripe('{{ stripe_public_key }}');
@@ -56,39 +196,67 @@
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-           
-            // Disable button
             submitButton.disabled = true;
             spinner.classList.remove('d-none');
             buttonText.textContent = 'Processing...';
 
-            // Create payment intent on server
-            const { clientSecret } = await fetch("{{ path('app_order_create_payment_intent') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({
-                    orderIds: Array.from(document.querySelectorAll('input[name="orderIds[]"]')).map(input => input.value),
-                    _token: document.querySelector('input[name="_token"]').value
-                })
-            }).then(r => r.json());
+            try {
+                // Fetch client secret
+                const response = await fetch("{{ path('app_order_create_payment_intent') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        orderIds: Array.from(document.querySelectorAll('input[name="orderIds[]"]')).map(input => input.value),
+                        _token: document.querySelector('input[name="_token"]').value
+                    })
+                });
 
-            // Confirm payment with Stripe
-            const { error } = await stripe.confirmCardPayment(clientSecret, {
-                payment_method: {
-                    card: cardElement
-                }
-            });
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const { clientSecret, error } = await response.json();
+                if (error) throw new Error(error);
 
-            if (error) {
+                // Confirm payment
+                const { error: stripeError } = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: { card: cardElement }
+                });
+
+                if (stripeError) throw stripeError;
+
+                // Mark orders as paid
+                const markPaidResponse = await fetch("{{ path('app_order_mark_paid') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        orderIds: Array.from(document.querySelectorAll('input[name="orderIds[]"]')).map(input => input.value),
+                        _token: document.querySelector('input[name="_token"]').value
+                    })
+                });
+
+                if (!markPaidResponse.ok) throw new Error('Failed to update order status');
+
+                // Update download link
+                const orderIds = Array.from(document.querySelectorAll('input[name="orderIds[]"]'))
+                    .map(input => input.value)
+                    .join(',');
+                const invoicePath = "{{ path('app_invoices_order', {'orderIds': 'ORDER_IDS'}) }}";
+                document.getElementById('downloadInvoice').href = invoicePath.replace('ORDER_IDS', orderIds);
+
+                // Show success modal
+                new bootstrap.Modal(document.getElementById('successModal')).show();
+
+            } catch (error) {
                 document.getElementById('card-errors').textContent = error.message;
+            } finally {
                 submitButton.disabled = false;
                 spinner.classList.add('d-none');
                 buttonText.textContent = 'Submit Payment';
-            } else {
-                window.location.href = "{{ path('app_order_payment_success') }}";
             }
         });
     </script>

@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProductRepository;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
+use App\Repository\OrderRepository;
 
 class HomeController extends AbstractController
 {
@@ -74,22 +75,22 @@ class HomeController extends AbstractController
     }
 
     #[Route('/market', name: 'market')]
-    public function listing(ProductRepository $productRepository, Request $request): Response
+    public function listing(ProductRepository $productRepository, OrderRepository $orderRepository, Request $request): Response
     {
-        $name = $request->query->get('name', '');
-
-        $queryBuilder = $productRepository->createQueryBuilder('p');
-
-        if ($name) {
-            $queryBuilder->andWhere('p.name LIKE :name')
-                         ->setParameter('name', '%' . $name . '%');
-        }
-
-        $products = $queryBuilder->getQuery()->getResult();
+        $products = $productRepository->findAll();
+        $confirmedOrders = $orderRepository->findBy(['status' => 'confirmed']);
+        $confirmedOrderCount = count($confirmedOrders);
 
         return $this->render('FrontOffice/market.html.twig', [
             'products' => $products,
-            'searchName' => $name,
+            'categories' => ['Drinks', 'Food', 'Household products', 'Home Appliances'],
+            'searchName' => $request->query->get('name', ''),
+            'selectedCategory' => $request->query->get('category', ''),
+            'minPrice' => $request->query->get('minPrice', 0),
+            'maxPrice' => $request->query->get('maxPrice', 1000),
+            'sliderMin' => 0,
+            'sliderMax' => 1000,
+            'confirmedOrderCount' => $confirmedOrderCount,
         ]);
     }
 

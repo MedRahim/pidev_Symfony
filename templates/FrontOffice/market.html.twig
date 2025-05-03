@@ -1,428 +1,1186 @@
-<!doctype html>
-<html class="no-js" lang="zxx">
+    {% set sliderMin = 0 %}
+    {% set sliderMax = 1000 %}
+    {% set sliderFrom = minPrice is defined and minPrice is not null ? minPrice : sliderMin %}
+    {% set sliderTo = maxPrice is defined and maxPrice is not null ? maxPrice : sliderMax %}
+    {% set newestProductDate = products is not empty ? products|last.createdAt : null %}
+
+    <!DOCTYPE html>
+    <html class="no-js" lang="zxx">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Directory HTML-5 Template </title>
+        <title>Directory HTML-5 Template</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="manifest" href="site.webmanifest">
-            <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
 
-            <!-- CSS here -->
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/owl.carousel.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slicknav.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/flaticon.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/price_rangs.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/animate.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/magnific-popup.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/fontawesome-all.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/themify-icons.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
-            <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
-   </head>
+        <!-- External CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-   <body>
-    <!-- Preloader Start -->
-    <div id="preloader-active">
-        <div class="preloader d-flex align-items-center justify-content-center">
-            <div class="preloader-inner position-relative">
-                <div class="preloader-circle"></div>
-                <div class="preloader-img pere-text">
-                    <img src="{{ asset('FrontOffice/assets/img/logo/loder.jpg') }}" alt="">
+        <!-- Local CSS -->
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/owl.carousel.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slicknav.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/flaticon.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/price_rangs.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/animate.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/magnific-popup.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/fontawesome-all.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/themify-icons.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+        <!-- Google Fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+        <style>
+            /* Global Styles for Main Section */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Poppins', sans-serif;
+                color: #2d2d2d;
+                background-color: #f5f7fa;
+                line-height: 1.6;
+            }
+
+            a {
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+            /* Hero Section */
+        
+            .hero-area3::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+            }
+
+            .hero-cap {
+                position: relative;
+                z-index: 1;
+            }
+
+            .hero-cap h2 {
+                color: #ffffff;
+                font-size: 48px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                margin-bottom: 20px;
+            }
+
+            /* Search Form */
+            .search-box {
+                background: #ffffff;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                padding: 30px;
+                transition: transform 0.3s ease;
+            }
+
+            .search-box:hover {
+                transform: translateY(-5px);
+            }
+
+            .search-box .form-label {
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 8px;
+                font-size: 14px;
+            }
+
+            .search-box .form-control, .search-box .form-select {
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 12px;
+                font-size: 14px;
+                transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .search-box .form-control:focus, .search-box .form-select:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            }
+
+            .search-box .btn-primary {
+                background: #007bff;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 25px;
+                font-weight: 600;
+                text-transform: uppercase;
+                transition: background 0.3s ease, transform 0.2s ease;
+            }
+
+            .search-box .btn-primary:hover {
+                background: #0056b3;
+                transform: scale(1.05);
+            }
+
+            /* Price Slider */
+            .price-range-container {
+                background: #f8f9fa;
+                border-radius: 10px;
+                padding: 20px;
+                border: 1px solid #e0e0e0;
+            }
+            
+
+            #price-slider {
+                height: 8px;
+                background: #e0e0e0;
+                border-radius: 5px;
+            }
+
+            .noUi-connect {
+                background: #007bff;
+            }
+
+            .noUi-handle {
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                background: #ffffff;
+                border: 2px solid #007bff;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                cursor: grab;
+            }
+
+            .noUi-tooltip {
+                background: #007bff;
+                color: #ffffff;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+            }
+
+            .noUi-tooltip::after {
+                content: ' DT';
+            }
+
+            .price-display {
+                font-size: 14px;
+                color: #333;
+            }
+
+            #min-price-display, #max-price-display {
+                color: #007bff;
+                font-weight: 600;
+            }
+
+            /* Listing Area */
+            .listing-area {
+                padding: 80px 0;
+                background: #ffffff;
+            }
+
+            .single-listing {
+                background: #ffffff;
+                border-radius: 15px;
+                overflow: hidden;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .single-listing:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            }
+
+            .new-badge {
+                background: #ff4d4d;
+                color: #ffffff;
+                font-size: 12px;
+                font-weight: 600;
+                padding: 8px;
+                position: absolute;
+                top: 10px;
+                left: -40px;
+                transform: rotate(-45deg);
+                width: 120px;
+                text-align: center;
+                z-index: 1;
+            }
+
+            .list-img {
+                text-align: center;
+            }
+
+            .list-img img {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+                border-radius: 10px 10px 0 0;
+            }
+
+            .list-caption {
+                padding: 20px;
+                text-align: center;
+            }
+
+            .list-caption h5 {
+                font-size: 18px;
+                font-weight: 600;
+                color: #2d2d2d;
+                margin-bottom: 10px;
+            }
+
+            .list-caption p {
+                font-size: 14px;
+                color: #6c757d;
+                margin-bottom: 10px;
+            }
+
+            .list-caption .text-primary {
+                font-size: 16px;
+                font-weight: 700;
+            }
+
+            .list-caption .form-control {
+                width: 80px;
+                border-radius: 25px;
+                text-align: center;
+                border: 1px solid #e0e0e0;
+            }
+
+            .list-caption .buy-btn {
+                background: #007bff;
+                color: #ffffff;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 25px;
+                font-weight: 600;
+                transition: background 0.3s ease, transform 0.2s ease;
+            }
+
+            .list-caption .buy-btn:hover {
+                background: #0056b3;
+                transform: scale(1.05);
+            }
+
+            /* Cart Button */
+        .btn.btn-warning {
+        background: linear-gradient(135deg, #ff7e00, #ffb347); /* Warm gradient for visual appeal */
+        border: none;
+        padding: 12px 35px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 16px;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 6px 12px rgba(255, 126, 0, 0.5);
+        transition: background 0.4s ease, box-shadow 0.3s ease, transform 0.2s ease;
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+            }
+
+        
+    .btn.btn-warning i.fas.fa-shopping-cart {
+        font-size: 20px;
+        filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+        transition: transform 0.3s ease;
+    }
+    .btn.btn-warning:hover,
+    .btn.btn-warning:focus {
+        background: linear-gradient(135deg, #ff9e1b, #ffc56f);
+        box-shadow: 0 8px 20px rgba(255, 158, 27, 0.6);
+        transform: scale(1.05);
+        outline: none;
+    }
+    .btn.btn-warning:active {
+        transform: scale(0.97);
+        box-shadow: 0 4px 10px rgba(255, 126, 0, 0.4);
+    }
+            .badge.bg-danger {
+                font-size: 12px;
+                padding: 5px 8px;
+            }
+
+            .cart-badge {
+        position: absolute;
+        top: 6px;
+        right: 8px;
+        background: #e53935; /* Slightly deeper red for contrast */
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 5px 9px;
+        border-radius: 50%;
+        box-shadow: 0 2px 6px rgba(229, 57, 53, 0.7);
+        animation: pulseBadge 2.5s infinite ease-in-out;
+        z-index: 10;
+        min-width: 24px;
+        text-align: center;
+        line-height: 1.2;
+    }
+    @keyframes pulseBadge {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 2px 6px rgba(229, 57, 53, 0.7);
+        }
+        50% {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(229, 57, 53, 0.9);
+        }
+    }
+
+    /* Accessibility: Focus ring for keyboard users */
+    .btn.btn-warning:focus-visible {
+        outline: 3px solid #ffbb33;
+        outline-offset: 3px;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 575px) {
+        .btn.btn-warning {
+            padding: 10px 25px;
+            font-size: 14px;
+            gap: 8px;
+        }
+        
+        .btn.btn-warning i.fas.fa-shopping-cart {
+            font-size: 18px;
+        }
+        
+        .cart-badge {
+            font-size: 11px;
+            min-width: 20px;
+            padding: 4px 7px;
+            top: 4px;
+            right: 6px;
+        }
+    }
+
+            /* Pagination */
+            .pagination .page-link {
+                border: none;
+                color: #007bff;
+                font-weight: 500;
+                padding: 10px 15px;
+                margin: 0 5px;
+                border-radius: 5px;
+                transition: background 0.3s ease;
+            }
+
+            .pagination .page-item.active .page-link {
+                background: #007bff;
+                color: #ffffff;
+            }
+
+            .pagination .page-link:hover {
+                background: #e9f1ff;
+            }
+
+            /* Modal */
+            .modal-content {
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            }
+
+            
+
+            .modal-title {
+                font-weight: 600;
+            }
+
+            .modal-body {
+                padding: 30px;
+            }
+
+            .modal-footer .btn-secondary {
+                border-radius: 25px;
+                padding: 10px 20px;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 991px) {
+                .hero-area3 {
+                    height: 400px;
+                }
+
+                .hero-cap h2 {
+                    font-size: 36px;
+                }
+            }
+
+            @media (max-width: 767px) {
+                .search-box {
+                    padding: 20px;
+                }
+
+                .single-listing {
+                    margin-bottom: 30px;
+                }
+
+                .hero-cap h2 {
+                    font-size: 28px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Preloader Start -->
+        <div id="preloader-active">
+            <div class="preloader d-flex align-items-center justify-content-center">
+                <div class="preloader-inner position-relative">
+                    <div class="preloader-circle"></div>
+                    <div class="preloader-img pere-text">
+                        <img src="{{ asset('FrontOffice/assets/img/logo/loder.jpg') }}" alt="">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Preloader Start -->
-    <header>
-        <!-- Header Start -->
-       <div class="header-area header-transparent">
-            <div class="main-header">
-               <div class="header-bottom  header-sticky">
-                    <div class="container-fluid">
-                        <div class="row align-items-center">
-                            <!-- Logo -->
-                            <div class="col-xl-2 col-lg-2 col-md-1">
-                                <div class="logo">
-                                  <a href="index.html"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt=""></a>
-                                </div>
-                            </div>
-                            <div class="col-xl-10 col-lg-10 col-md-8">
-                                <!-- Main-menu -->
-                                <div class="main-menu f-right d-none d-lg-block">
-                                    <nav>
-                                        <ul id="navigation">                                                                                                                                    
-                                            <li><a href="{{ asset('FrontOffice/index.html.twig') }}">Home</a></li>
-                                            <li><a href="{{ asset('FrontOffice/about.html.twig') }}">About</a></li>
-                                            <li><a href="{{ asset('FrontOffice/categori.html.twig') }}">Categories</a></li>
-                                            <li><a href="{{ asset('FrontOffice/market.html.twig') }}">Market</a></li>
-                                            <li><a href="#">Page</a>
-                                                <ul class="submenu">
-                                                    <li><a href="{{ asset('FrontOffice/blog.html.twig') }}">Blog</a></li>
-                                                    <li><a href="{{ asset('FrontOffice/blog-details.html.twig') }}">Blog Details</a></li>
-                                                    <li><a href="{{ asset('FrontOffice/elements.html.twig') }}">Element</a></li>
-                                                    <li><a href="{{ asset('FrontOffice/listing-details.html.twig') }}">Listing Details</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="{{ asset('FrontOffice/contact.html.twig') }}">Contact</a></li>
-                                            <li class="add-list"><a href="listing_details.html"><i class="ti-plus"></i> add Listing</a></li>
-                                            <li class="login"><a href="#">
-                                                <i class="ti-user"></i> Sign in or Register</a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                            <!-- Mobile Menu -->
-                            <div class="col-12">
-                                <div class="mobile_menu d-block d-lg-none"></div>
-                            </div>
-                        </div>
-                    </div>
-               </div>
-            </div>
-       </div>
-        <!-- Header End -->
-    </header>
-    <main>
+        <!-- Preloader End -->
 
-        <!-- Hero Start-->
-        <div class="hero-area3 hero-overly2 d-flex align-items-center">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-xl-8 col-lg-9">
-                        <div class="hero-cap text-center pt-50 pb-20">
-                            <h2>Our Market</h2>
-                        </div>
-                        <!-- Advanced Filter Section -->
-                        <form method="get" action="{{ path('app_product_listing') }}" id="product-filter-form" class="search-box search-box2 mt-4">
-                            <div class="input-form">
-                                <input type="text" id="search-name" name="name" placeholder="Search by Name" value="{{ searchName|default('') }}">
-                            </div>
-                            <!-- Filter button -->
-                            <div class="search-form">
-                                <button type="submit" class="btn btn-primary px-3 py-1" style="width: 100%; height: 100%;">
-                                    Filter
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--Hero End -->
-
-        <!-- listing Area Start -->
-        <div class="listing-area pt-120 pb-120">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-xl-10 col-lg-10">
-                        <div class="row">
-                            <div class="col-lg-12 d-flex justify-content-between align-items-center mb-3">
-                                <div class="count mb-0">
-                                    <!-- Optional count or title -->
-                                </div>
-                                <!-- Pannier Button -->
-                                <a href="{{ path('app_order_pannier') }}" class="btn btn-warning btn-lg" style="display: flex; align-items: center; gap: 8px;">
-                                    <i class="fa fa-shopping-cart"></i> Cart
-                                </a>
-                            </div>
-                        </div>
-                        <!-- listing Details Stat-->
-                        <div class="listing-details-area">
-                            <div class="container">
-                                <div class="row justify-content-center">
-                                    {% if products is defined and products is not empty %}
-                                        {% for product in products %}
-                                            <div class="col-lg-5 mb-4">
-                                                <div class="single-listing shadow-sm p-3 rounded">
-                                                    <div class="list-img text-center">
-                                                        <img src="{{ product.imagePath ? asset(product.imagePath) : asset('FrontOffice/assets/img/default-product.jpg') }}" alt="{{ product.name }}" class="img-fluid">
-                                                    </div>
-                                                    <div class="list-caption mt-3">
-                                                        <h5 class="text-center">{{ product.name }}</h5>
-                                                        <p class="text-muted text-center">{{ product.description }}</p>
-                                                        <p class="text-center"><strong>Price:</strong> {{ product.price }} DT</p>
-                           
-                                                        <div class="d-flex justify-content-center align-items-center mt-2">
-                                                            <input
-                                                                type="number"
-                                                                class="form-control me-2"
-                                                                style="width: 80px;"
-                                                                min="1"
-                                                                max="{{ product.stock }}"
-                                                                value="1"
-                                                                id="quantity-{{ product.id }}"
-                                                            />
-                                                            <button
-                                                                class="btn btn-primary buy-btn"
-                                                                data-product-id="{{ product.id }}"
-                                                                data-toggle="modal"
-                                                                data-target="#orderModal"
-                                                            >
-                                                                Buy
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    {% else %}
-                                        <p class="text-center">No products available.</p>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        <!-- listing Details End -->
-                        <!--Pagination Start  -->
-                        <div class="pagination-area pt-70 text-center">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-xl-12">
-                                        <div class="single-wrap d-flex justify-content-center">
-                                            <nav aria-label="Page navigation example">
-                                                <ul class="pagination justify-content-start">
-                                                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                                                    <li class="page-item"><a class="page-link" href="#">02</a></li>
-                                                    <li class="page-item"><a class="page-link" href="#">03</a></li>
-                                                    <li class="page-item"><a class="page-link" href="#"><span class="ti-angle-right"></span></a></li>
+        <!-- Header Start (Unchanged) -->
+        <header>
+                <!-- Header Start -->
+                <div class="header-area header-transparent">
+                    <div class="main-header">
+                        <div class="header-bottom  header-sticky">
+                            <div class="container-fluid">
+                                <div class="row align-items-center">
+                                    <!-- Logo -->
+                                    <div class="col-xl-2 col-lg-2 col-md-1">
+                                        <div class="logo">
+                                            <a href="index.html"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt=""></a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-10 col-lg-10 col-md-8">
+                                        <!-- Main-menu -->
+                                        <div class="main-menu f-right d-none d-lg-block">
+                                            <nav>
+                                                <ul id="navigation">                                                                                                                                    
+                                                    <li><a href="{{ asset('FrontOffice/index.html.twig') }}">Home</a></li>
+                                                    <li><a href="{{ asset('FrontOffice/about.html.twig') }}">About</a></li>
+                                                    <li><a href="{{ asset('FrontOffice/categori.html.twig') }}">Categories</a></li>
+                                                    <li><a href="{{ asset('FrontOffice/market.html.twig') }}">Market</a></li>
+                                                    <li><a href="#">Page</a>
+                                                        <ul class="submenu">
+                                                            <li><a href="{{ asset('FrontOffice/blog.html.twig') }}">Blog</a></li>
+                                                            <li><a href="{{ asset('FrontOffice/blog-details.html.twig') }}">Blog Details</a></li>
+                                                            <li><a href="{{ asset('FrontOffice/elements.html.twig') }}">Element</a></li>
+                                                            <li><a href="{{ asset('FrontOffice/listing-details.html.twig') }}">Listing Details</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li><a href="{{ asset('FrontOffice/contact.html.twig') }}">Contact</a></li>
+                                                    <li class="add-list"><a href="listing_details.html"><i class="ti-plus"></i> add Listing</a></li>
+                                                    <li class="login"><a href="#">
+                                                        <i class="ti-user"></i> Sign in or Register</a>
+                                                    </li>
                                                 </ul>
                                             </nav>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--Pagination End  -->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- listing-area Area End -->
-
-    </main>
-    <footer>
-        <!-- Footer Start-->
-        <div class="footer-area">
-            <div class="container">
-               <div class="footer-top footer-padding">
-                    <div class="row justify-content-between">
-                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="single-footer-caption mb-30">
-                                    <!-- logo -->
-                                    <div class="footer-logo">
-                                        <a href="index.html"><img src="{{ asset('FrontOffice/assets/img/logo/logo2_footer.png') }}" alt=""></a>
+                                    <!-- Mobile Menu -->
+                                    <div class="col-12">
+                                        <div class="mobile_menu d-block d-lg-none"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>Quick Link</h4>
-                                    <ul>
-                                        <li><a href="#">Home</a></li>
-                                        <li><a href="#">Market</a></li>
-                                        <li><a href="#">About</a></li>
-                                        <li><a href="#">Contact</a></li>
-                                    </ul>
-                                </div>
+                    </div>
+                </div>
+                <!-- Header End -->
+            </header>
+
+        <!-- Header End -->
+
+        <main>
+            <!-- Hero Start -->
+            <div class="hero-area3 hero-overly2 d-flex align-items-center">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-8 col-lg-9">
+                            <div class="hero-cap text-center pt-50 pb-20">
+                                <h2>Explore Our Market</h2>
                             </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>Categories</h4>
-                                    <ul>
-                                        <li><a href="#">Reasonable Hotel</a></li>
-                                        <li><a href="#">Popular Restaurant</a></li>
-                                        <li><a href="#">Easy Shopping</a></li>
-                                        <li><a href="#">Night Life</a></li>    
-                                    </ul>
+                            <!-- Advanced Filter Section -->
+                            <form method="get" action="{{ path('app_product_listing') }}" id="product-filter-form" class="search-box mt-4 p-4">
+                                <div class="row g-3">
+                                    <!-- Search by Name -->
+                                    <div class="col-md-4">
+                                        <label for="search-name" class="form-label">Search by Name</label>
+                                        <input type="text" id="search-name" name="name" class="form-control" placeholder="Enter product name" value="{{ searchName|default('') }}">
+                                    </div>
+                                    <!-- Filter by Category -->
+                                    <div class="col-md-4">
+                                        <label for="search-category" class="form-label">Filter by Category</label>
+                                        <select id="search-category" name="category" class="form-select">
+                                            <option value="">All Categories</option>
+                                            {% for category in categories %}
+                                                <option value="{{ category }}" {% if selectedCategory == category %}selected{% endif %}>
+                                                    {{ category }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                       <!-- Filter by Price Range -->
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold">Price Range</label>
+                                        <div class="price-range-container p-3 bg-light rounded">
+                                            <div class="price-display mb-3">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="min-price">
+                                                        <span class="text-muted">Min:</span>
+                                                        <span class="fw-bold ms-2" id="min-price-display">DT {{ minPrice|default(sliderMin) }}</span>
+                                                    </div>
+                                                    <div class="max-price">
+                                                        <span class="text-muted">Max:</span>
+                                                        <span class="fw-bold ms-2" id="max-price-display">DT {{ maxPrice|default(sliderMax) }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="price-slider" class="mb-3"></div>
+                                            <input type="hidden" id="min-price" name="minPrice" value="{{ minPrice|default(sliderMin) }}">
+                                            <input type="hidden" id="max-price" name="maxPrice" value="{{ maxPrice|default(sliderMax) }}">
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>Download App</h4>
-                                    <ul>
-                                        <li class="app-log"><a href="#"><img src="{{ asset('FrontOffice/assets/img/gallery/app-logo.png') }}" alt=""></a></li>
-                                        <li><a href="#"><img src="{{ asset('FrontOffice/assets/img/gallery/app-logo2.png') }}" alt=""></a></li>
-                                    </ul>
+                                <!-- Filter Button -->
+                                <div class="row mt-4">
+                                    <div class="col-md-12 text-center">
+                                        <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow-sm">Apply Filters</button>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
-               </div>
-                <div class="footer-bottom">
-                    <div class="row d-flex justify-content-between align-items-center">
-                        <div class="col-xl-9 col-lg-8">
-                            <div class="footer-copy-right">
-                                <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-  Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-4">
-                            <!-- Footer Social -->
-                            <div class="footer-social f-right">
-                                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fas fa-globe"></i></a>
-                                <a href="#"><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-               </div>
+                </div>
             </div>
+
+            <!-- Hero End -->
+
+            <!-- Listing Area Start -->
+            <div class="listing-area pt-120 pb-120">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-10 col-lg-10">
+                            <div class="row">
+                                <div class="col-lg-12 d-flex justify-content-between align-items-center mb-4">
+                                    <div class="count mb-0"></div>
+                                    <!-- Pannier Button -->
+    <a href="{{ path('app_order_pannier') }}" class="btn btn-warning position-relative" aria-label="View shopping cart with {{ confirmedOrderCount }} confirmed orders">
+                                    <i class="fas fa-shopping-cart" aria-hidden="true"></i> Cart
+        {% if confirmedOrderCount > 0 %}
+            <span class="cart-badge" aria-live="polite" aria-atomic="true">
+                {{ confirmedOrderCount }}
+            </span>
+        {% endif %}
+    </a>
+                                </div>
+                            </div>
+                            <!-- Listing Details Start -->
+                            <div class="listing-details-area">
+                                <div class="container">
+                                    <div class="row justify-content-center">
+                                        {% if products is defined and products is not empty %}
+                                            {% for product in products %}
+                                                <div class="col-lg-4 col-md-6 mb-4">
+                                                    <div class="single-listing position-relative">
+                                                        {% if product.createdAt == newestProductDate %}
+                                                            <div class="new-badge">NEW</div>
+                                                        {% endif %}
+                                                        <div class="list-img text-center mb-3">
+                                                            <img src="{{ product.imagePath ? asset(product.imagePath) : asset('FrontOffice/assets/img/default-product.jpg') }}" 
+                                                                alt="{{ product.name }}" 
+                                                                class="img-fluid">
+                                                        </div>
+                                                        <div class="list-caption text-center">
+                                                            <h5>{{ product.name }}</h5>
+                                                            <p>{{ product.description }}</p>
+                                                            <p class="text-primary">Price: {{ product.price }} DT</p>
+                                                            <div class="d-flex justify-content-center align-items-center mt-3">
+                                                                <input type="number" class="form-control me-2" min="1" max="{{ product.stock }}" 
+                                                                    value="1" id="quantity-{{ product.id }}">
+                                                                <button class="btn buy-btn" data-product-id="{{ product.id }}" 
+                                                                        data-toggle="modal" data-target="#orderModal">Buy</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p class="text-center">No products available.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Listing Details End -->
+                            <!-- Pagination Start -->
+                            <div class="pagination-area pt-70 text-center">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-xl-12">
+                                            <div class="single-wrap d-flex justify-content-center">
+                                                <nav aria-label="Page navigation example">
+                                                    <ul class="pagination justify-content-start">
+                                                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">02</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">03</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#"><span class="ti-angle-right"></span></a></li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Pagination End -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Listing Area End -->
+        </main>
+
+        <!-- Footer Start (Unchanged) -->
+        <footer>
+            <div class="footer-area">
+                <div class="container">
+                    <div class="footer-top footer-padding">
+                        <div class="row justify-content-between">
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="single-footer-caption mb-30">
+                                        <div class="footer-logo">
+                                            <a href="index.html"><img src="{{ asset('FrontOffice/assets/img/logo/logo2_footer.png') }}" alt=""></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="footer-tittle">
+                                        <h4>Quick Link</h4>
+                                        <ul>
+                                            <li><a href="#">Home</a></li>
+                                            <li><a href="#">Market</a></li>
+                                            <li><a href="#">About</a></li>
+                                            <li><a href="#">Contact</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="footer-tittle">
+                                        <h4>Categories</h4>
+                                        <ul>
+                                            <li><a href="#">Reasonable Hotel</a></li>
+                                            <li><a href="#">Popular Restaurant</a></li>
+                                            <li><a href="#">Easy Shopping</a></li>
+                                            <li><a href="#">Night Life</a></li>    
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="footer-tittle">
+                                        <h4>Download App</h4>
+                                        <ul>
+                                            <li class="app-log"><a href="#"><img src="{{ asset('FrontOffice/assets/img/gallery/app-logo.png') }}" alt=""></a></li>
+                                            <li><a href="#"><img src="{{ asset('FrontOffice/assets/img/gallery/app-logo2.png') }}" alt=""></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-bottom">
+                        <div class="row d-flex justify-content-between align-items-center">
+                            <div class="col-xl-9 col-lg-8">
+                                <div class="footer-copy-right">
+                                    <p>
+                                        Copyright ©<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4">
+                                <div class="footer-social f-right">
+                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                    <a href="#"><i class="fas fa-globe"></i></a>
+                                    <a href="#"><i class="fab fa-instagram"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer End -->
+
+        <!-- Scroll Up -->
+        <div id="back-top">
+            <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
         </div>
-        <!-- Footer End-->
-    </footer>
-    <!-- Scroll Up -->
-    <div id="back-top" >
-        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
-    </div>
 
-
-    <!-- JS here -->
-            <!-- All JS Custom Plugins Link Here here -->
+        <!-- JavaScript -->
         <script src="{{ asset('FrontOffice/assets/js/vendor/modernizr-3.5.0.min.js') }}"></script>
-            <!-- Jquery, Popper, Bootstrap -->
-            <script src="{{ asset('FrontOffice/assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/popper.min.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/bootstrap.min.js') }}"></script>
-          <!-- Jquery Mobile Menu -->
         <script src="{{ asset('FrontOffice/assets/js/jquery.slicknav.min.js') }}"></script>
-
-            <!-- Jquery Slick , Owl-Carousel Plugins -->
         <script src="{{ asset('FrontOffice/assets/js/owl.carousel.min.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/slick.min.js') }}"></script>
-            <!-- One Page, Animated-HeadLin -->
         <script src="{{ asset('FrontOffice/assets/js/wow.min.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/price-range.js') }}"></script>
-            <script src="{{ asset('FrontOffice/assets/js/animated.headline.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/animated.headline.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/jquery.magnific-popup.js') }}"></script>
-
-            <!-- Nice-select, sticky -->
         <script src="{{ asset('FrontOffice/assets/js/jquery.nice-select.min.js') }}"></script>
-            <script src="{{ asset('FrontOffice/assets/js/jquery.sticky.js') }}"></script>
-       
-        <!-- contact js -->
+        <script src="{{ asset('FrontOffice/assets/js/jquery.sticky.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/contact.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/jquery.form.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/jquery.validate.min.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/mail-script.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/jquery.ajaxchimp.min.js') }}"></script>
-       
-            <!-- Jquery Plugins, main Jquery -->      
         <script src="{{ asset('FrontOffice/assets/js/plugins.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/main.js') }}"></script>
-       
-    <!-- Order Confirmation Modal -->
-    <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
+
+        <!-- Order Confirmation Modal -->
+<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="orderModalLabel">Order Received</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            Your order has been placed! Please await confirmation.
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Close
-            </button>
-          </div>
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="orderModalLabel">
+                    <i class="fas fa-clipboard-check me-2 text-primary"></i>Order Summary
+                </h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <div id="orderSummary" class="px-2">
+                    <!-- Order Success Message -->
+                    <div class="text-center mb-4">
+                        <div class="success-animation">
+                            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                            </svg>
+                        </div>
+                        <h4 class="text-success fw-bold mt-3">Order Submitted!</h4>
+                        <p class="text-muted">Your order has been received and is awaiting confirmation</p>
+                    </div>
+                    
+                    <!-- Admin Confirmation Notice -->
+                    <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <div>
+                            This order will be reviewed by an administrator before processing.
+                            <br>You will be notified when your order is confirmed.
+                        </div>
+                    </div>
+                    
+                    <!-- Order Details Card -->
+                    <div class="card border shadow-sm mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="fas fa-receipt me-2"></i>Order Details</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">Product:</div>
+                                <div class="col-6 fw-bold text-end" id="productName">Product Name</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">Unit Price:</div>
+                                <div class="col-6 text-end" id="unitPrice">0.00 DT</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">Quantity:</div>
+                                <div class="col-6 text-end" id="orderQuantity">1</div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6 fw-bold">Total Price:</div>
+                                <div class="col-6 fw-bold text-end text-primary" id="totalPrice">0.00 DT</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Order ID Section -->
+                    <div class="text-center mb-3">
+                        <small class="text-muted">Order Reference: <span id="orderReference">ORD-2025050001</span></small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 justify-content-center pt-0">
+                <button type="button" class="btn btn-outline-secondary me-2" data-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Close
+                </button>
+                <a href="#" class="btn btn-primary" id="viewOrdersBtn">
+                    <i class="fas fa-shopping-cart me-1"></i> View Cart
+                </a>
+            </div>
         </div>
-      </div>
     </div>
+</div>
 
-    {% set sliderMin = 0 %}
-    {% set sliderMax = 1000 %}
-    {% set sliderFrom = minPrice is defined and minPrice is not null ? minPrice : sliderMin %}
-    {% set sliderTo = maxPrice is defined and maxPrice is not null ? maxPrice : sliderMax %}
-
-    <script>
-      $(function(){
-        var $slider = $('.js-range-slider');
-        if ($slider.length && typeof $.fn.ionRangeSlider === 'function') {
-          var sliderInstance = $slider.ionRangeSlider({
-            type: 'double',
-            min: {{ sliderMin }},
-            max: {{ sliderMax }},
-            from: {{ sliderFrom }},
-            to: {{ sliderTo }},
-            prefix: "$",
-            onStart: updateInputs,
-            onChange: updateInputs,
-            onFinish: updateInputs
-          }).data("ionRangeSlider");
-
-          // Ensure hidden fields are updated on page load
-          $('#amount-from').val({{ sliderFrom }});
-          $('#amount-to').val({{ sliderTo }});
-          $('#min_price').val({{ sliderFrom }});
-          $('#max_price').val({{ sliderTo }});
+<!-- Additional CSS for Modal -->
+<style>
+    /* Modal Styling */
+    .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .modal-header .modal-title {
+        font-size: 1.3rem;
+        color: #333;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    /* Success Animation */
+    .success-animation {
+        margin: 0 auto;
+        width: 80px;
+        height: 80px;
+    }
+    
+    .checkmark {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: block;
+        stroke-width: 2;
+        stroke: #4bb71b;
+        stroke-miterlimit: 10;
+        box-shadow: inset 0px 0px 0px #4bb71b;
+        animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+    }
+    
+    .checkmark__circle {
+        stroke-dasharray: 166;
+        stroke-dashoffset: 166;
+        stroke-width: 2;
+        stroke-miterlimit: 10;
+        stroke: #4bb71b;
+        fill: none;
+        animation: stroke .6s cubic-bezier(0.650, 0.000, 0.450, 1.000) forwards;
+    }
+    
+    .checkmark__check {
+        transform-origin: 50% 50%;
+        stroke-dasharray: 48;
+        stroke-dashoffset: 48;
+        animation: stroke .3s cubic-bezier(0.650, 0.000, 0.450, 1.000) .8s forwards;
+    }
+    
+    @keyframes stroke {
+        100% {
+            stroke-dashoffset: 0;
         }
-
-        function updateInputs(data) {
-          $('#amount-from').val(data.from);
-          $('#amount-to').val(data.to);
-          $('#min_price').val(data.from);
-          $('#max_price').val(data.to);
+    }
+    
+    @keyframes scale {
+        0%, 100% {
+            transform: none;
         }
-
-        $('.buy-btn').on('click', function(e){
-          e.preventDefault();
-
-          const productId = $(this).data('product-id');
-          const quantity = $('#quantity-' + productId).val(); // Get quantity value
-          const csrfToken = '{{ csrf_token("order") }}'; // Fetch CSRF token
-
-          const url = '{{ path("order_create") }}';
-
-          $.ajax({
-            url: url,
-            method: 'POST',
-            data: JSON.stringify({ productId: productId, quantity: quantity, _csrf_token: csrfToken }),
-            contentType: 'application/json',
-            success: function(response) {
-              if (response.success) {
-                alert('Order created successfully. Awaiting admin approval.');
-              } else {
-                alert('Error placing order: ' + response.error);
-              }
-            },
-            error: function(xhr) {
-              alert('Request failed: ' + xhr.statusText);
-            }
-          });
-        });
-      });
-    </script>
-
-    <style>
-    /* Add custom style for the Pannier button */
-    .btn.btn-warning.btn-lg {
-        font-size: 1.1rem;
+        50% {
+            transform: scale3d(1.1, 1.1, 1);
+        }
+    }
+    
+    @keyframes fill {
+        100% {
+            box-shadow: inset 0px 0px 0px 30px #4bb71b10;
+        }
+    }
+    
+    /* Button Styling */
+    .btn-primary {
+        background: #007bff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
         font-weight: 600;
-        border-radius: 30px;
-        padding: 10px 28px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        transition: background 0.2s;
+        transition: all 0.3s ease;
     }
-    .btn.btn-warning.btn-lg:hover {
-        background: #ffae00;
-        color: #fff;
+    
+    .btn-primary:hover {
+        background: #0069d9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
     }
-    </style>
-</body>
-</html>
+    
+    .btn-outline-secondary {
+        border: 1px solid #ced4da;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: #f8f9fa;
+    }
+    
+    /* Alert Styling */
+    .alert-info {
+        background-color: rgba(0, 123, 255, 0.1);
+        border-left: 4px solid #007bff;
+        border-top: none;
+        border-right: none;
+        border-bottom: none;
+        color: #444;
+        padding: 15px;
+        border-radius: 4px;
+    }
+    
+    .alert-info i {
+        color: #007bff;
+        font-size: 1.2rem;
+    }
+    
+    /* Card Styling */
+    .card {
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0,0,0,.05);
+        padding: 12px 15px;
+        border-radius: 8px 8px 0 0 !important;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+</style>
+
+        <script>
+           $(function(){
+                var $slider = $('.js-range-slider');
+                if ($slider.length && typeof $.fn.ionRangeSlider === 'function') {
+                    var sliderInstance = $slider.ionRangeSlider({
+                        type: 'double',
+                        min: {{ sliderMin }},
+                        max: {{ sliderMax }},
+                        from: {{ sliderFrom }},
+                        to: {{ sliderTo }},
+                        prefix: "$",
+                        onStart: updateInputs,
+                        onChange: updateInputs,
+                        onFinish: updateInputs
+                    }).data("ionRangeSlider");
+
+                    // Ensure hidden fields are updated on page load
+                    $('#amount-from').val({{ sliderFrom }});
+                    $('#amount-to').val({{ sliderTo }});
+                    $('#min_price').val({{ sliderFrom }});
+                    $('#max_price').val({{ sliderTo }});
+                }
+
+                function updateInputs(data) {
+                    $('#amount-from').val(data.from);
+                    $('#amount-to').val(data.to);
+                    $('#min_price').val(data.from);
+                    $('#max_price').val(data.to);
+                }
+
+                $('.buy-btn').on('click', function(e){
+                    e.preventDefault();
+
+                    const productId = $(this).data('product-id');
+                    const quantity = $('#quantity-' + productId).val();
+                    const csrfToken = '{{ csrf_token("order") }}';
+
+                    const url = '{{ path("order_create") }}';
+
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: JSON.stringify({ 
+                            productId: productId, 
+                            quantity: quantity, 
+                            _csrf_token: csrfToken 
+                        }),
+                        contentType: 'application/json',
+                        success: function(response) {
+                            if (response.success) {
+                                // Update modal with order details
+                                $('#unitPrice').text(response.data.unitPrice);
+                                $('#orderQuantity').text(response.data.quantity);
+                                $('#totalPrice').text(response.data.totalPrice);
+                                $('#orderModal').modal('show');
+                            } else {
+                                alert('Error placing order: ' + response.error);
+                            }
+                        },
+                        error: function(xhr) {
+                            alert('Request failed: ' + xhr.statusText);
+                        }
+                    });
+                });
+            });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const slider = document.getElementById('price-slider');
+                const minPriceInput = document.getElementById('min-price');
+                const maxPriceInput = document.getElementById('max-price');
+                const minPriceDisplay = document.getElementById('min-price-display');
+                const maxPriceDisplay = document.getElementById('max-price-display');
+                const form = document.getElementById('product-filter-form');
+
+                if (slider) {
+                    // Initialize the slider
+                    noUiSlider.create(slider, {
+                        start: [{{ minPrice|default(sliderMin) }}, {{ maxPrice|default(sliderMax) }}],
+                        connect: true,
+                        range: {
+                            'min': {{ sliderMin }},
+                            'max': {{ sliderMax }}
+                        },
+                        step: 1,
+                        tooltips: [true, true],
+                        format: {
+                            to: function (value) {
+                                return Math.round(value);
+                            },
+                            from: function (value) {
+                                return Number(value);
+                            }
+                        }
+                    });
+
+                    // Update display and hidden inputs when slider changes
+                    slider.noUiSlider.on('update', function (values) {
+                        const minValue = Math.round(values[0]);
+                        const maxValue = Math.round(values[1]);
+                        
+                        minPriceInput.value = minValue;
+                        maxPriceInput.value = maxValue;
+                        
+                        minPriceDisplay.textContent = `DT ${minValue}`;
+                        maxPriceDisplay.textContent = `DT ${maxValue}`;
+                    });
+
+                    // Initialize slider values from URL parameters if they exist
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const urlMinPrice = urlParams.get('minPrice');
+                    const urlMaxPrice = urlParams.get('maxPrice');
+
+                    if (urlMinPrice && urlMaxPrice) {
+                        slider.noUiSlider.set([urlMinPrice, urlMaxPrice]);
+                    }
+                }
+
+                // Handle form submission only when Apply Filters button is clicked
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get current values
+                    const minPrice = minPriceInput.value;
+                    const maxPrice = maxPriceInput.value;
+                    const searchName = document.getElementById('search-name').value;
+                    const category = document.getElementById('search-category').value;
+
+                    // Build URL with parameters
+                    let url = '{{ path("app_product_listing") }}';
+                    const params = new URLSearchParams();
+                    
+                    if (searchName) params.append('name', searchName);
+                    if (category) params.append('category', category);
+                    if (minPrice) params.append('minPrice', minPrice);
+                    if (maxPrice) params.append('maxPrice', maxPrice);
+
+                    // Redirect to the filtered URL
+                    window.location.href = url + (params.toString() ? '?' + params.toString() : '');
+                });
+            });
+
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Toastr
+    toastr.options = {
+        positionClass: 'toast-bottom-right',
+        progressBar: true,
+        timeOut: 5000
+    };
+
+    let lastChecked = localStorage.getItem('lastOrderCheck') || new Date().toISOString();
+    
+    function checkConfirmedOrders() {
+        fetch(`/order/api/confirmed-orders?since=${encodeURIComponent(lastChecked)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.count > 0) {
+                    const message = `${data.count} order${data.count > 1 ? 's' : ''} confirmed!`;
+                    toastr.success(message, 'New Confirmation!', {
+                        onclick: () => {
+                            window.location.href = '{{ path('app_order_pannier') }}';
+                        }
+                    });
+                }
+                // Update last checked time
+                localStorage.setItem('lastOrderCheck', data.lastChecked);
+                lastChecked = data.lastChecked;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Check immediately and every 30 seconds
+    checkConfirmedOrders();
+    setInterval(checkConfirmedOrders, 30000);
+});
+</script>
+<style>
+/* Custom Toastr styling */
+.toast {
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.toast-success {
+    background-color: #28a745 !important;
+    border-left: 4px solid #1e7e34 !important;
+}
+
+.toast-info {
+    background-color: #17a2b8 !important;
+    border-left: 4px solid #117a8b !important;
+}
+
+.toast-close-button {
+    color: white !important;
+    opacity: 0.8 !important;
+}
+
+.toast-message {
+    font-size: 14px;
+    padding-right: 20px;
+}
+</style>
+    </body>
+    </html>

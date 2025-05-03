@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Form\ProductType;
+use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,14 +14,27 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/product')]
 final class ProductController extends AbstractController
 {
     #[Route('/backoffice/products', name: 'products_page', methods: ['GET', 'POST'])]
-    public function index(ProductRepository $productRepository, Request $request, EntityManagerInterface $entityManager, FormFactoryInterface $formFactory): Response
+    public function index(
+        ProductRepository $productRepository, 
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        FormFactoryInterface $formFactory,
+        PaginatorInterface $paginator
+    ): Response
     {
-        $products = $productRepository->findAll();
+        $query = $productRepository->createQueryBuilder('p')->getQuery();
+        
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10 // Items per page
+        );
 
         $product = new Product();
         $form = $formFactory->create(ProductType::class, $product);
@@ -36,7 +50,7 @@ final class ProductController extends AbstractController
                 );
                 $product->setImagePath('/uploads/products/'.$newFilename);
             } else {
-                $product->setImagePath(null); // Explicitly set to null if no file is uploaded
+                $product->setImagePath(null);
             }
 
             $entityManager->persist($product);
@@ -50,7 +64,7 @@ final class ProductController extends AbstractController
         }
 
         return $this->render('BackOffice/products.html.twig', [
-            'products' => $products,
+            'pagination' => $pagination,
             'form' => $form->createView(),
         ]);
     }
@@ -60,50 +74,60 @@ final class ProductController extends AbstractController
     {
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
-        $form->handleRequest($request); // Handle the form submission
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handle file upload (optional)
-            $imageFile = $form->get('imagePath')->getData();
-            if ($imageFile) {
-                $newFilename = uniqid().'.'.$imageFile->guessExtension();
-                $imageFile->move(
-                    $this->getParameter('kernel.project_dir').'/public/uploads',
-                    $newFilename
-                );
-                $product->setImagePath($newFilename);
-            }
-
-            // Persist to database
             $entityManager->persist($product);
             $entityManager->flush();
 
-            // Redirect to avoid duplicate submissions
-            return $this->redirectToRoute('products_page');
+            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('product/new.html.twig', [
-            'form' => $form->createView(),
+            'product' => $product,
+            'form' => $form,
         ]);
     }
 
     #[Route('/listing', name: 'app_product_listing', methods: ['GET'])]
-    public function listing(ProductRepository $productRepository, Request $request): Response
+    public function listing(ProductRepository $productRepository,OrderRepository $orderRepository, Request $request): Response
     {
-        $searchName = $request->query->get('name');
-        $minPrice = $request->query->get('min_price');
-        $maxPrice = $request->query->get('max_price');
+        $searchName = $request->query->get('name', '');
+        $selectedCategory = $request->query->get('category', '');
+        $minPrice = $request->query->get('minPrice', '');
+        $maxPrice = $request->query->get('maxPrice', '');
+        $confirmedOrderCount = $orderRepository->count(['status' => 'confirmed']); // ✅ Correct count
 
-        $minPrice = $minPrice !== null && $minPrice !== '' ? (float)$minPrice : null;
-        $maxPrice = $maxPrice !== null && $maxPrice !== '' ? (float)$maxPrice : null;
 
-        $products = $productRepository->findByNameAndPriceRange($searchName, $minPrice, $maxPrice);
+        // Define categories manually (no database migration required)
+        $categories = ['Drinks', 'Food', 'Household products', 'Home Appliances'];
+
+        // Define slider range
+        $sliderMin = 0; // Minimum price for the slider
+        $sliderMax = 2000; // Maximum price for the slider
+
+        // Fetch products and filter them manually
+        $products = $productRepository->findAll();
+        $filteredProducts = array_filter($products, function ($product) use ($searchName, $selectedCategory, $minPrice, $maxPrice) {
+            $matchesName = !$searchName || stripos($product->getName(), $searchName) !== false;
+            $matchesCategory = !$selectedCategory || $product->getCategory() === $selectedCategory;
+            $matchesMinPrice = !$minPrice || $product->getPrice() >= $minPrice;
+            $matchesMaxPrice = !$maxPrice || $product->getPrice() <= $maxPrice;
+
+            return $matchesName && $matchesCategory && $matchesMinPrice && $matchesMaxPrice;
+        });
 
         return $this->render('FrontOffice/market.html.twig', [
-            'products' => $products,
+            'products' => $filteredProducts,
+            'categories' => $categories, // Pass categories to the template
             'searchName' => $searchName,
+            'selectedCategory' => $selectedCategory,
             'minPrice' => $minPrice,
             'maxPrice' => $maxPrice,
+            'sliderMin' => $sliderMin, // Pass sliderMin to the template
+            'sliderMax' => $sliderMax, // Pass sliderMax to the template
+            'confirmedOrderCount' => $confirmedOrderCount, // ✅ Pass variable
+
         ]);
     }
 
@@ -170,19 +194,25 @@ final class ProductController extends AbstractController
                 $product->setImagePath('uploads/images/' . $filename);
             }
 
-            // No need to persist, just flush
+            // Flush changes to the database
             $em->flush();
 
-            // Return updated card HTML for AJAX
+            // Return updated product list HTML for AJAX
             if ($request->isXmlHttpRequest()) {
+                $products = $em->getRepository(Product::class)->findAll();
                 return $this->json([
                     'success' => true,
-                    'html' => $this->renderView('BackOffice/_product_card.html.twig', ['product' => $product]),
+                    'html' => $this->renderView('BackOffice/_product_list.html.twig', [
+                        'products' => $products,
+                    ]),
                 ]);
             }
 
-            // Redirect or return JSON
-            return $this->redirectToRoute('app_product_index');
+            // Redirect or dynamically render the list of products
+            $products = $em->getRepository(Product::class)->findAll();
+            return $this->render('BackOffice/_product_list.html.twig', [
+                'products' => $products,
+            ]);
         }
 
         // Render the form for GET requests
@@ -206,6 +236,16 @@ final class ProductController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
             $entityManager->remove($product);
             $entityManager->flush();
+
+            if ($request->isXmlHttpRequest()) {
+                $products = $entityManager->getRepository(Product::class)->findAll();
+                return $this->json([
+                    'success' => true,
+                    'html' => $this->renderView('BackOffice/_product_list.html.twig', [
+                        'products' => $products,
+                    ]),
+                ]);
+            }
         }
 
         return $this->redirectToRoute('products_page', [], Response::HTTP_SEE_OTHER);

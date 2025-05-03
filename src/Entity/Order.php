@@ -58,6 +58,19 @@ class Order
 
     #[ORM\Column(type: 'datetime')]
     private $createdAt;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $confirmedAt = null;
+
+    public function getConfirmedAt(): ?\DateTimeInterface
+    {
+        return $this->confirmedAt;
+    }
+
+    public function setConfirmedAt(?\DateTimeInterface $confirmedAt): self
+    {
+        $this->confirmedAt = $confirmedAt;
+        return $this;
+    }
 
     public function __construct()
     {
@@ -157,6 +170,7 @@ class Order
             $now = new \DateTime();
             $interval = $now->diff($this->date);
            
+           
             if ($interval->h < 24 && $interval->d === 0) {
                 $context->buildViolation('Orders can only be cancelled within 24 hours of creation.')
                     ->atPath('status')
@@ -179,5 +193,8 @@ class Order
     {
         return sprintf('Order #%d - %s', $this->id, $this->status);
     }
+    
 }
+
+
 
