@@ -110,6 +110,15 @@ services:
     App\Controller\OrderController:
         autowire: true
         autoconfigure: true
+    App\Service\ContentFilterService:
+        arguments:
+            $httpClient: '@http_client'
+
+    App\Service\HuggingFaceService:
+        arguments:
+            $client: '@http_client'
+            $apiToken: '%env(HUGGINGFACE_API_TOKEN)%'
+            $apiUrl: '%env(HUGGINGFACE_API_URL)%'
         public: true
         tags: ['controller.service_arguments']
 

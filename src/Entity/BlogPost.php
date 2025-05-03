@@ -54,9 +54,11 @@ class BlogPost
     private ?string $imageUrl = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Assert\Length(
-        max: 255,
-        maxMessage: "The category cannot exceed {{ limit }} characters."
+    #[Assert\NotBlank(message: "Please select a category.")]
+    
+    #[Assert\Choice(
+        choices: ['Technology', 'Travel', 'Food', 'Lifestyle', 'Fashion', 'Health', 'Sports', 'Business'],
+        message: 'Please select a valid category.'
     )]
     private ?string $category = null;
 
