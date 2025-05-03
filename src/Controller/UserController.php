@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\GoogleUserType;
 use App\Form\LoginFormType;
+use App\Form\UserEditType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Service\EmailService;
@@ -51,27 +52,37 @@ final class UserController extends AbstractController
     #[Route('/admin/users', name: 'app_admin_Listusers', methods: ['GET'])]
     public function users(Request $request, UserRepository $userRepository): Response
     {
-        // Get filter parameters from request
         $filters = [
             'cin' => $request->query->get('cin'),
             'email' => $request->query->get('email'),
             'age' => $request->query->get('age'),
         ];
 
-        // Get sorting parameters
         $sort = $request->query->get('sort');
         $direction = $request->query->get('direction', 'ASC');
-
-        // Validate sort direction
         $direction = in_array(strtoupper($direction), ['ASC', 'DESC']) ? $direction : 'ASC';
 
+        $users = $userRepository->findAllWithFilters($filters, $sort, $direction);
+
+        // 👇 Example chart data (age distribution)
+        $ageCounts = [];
+        foreach ($users as $user) {
+            $age = (new \DateTime())->diff($user->getBirthday())->y;
+            $ageCounts[$age] = ($ageCounts[$age] ?? 0) + 1;
+        }
+
+        ksort($ageCounts); // Sort by age
+
         return $this->render('BackOffice/amine/users.html.twig', [
-            'users' => $userRepository->findAllWithFilters($filters, $sort, $direction),
+            'users' => $users,
             'current_filters' => $filters,
             'current_sort' => $sort,
             'current_direction' => $direction,
+            'chart_labels' => array_keys($ageCounts),
+            'chart_data' => array_values($ageCounts),
         ]);
     }
+
 
 //    #[Route('/admin/users',name: 'app_admin_Listusers', methods: ['GET'])]
 //    public function users(UserRepository $userRepository): Response
@@ -317,13 +328,12 @@ final class UserController extends AbstractController
                     $this->addFlash('error', 'You must provide a valid CIN');
                     return $this->redirectToRoute('app_user_complete_profile');
                 }
-
                 $user->setIsGoogleAuthenticatorEnabled(false);
                 $entityManager->flush();
                 $this->addFlash('success', 'Profile completed successfully!');
                 $session->remove('pending_user_id');
                 $session->set('user_id', $user->getId());
-                return $this->redirectToRoute('home');
+                return $this->redirectToRoute('app_user_index');
             } else {
                 $plainPassword = $form->get('Password')->getData();
                 $this->addFlash('error', 'Submitted password: ' . ($plainPassword ?: '[empty]'));
@@ -465,21 +475,25 @@ final class UserController extends AbstractController
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher
     ): Response {
-        $form = $this->createForm(UserType::class, $user);
+//        $hashedPassword = $passwordHasher->hashPassword($user, 'Snprb120401!');
+//        $user->setPassword($hashedPassword);
+        $form = $this->createForm(UserEditType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Handle password update only if a new one was provided
             $newPassword = $form->get('Password')->getData();
             if ($newPassword) {
+                $this->addFlash('info', 'Submitted password: ' . $newPassword); // Debug only
                 $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
                 $user->setPassword($hashedPassword);
             }
 
+
             $entityManager->flush();
 
             $this->addFlash('success', 'User updated successfully');
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('user/edit.html.twig', [
