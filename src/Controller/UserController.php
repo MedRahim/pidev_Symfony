@@ -489,7 +489,6 @@ final class UserController extends AbstractController
                 $user->setPassword($hashedPassword);
             }
 
-
             $entityManager->flush();
 
             $this->addFlash('success', 'User updated successfully');
