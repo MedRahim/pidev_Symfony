@@ -1,72 +1,119 @@
-{% extends 'FrontOffice/base.html.twig' %}
-
-{% block title %}Login{% endblock %}
-
-{% block body %}
-    <div class="container mt-5 mb-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-4">
-                <div class="card shadow">
-                    <div class="card-body p-4">
-                        <h1 class="h3 mb-4 text-center">Login</h1>
-
-                        {% for message in app.flashes('error') %}
-                            <div class="alert alert-danger">{{ message }}</div>
-                        {% endfor %}
-
-                        {{ form_start(form) }}
-                        <div class="mb-3">
-                            {{ form_row(form.email, {
-                                'attr': {'class': 'form-control'}
-                            }) }}
-                            {{ form_errors(form.email) }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_row(form.password, {
-                                'attr': {'class': 'form-control'}
-                            }) }}
-                            {{ form_errors(form.password) }}
-                        </div>
-
-                        <div class="mb-2 mt-4 ml-4">
-                            <div class="d-grid gap-2 col-md-6 mx-auto">
-                                <button type="submit" class="genric-btn primary-border">LOGIN</button>
-                            </div>
-                        </div>
-                        {{ form_end(form) }}
-
-                        <!-- Divider with "OR" -->
-                        <div class="divider d-flex align-items-center justify-content-center my-2">
-                            <hr class="w-25">
-                            <span class="px-3 text-muted">OR</span>
-                            <hr class="w-25">
-                        </div>
-
-                        <!-- Centered alternative options -->
-                        <div class="text-center">
-                            <div class="mb-3">
-                                <a href="{{ path('connect_google_start') }}" class="genric-btn success">
-                                    <i class="fab fa-google"></i> Login with Google
-                                </a>
-                            </div>
-
-                            <div>
-                                <a href="{{ path('app_user_new') }}" class="genric-btn link">
-                                    Don't have an account? Signup.
-                                </a>
-                            </div>
-{#                            <div>#}
-{#                                <a href="{{ path('app_forgot_password_request') }}" class="genric-btn danger-border">#}
-{#                                    forget your password?#}
-{#                                </a>#}
-{#                            </div>#}
-                        </div>
-
-                    </div>
-                </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | Your Market</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #f5f7fa; min-height: 100vh; }
+        .auth-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f5f7fa 100%);
+        }
+        .auth-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.08);
+            padding: 2.5rem 2rem 2rem 2rem;
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+        }
+        .auth-card .brand {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .auth-card .brand img {
+            width: 60px;
+        }
+        .auth-card h2 {
+            font-weight: 700;
+            color: #2A4B7C;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .auth-card p.subtitle {
+            color: #6c757d;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .auth-card .form-control {
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .auth-card .btn-primary {
+            background: linear-gradient(135deg, #2A4B7C 0%, #4e73df 100%);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 0.75rem 0;
+            margin-top: 0.5rem;
+        }
+        .auth-card .btn-primary:hover {
+            background: linear-gradient(135deg, #4e73df 0%, #2A4B7C 100%);
+        }
+        .auth-card .auth-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #2A4B7C;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .auth-card .auth-link:hover {
+            color: #4e73df;
+            text-decoration: underline;
+        }
+        .auth-card .text-muted {
+            font-size: 0.95rem;
+        }
+        .auth-card .alert {
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="brand">
+            <img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt="Logo">
+        </div>
+        <h2>Sign In to Your Account</h2>
+        <p class="subtitle">Sign in to access your account and enjoy our services.</p>
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+        {{ form_start(form) }}
+            <div class="mb-3">
+                {{ form_row(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
             </div>
+            <div class="mb-3">
+                {{ form_row(form.password, {'attr': {'class': 'form-control', 'placeholder': 'Password'}}) }}
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Sign In</button>
+        {{ form_end(form) }}
+        <div class="text-center my-3">
+            <span class="text-muted">or</span>
+        </div>
+        <a href="{{ path('connect_google_start') }}" class="btn btn-outline-danger w-100 mb-2" style="font-weight:600;">
+            <i class="fab fa-google me-2"></i> Sign in with Google
+        </a>
+        <a href="{{ path('app_user_new') }}" class="auth-link">Don't have an account? <b>Register</b></a>
+        <div class="text-center mt-2">
+            <span class="text-muted">If you were already signed in before, please log in again.</span>
         </div>
     </div>
-
-{% endblock %}
+</div>
+<script src="{{ asset('FrontOffice/assets/js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>

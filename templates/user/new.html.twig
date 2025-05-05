@@ -1,244 +1,150 @@
-{% extends 'FrontOffice/base.html.twig' %}
-
-{% block title %}New User{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Your Market</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #6e8efb, #a777e3);
-            --dark-bg: #1a1a2e;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --neon-accent: #00f2fe;
+        body { background: #f5f7fa; min-height: 100vh; }
+        .auth-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f5f7fa 100%);
         }
-
-        body {
-            background: var(--dark-bg);
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-        }
-
-        .futuristic-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .futuristic-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .form-control {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--glass-border);
-            color: white;
-            border-radius: 8px;
-            padding: 12px 15px;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: var(--neon-accent);
-            box-shadow: 0 0 0 0.25rem rgba(0, 242, 254, 0.25);
-            color: white;
-        }
-
-        .form-label {
-            color: rgba(255, 255, 255, 0.8);
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-
-        .form-text {
-            color: rgba(255, 255, 255, 0.6) !important;
-        }
-
-        h1 {
-            color: white;
-            font-weight: 700;
-            text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
-            position: relative;
-            padding-bottom: 15px;
-        }
-
-        h1::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: var(--neon-accent);
-            border-radius: 3px;
-        }
-
-        .genric-btn.info {
-            background: var(--primary-gradient);
-            border: none;
-            color: white;
-            font-weight: 600;
-            letter-spacing: 1px;
-            padding: 12px 30px;
-            border-radius: 8px;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            transition: all 0.3s ease;
-        }
-
-        .genric-btn.info::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
+        .auth-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.08);
+            padding: 2.5rem 2rem 2rem 2rem;
+            max-width: 400px;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #a777e3, #6e8efb);
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            position: relative;
         }
-
-        .genric-btn.info:hover::before {
-            opacity: 1;
+        .auth-card .brand {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
         }
-
-        .alert {
+        .auth-card .brand img {
+            width: 60px;
+        }
+        .auth-card h2 {
+            font-weight: 700;
+            color: #28A745;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .auth-card p.subtitle {
+            color: #6c757d;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .auth-card .form-control {
             border-radius: 8px;
+            font-size: 1rem;
+        }
+        .auth-card .btn-success {
+            background: linear-gradient(135deg, #28A745 0%, #43e97b 100%);
             border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 0.75rem 0;
+            margin-top: 0.5rem;
+        }
+        .auth-card .btn-success:hover {
+            background: linear-gradient(135deg, #43e97b 0%, #28A745 100%);
+        }
+        .auth-card .auth-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #2A4B7C;
             font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s;
         }
-
-        .alert-danger {
-            background: rgba(220, 53, 69, 0.2);
-            color: #ff6b6b;
-            border-left: 4px solid #dc3545;
+        .auth-card .auth-link:hover {
+            color: #28A745;
+            text-decoration: underline;
         }
-
-        .alert-success {
-            background: rgba(25, 135, 84, 0.2);
-            color: #6bffb8;
-            border-left: 4px solid #198754;
+        .auth-card .text-muted {
+            font-size: 0.95rem;
         }
-
-        /* Floating animation */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .floating {
-            animation: float 6s ease-in-out infinite;
+        .auth-card .alert {
+            font-size: 0.95rem;
         }
     </style>
-{% endblock %}
-
-{% block body %}
-    <div class="container mt-5 mb-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <div class="futuristic-card floating">
-                    <div class="card-body p-5">
-                        <h1 class="h3 mb-4 text-center">CREATE NEW USER</h1>
-
-                        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-
-                        <div class="mb-4">
-                            <label for="{{ form.profilePicture.vars.id }}" class="form-label">PROFILE PICTURE</label>
-                            {{ form_widget(form.profilePicture, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.profilePicture) }}
-                            <div class="form-text mt-2">JPEG, PNG or GIF (Max 2MB)</div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <label for="{{ form.CIN.vars.id }}" class="form-label">CIN/NATIONAL ID</label>
-                                {{ form_widget(form.CIN, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_errors(form.CIN) }}
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <label for="{{ form.Name.vars.id }}" class="form-label">FULL NAME</label>
-                                {{ form_widget(form.Name, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_errors(form.Name) }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <label for="{{ form.Email.vars.id }}" class="form-label">EMAIL</label>
-                                {{ form_widget(form.Email, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_errors(form.Email) }}
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <label for="{{ form.Password.vars.id }}" class="form-label">PASSWORD</label>
-                                {{ form_widget(form.Password, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_errors(form.Password) }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <label for="{{ form.Phone.vars.id }}" class="form-label">PHONE</label>
-                                {{ form_widget(form.Phone, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_errors(form.Phone) }}
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <label for="{{ form.birthday.vars.id }}" class="form-label">DATE OF BIRTH</label>
-                                {{ form_widget(form.birthday, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_errors(form.birthday) }}
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="{{ form.Address.vars.id }}" class="form-label">ADDRESS</label>
-                            {{ form_widget(form.Address, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.Address) }}
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="{{ form.bio.vars.id }}" class="form-label">BIOGRAPHY</label>
-                            {{ form_widget(form.bio, {'attr': {'class': 'form-control', 'rows': 3}}) }}
-                            {{ form_errors(form.bio) }}
-                        </div>
-
-                        <div class="text-center mt-5">
-                            <button type="submit" class="genric-btn info btn-lg px-5">
-                                <i class="fas fa-user-plus me-2"></i> CREATE USER
-                            </button>
-                        </div>
-
-                        {{ form_end(form) }}
-                    </div>
-                </div>
-            </div>
+</head>
+<body>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="brand">
+            <img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt="Logo">
         </div>
+        <h2>Create Your Account</h2>
+        <p class="subtitle">Register to start shopping and enjoy our services.</p>
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            <div class="mb-3">
+                <label for="{{ form.profilePicture.vars.id }}" class="form-label">Profile Picture</label>
+                {{ form_widget(form.profilePicture, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.profilePicture) }}
+                <div class="form-text">JPEG, PNG or GIF (Max 2MB)</div>
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.CIN.vars.id }}" class="form-label">CIN/National ID</label>
+                {{ form_widget(form.CIN, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.CIN) }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.Name.vars.id }}" class="form-label">Full Name</label>
+                {{ form_widget(form.Name, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.Name) }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.Email.vars.id }}" class="form-label">Email</label>
+                {{ form_widget(form.Email, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.Email) }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.Password.vars.id }}" class="form-label">Password</label>
+                {{ form_widget(form.Password, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.Password) }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.Phone.vars.id }}" class="form-label">Phone</label>
+                {{ form_widget(form.Phone, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.Phone) }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.birthday.vars.id }}" class="form-label">Date of Birth</label>
+                {{ form_widget(form.birthday, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.birthday) }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.Address.vars.id }}" class="form-label">Address</label>
+                {{ form_widget(form.Address, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.Address) }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.bio.vars.id }}" class="form-label">Biography</label>
+                {{ form_widget(form.bio, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+                {{ form_errors(form.bio) }}
+            </div>
+            <button type="submit" class="btn btn-success w-100 mt-2">Register</button>
+        {{ form_end(form) }}
+        <a href="{{ path('app_user_login') }}" class="auth-link">Already have an account? <b>Sign In</b></a>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <script>
-        // Add futuristic input interactions
-        document.querySelectorAll('.form-control').forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentElement.querySelector('.form-label').style.color = 'var(--neon-accent)';
-            });
-
-            input.addEventListener('blur', function() {
-                this.parentElement.querySelector('.form-label').style.color = 'rgba(255, 255, 255, 0.8)';
-            });
-        });
-    </script>
-{% endblock %}
+</div>
+<script src="{{ asset('FrontOffice/assets/js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>

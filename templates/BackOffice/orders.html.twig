@@ -201,6 +201,7 @@
                       <th>Date</th>
                       <th>Status</th>
                       <th>Product</th>
+                      <th>User</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -215,6 +216,13 @@
                         </span>
                       </td>
                       <td>{{ order.product.name }}</td>
+                      <td>
+                        {% if order.user is defined and order.user %}
+                          {{ order.user.Name ~ ' (ID: ' ~ order.user.id ~ ')' }}
+                        {% else %}
+                          <span class="text-danger">N/A</span>
+                        {% endif %}
+                      </td>
                       <td>
                         <button type="button" 
                                 class="btn btn-info btn-sm details-order-btn" 
@@ -241,7 +249,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                      <td colspan="5" class="text-center py-4">No orders found</td>
+                      <td colspan="6" class="text-center py-4">No orders found</td>
                     </tr>
                     {% endfor %}
                   </tbody>

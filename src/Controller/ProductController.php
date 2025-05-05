@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
+use App\Service\CurrentUserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,13 @@ use Knp\Component\Pager\PaginatorInterface;
 #[Route('/product')]
 final class ProductController extends AbstractController
 {
+    private CurrentUserService $currentUserService;
+
+    public function __construct(CurrentUserService $currentUserService)
+    {
+        $this->currentUserService = $currentUserService;
+    }
+
     #[Route('/backoffice/products', name: 'products_page', methods: ['GET', 'POST'])]
     public function index(
         ProductRepository $productRepository, 
@@ -92,6 +100,7 @@ final class ProductController extends AbstractController
     #[Route('/listing', name: 'app_product_listing', methods: ['GET'])]
     public function listing(ProductRepository $productRepository,OrderRepository $orderRepository, Request $request): Response
     {
+        $user = $this->currentUserService->getUser();
         $searchName = $request->query->get('name', '');
         $selectedCategory = $request->query->get('category', '');
         $minPrice = $request->query->get('minPrice', '');
@@ -127,7 +136,7 @@ final class ProductController extends AbstractController
             'sliderMin' => $sliderMin, // Pass sliderMin to the template
             'sliderMax' => $sliderMax, // Pass sliderMax to the template
             'confirmedOrderCount' => $confirmedOrderCount, // ✅ Pass variable
-
+            'user' => $user,
         ]);
     }
 

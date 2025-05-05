@@ -48,55 +48,7 @@
         </div>
     </div>
     <!-- Preloader Start -->
-    <header>
-        <!-- Header Start -->
-    <div class="header-area header-transparent">
-            <div class="main-header">
-            <div class="header-bottom  header-sticky">
-                    <div class="container-fluid">
-                        <div class="row align-items-center">
-                            <!-- Logo -->
-                            <div class="col-xl-2 col-lg-2 col-md-1">
-                                <div class="logo">
-                                <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt=""></a>
-                                </div>
-                            </div>
-                            <div class="col-xl-10 col-lg-10 col-md-8">
-                                <!-- Main-menu -->
-                                <div class="main-menu f-right d-none d-lg-block">
-                                    <nav>
-                                        <ul id="navigation">                                                                                                                                     
-                                            <li><a href="{{ path('home') }}">Home</a></li>
-                                            <li><a href="{{ path('about') }}">About</a></li>
-                                            <li><a href="{{ path('contact') }}">Contact</a></li>
-                                            <li><a href="{{ path('categori') }}">Categories</a></li>
-                                            <li><a href="{{ path('market') }}">Market</a></li>
-                                            <li><a href="#">Page</a>
-                                                <ul class="submenu">
-                                                    <li><a href="{{ path('blog') }}">Blog</a></li>
-                                                    <li><a href="{{ path('blog_details') }}">Blog Details</a></li>
-                                                    <li><a href="{{ path('elements') }}">Elements</a></li>
-                                                    <li><a href="{{ path('listing_details') }}">Listing Details</a></li>
-                                                </ul>
-                                            </li>
-                                            <li class="add-list"><a href="{{ path('listing_details') }}"><i class="ti-plus"></i> Add Listing</a></li>
-                                            {#<li class="login"><a href="{{ path('login') }}"><i class="ti-user"></i> Sign in</a></li>#}
-                                            <li class="register"><a href="{{ path('register') }}"><i class="ti-pencil"></i> Register</a></li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                            <!-- Mobile Menu -->
-                            <div class="col-12">
-                                <div class="mobile_menu d-block d-lg-none"></div>
-                            </div>
-                        </div>
-                    </div>
-            </div>
-            </div>
-    </div>
-        <!-- Header End -->
-    </header>
+    {% include 'FrontOffice/partials/header.html.twig' %}
 <main>
     <!-- Hero Start-->
     <div class="hero-area2 slider-height2 hero-overly2 d-flex align-items-center">
@@ -229,6 +181,15 @@
 
                         {% for post in blog_posts %}
                             <article class="blog_item" data-post-id="{{ post.id }}">
+                                <div class="d-flex align-items-center mb-2">
+                                    {% if post.user %}
+                                        <img src="{% if post.user.pathtopic and post.user.pathtopic|trim != '' %}{{ asset(post.user.pathtopic) }}{% else %}{{ asset('uploads/avatars/default.png') }}{% endif %}" alt="{{ post.user.Name }}" class="rounded-circle" width="40" height="40">
+                                        <span class="ml-2 font-weight-bold">{{ post.user.Name }}</span>
+                                    {% else %}
+                                        <img src="{{ asset('uploads/avatars/default.png') }}" alt="Unknown User" class="rounded-circle" width="40" height="40">
+                                        <span class="ml-2 font-weight-bold">Unknown User</span>
+                                    {% endif %}
+                                </div>
                                 {% if post.imageUrl %}
                                     <div class="blog_item_img">
                                         <img class="card-img rounded-0" src="{{ asset('uploads/images/' ~ post.imageUrl) }}" alt="{{ post.title }}">
@@ -243,19 +204,21 @@
                                 <div class="blog_details">
                                     <div class="d-flex justify-content-between align-items-start mb-3">
                                         <h2 class="mb-0">{{ post.title }}</h2>
-                                        <div class="post-actions-dropdown">
-                                            <button class="btn btn-link text-muted three-dots-btn" data-post-id="{{ post.id }}">
-                                                <i class="fa fa-ellipsis-v"></i>
-                                            </button>
-                                            <div class="action-buttons" id="action-buttons-{{ post.id }}" style="display: none;">
-                                                <button class="edit-post-btn" data-post-id="{{ post.id }}">
-                                                    <i class="fa fa-edit mr-1"></i>Edit
+                                        {% if currentUser and post.user and post.user.id == currentUser.id %}
+                                            <div class="post-actions-dropdown" style="position: relative; z-index: 1001;">
+                                                <button class="btn btn-link text-muted three-dots-btn" data-post-id="{{ post.id }}" style="display: inline-block; font-size: 1.5rem; padding: 0 8px;">
+                                                    <i class="fa fa-ellipsis-v"></i>
                                                 </button>
-                                                <button class="delete-post-btn" data-post-id="{{ post.id }}">
-                                                    <i class="fa fa-trash mr-1"></i>Delete
-                                                </button>
+                                                <div class="action-buttons" id="action-buttons-{{ post.id }}" style="display: none; position: absolute; right: 0; top: 100%; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); min-width: 120px;">
+                                                    <button class="edit-post-btn" data-post-id="{{ post.id }}">
+                                                        <i class="fa fa-edit mr-1"></i>Edit
+                                                    </button>
+                                                    <button class="delete-post-btn" data-post-id="{{ post.id }}">
+                                                        <i class="fa fa-trash mr-1"></i>Delete
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
+                                        {% endif %}
                                     </div>
                                     <div class="post-content mb-4">
                                         {{ post.content|raw }}
@@ -275,8 +238,9 @@
                                     <div class="interaction-section">
                                         <div class="d-flex align-items-center mb-3">
                                             <form method="post" action="{{ path('app_blog_post_like', {'id': post.id}) }}" class="like-form mr-3">
+                                                {% set liked = currentUser and currentUser.id is not null and post.likes|filter(l => l.user and l.user.id == currentUser.id)|length > 0 %}
                                                 <button type="submit" class="like-btn">
-                                                    <i class="fa fa-heart"></i>
+                                                    <i class="fa fa-heart{% if liked %} text-danger{% endif %}"></i>
                                                     <span class="like-count">{{ post.likes|length }}</span>
                                                 </button>
                                             </form>
@@ -294,11 +258,19 @@
                                                         <div class="comment mb-3" data-comment-id="{{ comment.id }}">
                                                             <div class="d-flex">
                                                                 <div class="comment-avatar mr-3">
-                                                                    <i class="fa fa-user-circle fa-2x text-muted"></i>
+                                                                    {% if comment.user %}
+                                                                        <img src="{% if comment.user.pathtopic and comment.user.pathtopic|trim != '' %}{{ asset(comment.user.pathtopic) }}{% else %}{{ asset('uploads/avatars/default.png') }}{% endif %}" alt="{{ comment.user.Name }}" class="rounded-circle" width="32" height="32">
+                                                                    {% else %}
+                                                                        <img src="{{ asset('uploads/avatars/default.png') }}" alt="Unknown User" class="rounded-circle" width="32" height="32">
+                                                                    {% endif %}
                                                                 </div>
                                                                 <div class="comment-content flex-grow-1">
                                                                     <div class="d-flex justify-content-between align-items-start">
-                                                                        <p class="comment-text mb-1">{{ comment.content }}</p>
+                                                                        <div>
+                                                                            <span class="font-weight-bold">{{ comment.user ? comment.user.Name : 'Unknown User' }}</span>
+                                                                            <p class="comment-text mb-1">{{ comment.content }}</p>
+                                                                        </div>
+                                                                        {% if currentUser and comment.user and comment.user.id == currentUser.id %}
                                                                         <div class="comment-actions">
                                                                             <button class="btn btn-sm edit-comment-btn">
                                                                                 <i class="fa fa-edit mr-1"></i>Edit
@@ -307,6 +279,7 @@
                                                                                 <i class="fa fa-trash mr-1"></i>Delete
                                                                             </button>
                                                                         </div>
+                                                                        {% endif %}
                                                                     </div>
                                                                     <div class="comment-time text-muted small">
                                                                         {{ comment.createdAt|date('d M Y, H:i') }}
@@ -346,14 +319,11 @@ class="form-control comment-input {% if app.request.method == 'POST' and comment
                                         </div>
                                     </div>
                                 </div>
-                                <!-- End Delete Confirmation Modal -->
                             </article>
                         {% else %}
                             <div class="alert alert-info">No posts available yet. Be the first to share!</div>
                         {% endfor %}
-                    </
-                di                            <div class="alert alert-info">{{ 'blog.post.no_posts'|trans }}</div>
-v>
+                    </div>
                 </div>
 
                 <!-- Sidebar Section -->
@@ -737,7 +707,12 @@ $(document).ready(function() {
                     commentDiv.find('.comment-text').show();
                     commentDiv.find('.comment-actions').show();
                     commentDiv.find('.edit-comment-form').hide();
+                } else {
+                    alert(data.message || 'Error editing comment');
                 }
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || 'Error editing comment. Please try again.');
             }
         });
     });
@@ -779,7 +754,7 @@ $(document).ready(function() {
             url: `/comment/comment/${commentId}/delete`,
             method: 'POST',
             data: {
-                _token: $('meta[name="csrf-token-delete"]').attr('content')
+                _token: document.querySelector('meta[name="csrf-token-delete"]').getAttribute('content')
             },
             success: function(data) {
                 if(data.success) {
@@ -817,19 +792,36 @@ $(document).ready(function() {
         e.preventDefault();
         const form = $(this);
         const url = form.attr('action');
-        
+        const icon = form.find('i');
+        const likeCount = form.find('.like-count');
+        const wasLiked = icon.hasClass('text-danger');
+        let currentCount = parseInt(likeCount.text()) || 0;
+
         $.ajax({
             url: url,
             method: 'POST',
             success: function(data) {
-                if(data.success) {
-                    const likeCount = form.find('.like-count');
-                    likeCount.text(data.likes);
-                    
-                    if(data.liked) {
-                        form.find('i').addClass('text-danger');
-                    }
+                let newCount = currentCount;
+                if (data.liked && !wasLiked) {
+                    newCount++;
+                } else if (!data.liked && wasLiked && newCount > 0) {
+                    newCount--;
                 }
+                // If backend returns a valid number, trust it
+                if (typeof data.likes !== 'undefined' && !isNaN(parseInt(data.likes))) {
+                    newCount = parseInt(data.likes);
+                }
+                if (newCount < 0) newCount = 0;
+                likeCount.text(newCount);
+
+                if(data.liked) {
+                    icon.addClass('text-danger');
+                } else {
+                    icon.removeClass('text-danger');
+                }
+            },
+            error: function() {
+                // Optionally show an error message
             }
         });
     });
@@ -865,23 +857,41 @@ $(document).ready(function() {
                     commentsSection.find('.no-comments').remove();
 
                     // Add the new comment to the list
+                    const avatarUrl = data.comment.user.pathtopic && data.comment.user.pathtopic.trim() !== ''
+                        ? '/uploads/avatars/' + data.comment.user.pathtopic
+                        : '/uploads/avatars/default.png';
+                    const userName = data.comment.user.name || 'Unknown User';
+
+                    // Get current user id from a Twig variable
+                    const currentUserId = {{ currentUser ? currentUser.id : 'null' }};
+
+                    // Only show edit/delete if current user is the comment author
+                    const showActions = currentUserId && data.comment.user && data.comment.user.id == currentUserId;
+
+                    const commentActionsHtml = showActions ? `
+                        <div class="comment-actions">
+                            <button class="btn btn-sm edit-comment-btn">
+                                <i class="fa fa-edit mr-1"></i>Edit
+                            </button>
+                            <button class="btn btn-sm delete-comment-btn">
+                                <i class="fa fa-trash mr-1"></i>Delete
+                            </button>
+                        </div>
+                    ` : '';
+
                     const newComment = `
                         <div class="comment mb-3" data-comment-id="${data.comment.id}">
                             <div class="d-flex">
                                 <div class="comment-avatar mr-3">
-                                    <i class="fa fa-user-circle fa-2x text-muted"></i>
+                                    <img src="${avatarUrl}" alt="${userName}" class="rounded-circle" width="32" height="32">
                                 </div>
                                 <div class="comment-content flex-grow-1">
                                     <div class="d-flex justify-content-between align-items-start">
-                                        <p class="comment-text mb-1">${data.comment.content}</p>
-                                        <div class="comment-actions">
-                                            <button class="btn btn-sm edit-comment-btn">
-                                                <i class="fa fa-edit mr-1"></i>Edit
-                                            </button>
-                                            <button class="btn btn-sm delete-comment-btn">
-                                                <i class="fa fa-trash mr-1"></i>Delete
-                                            </button>
+                                        <div>
+                                            <span class="font-weight-bold">${userName}</span>
+                                            <p class="comment-text mb-1">${data.comment.content}</p>
                                         </div>
+                                        ${commentActionsHtml}
                                     </div>
                                     <div class="comment-time text-muted small">
                                         ${data.comment.createdAt}
@@ -1363,4 +1373,3 @@ $(document).on('click', '.generate-content-btn', function() {
     </div>
 </body>
 </html>
-

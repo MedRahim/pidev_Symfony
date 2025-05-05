@@ -18,6 +18,10 @@ class PostLike
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?BlogPost $blogPost = null;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     #[ORM\Column(type: 'datetime_immutable')]
     #[Assert\NotNull(message: "The created date cannot be null.")]
     private ?\DateTimeImmutable $createdAt = null;
@@ -36,6 +40,17 @@ class PostLike
     {
         $this->blogPost = $blogPost;
 
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
         return $this;
     }
 

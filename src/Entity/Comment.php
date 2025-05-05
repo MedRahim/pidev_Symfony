@@ -26,6 +26,10 @@ class Comment
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?BlogPost $blogPost = null;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -63,6 +67,18 @@ class Comment
     public function setBlogPost(?BlogPost $blogPost): self
     {
         $this->blogPost = $blogPost;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

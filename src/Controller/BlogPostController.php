@@ -30,7 +30,8 @@ final class BlogPostController extends AbstractController
         BlogPostRepository $blogPostRepository,
         EntityManagerInterface $entityManager,
         \Knp\Component\Pager\PaginatorInterface $paginator,
-        NewsApiService $newsApiService
+        NewsApiService $newsApiService,
+        \App\Service\CurrentUserService $currentUserService
     ): Response {
         $blogPost = new BlogPost();
         $form = $this->createForm(BlogPostType::class, $blogPost);
@@ -43,11 +44,10 @@ final class BlogPostController extends AbstractController
             $blogPost->setCreatedAt(new \DateTimeImmutable());
             $blogPost->setPostDate(new \DateTime());
             $blogPost->setApproved(true);
+            $blogPost->setUser($currentUserService->getUser()); // Use the user from CurrentUserService
 
             $entityManager->persist($blogPost);
             $entityManager->flush();
-            $searchTerm = $request->query->get('search');
-            $category = $request->query->get('category');
 
             return $this->redirectToRoute('app_blog_post_index');
         }
@@ -116,6 +116,15 @@ final class BlogPostController extends AbstractController
             $newsArticles = [];
         }
 
+        // Fetch current user using dependency injection
+        $currentUser = $currentUserService->getUser();
+        // Debug: Log the current user ID
+        if ($currentUser) {
+            error_log('CurrentUserService user id: ' . $currentUser->getId());
+        } else {
+            error_log('CurrentUserService user is null');
+        }
+
         return $this->render('FrontOffice/blog.html.twig', [
             'form' => $form->createView(),
             'blog_posts' => $pagination,
@@ -126,6 +135,7 @@ final class BlogPostController extends AbstractController
             'selected_recent' => $selectedRecent,
             'search_term' => $searchTerm,
             'news_articles' => $newsArticles,
+            'currentUser' => $currentUser,
         ]);
     }
 
@@ -178,147 +188,163 @@ final class BlogPostController extends AbstractController
     }
 
     #[Route('/{id}/comment', name: 'app_blog_post_comment', methods: ['POST'])]
-public function comment(
-    Request $request,
-    BlogPost $blogPost,
-    EntityManagerInterface $entityManager,
-    ContentFilterService $contentFilter
-): Response {
-    $content = $request->request->get('comment');
-    
-    if (empty($content)) {
-        return $this->json(['success' => false, 'message' => 'Comment cannot be empty']);
-    }
-
-    // Check for bad words
-    if ($contentFilter->containsBadWords($content)) {
+    public function comment(
+        Request $request,
+        BlogPost $blogPost,
+        EntityManagerInterface $entityManager,
+        ContentFilterService $contentFilter,
+        \App\Service\CurrentUserService $currentUserService
+    ): Response {
+        $currentUser = $currentUserService->getUser();
+        $content = $request->request->get('comment');
+        if (empty($content)) {
+            return $this->json(['success' => false, 'message' => 'Comment cannot be empty']);
+        }
+        if ($contentFilter->containsBadWords($content)) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Your comment contains inappropriate language'
+            ]);
+        }
+        $comment = new Comment();
+        $comment->setContent($content);
+        $comment->setBlogPost($blogPost);
+        $comment->setCreatedAt(new \DateTimeImmutable());
+        $comment->setUser($currentUser); // Use the user from CurrentUserService
+        $entityManager->persist($comment);
+        $entityManager->flush();
         return $this->json([
-            'success' => false,
-            'message' => 'Your comment contains inappropriate language'
+            'success' => true,
+            'comment' => [
+                'id' => $comment->getId(),
+                'content' => $comment->getContent(),
+                'createdAt' => $comment->getCreatedAt()->format('d M Y, H:i'),
+                'user' => [
+                    'name' => $comment->getUser() ? $comment->getUser()->getName() : '',
+                    'avatar' => $comment->getUser() && $comment->getUser()->getAvatar() ? $comment->getUser()->getAvatar() : null
+                ]
+            ]
         ]);
     }
 
-    // Existing code to save comment
-    $comment = new Comment();
-    $comment->setContent($content);
-    $comment->setBlogPost($blogPost);
-    $comment->setCreatedAt(new \DateTimeImmutable());
-
-    $entityManager->persist($comment);
-    $entityManager->flush();
-
-    return $this->json([
-        'success' => true,
-        'comment' => [
-            'id' => $comment->getId(),
-            'content' => $comment->getContent(),
-            'createdAt' => $comment->getCreatedAt()->format('d M Y, H:i')
-        ]
-    ]);
-}
     #[Route('/{id}/like', name: 'app_blog_post_like', methods: ['POST'])]
-public function like(
-    BlogPost $blogPost,
-    EntityManagerInterface $entityManager
-): Response {
-    $like = new PostLike();
-    $like->setBlogPost($blogPost);
-    $like->setCreatedAt(new \DateTimeImmutable());
-
-    $entityManager->persist($like);
-    $entityManager->flush();
-
-    return $this->json([
-        'success' => true,
-        'likes' => $blogPost->getLikes()->count(),
-        'liked' => true
-    ]);
-}
-
-#[Route('/edit/{id}', name: 'app_blog_post_edit', methods: ['POST'])]
-public function edit(
-    Request $request,
-    BlogPost $blogPost,
-    EntityManagerInterface $entityManager
-): Response {
-    // Debug request data
-    error_log(print_r($request->request->all(), true));
-    error_log(print_r($_FILES, true));
-
-    // Verify CSRF token
-    if (!$this->isCsrfTokenValid('blog_post', $request->request->get('_token'))) {
-        return $this->json([
-            'success' => false,
-            'message' => 'Invalid CSRF token'
-        ], 403);
-    }
-
-    // Handle partial updates
-    $isUpdated = false;
-
-    if ($request->request->has('title')) {
-        $blogPost->setTitle($request->request->get('title'));
-        $isUpdated = true;
-    }
-
-    if ($request->request->has('content')) {
-        $blogPost->setContent($request->request->get('content'));
-        $isUpdated = true;
-    }
-
-    if ($request->request->has('category')) {
-        $blogPost->setCategory($request->request->get('category'));
-        $isUpdated = true;
-    }
-
-    // Handle image upload if present
-    if ($request->files->has('imageFile')) {
-        $file = $request->files->get('imageFile');
-        if ($file) {
-            $newFilename = uniqid().'.'.$file->guessExtension();
-            try {
-                $file->move(
-                    $this->getParameter('images_directory'),
-                    $newFilename
-                );
-                $blogPost->setImageUrl($newFilename);
-                $isUpdated = true;
-            } catch (FileException $e) {
-                return $this->json([
-                    'success' => false,
-                    'message' => 'File upload failed'
-                ], 400);
-            }
+    public function like(
+        BlogPost $blogPost,
+        EntityManagerInterface $entityManager,
+        \App\Service\CurrentUserService $currentUserService
+    ): Response {
+        $user = $currentUserService->getUser();
+        if (!$user) {
+            return $this->json(['success' => false, 'message' => 'Not authenticated'], 401);
         }
-    }
-
-    if ($isUpdated) {
-        try {
+        $existingLike = $blogPost->getLikes()->filter(fn($like) => $like->getUser() && $like->getUser()->getId() === $user->getId())->first();
+        if ($existingLike) {
+            $entityManager->remove($existingLike);
             $entityManager->flush();
-
             return $this->json([
                 'success' => true,
-                'post' => [
-                    'id' => $blogPost->getId(),
-                    'title' => $blogPost->getTitle(),
-                    'content' => $blogPost->getContent(),
-                    'category' => $blogPost->getCategory(),
-                    'imageUrl' => $blogPost->getImageUrl()
-                ]
+                'likes' => $blogPost->getLikes()->count(),
+                'liked' => false
             ]);
-        } catch (\Exception $e) {
+        } else {
+            $like = new PostLike();
+            $like->setBlogPost($blogPost);
+            $like->setCreatedAt(new \DateTimeImmutable());
+            $like->setUser($user);
+            $entityManager->persist($like);
+            $entityManager->flush();
             return $this->json([
-                'success' => false,
-                'message' => 'Error updating post'
-            ], 500);
+                'success' => true,
+                'likes' => $blogPost->getLikes()->count(),
+                'liked' => true
+            ]);
         }
     }
 
-    return $this->json([
-        'success' => true,
-        'message' => 'No changes made'
-    ]);
-}
+    #[Route('/edit/{id}', name: 'app_blog_post_edit', methods: ['POST'])]
+    public function edit(
+        Request $request,
+        BlogPost $blogPost,
+        EntityManagerInterface $entityManager
+    ): Response {
+        // Debug request data
+        error_log(print_r($request->request->all(), true));
+        error_log(print_r($_FILES, true));
+
+        // Verify CSRF token
+        if (!$this->isCsrfTokenValid('blog_post', $request->request->get('_token'))) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Invalid CSRF token'
+            ], 403);
+        }
+
+        // Handle partial updates
+        $isUpdated = false;
+
+        if ($request->request->has('title')) {
+            $blogPost->setTitle($request->request->get('title'));
+            $isUpdated = true;
+        }
+
+        if ($request->request->has('content')) {
+            $blogPost->setContent($request->request->get('content'));
+            $isUpdated = true;
+        }
+
+        if ($request->request->has('category')) {
+            $blogPost->setCategory($request->request->get('category'));
+            $isUpdated = true;
+        }
+
+        // Handle image upload if present
+        if ($request->files->has('imageFile')) {
+            $file = $request->files->get('imageFile');
+            if ($file) {
+                $newFilename = uniqid().'.'.$file->guessExtension();
+                try {
+                    $file->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                    $blogPost->setImageUrl($newFilename);
+                    $isUpdated = true;
+                } catch (FileException $e) {
+                    return $this->json([
+                        'success' => false,
+                        'message' => 'File upload failed'
+                    ], 400);
+                }
+            }
+        }
+
+        if ($isUpdated) {
+            try {
+                $entityManager->flush();
+
+                return $this->json([
+                    'success' => true,
+                    'post' => [
+                        'id' => $blogPost->getId(),
+                        'title' => $blogPost->getTitle(),
+                        'content' => $blogPost->getContent(),
+                        'category' => $blogPost->getCategory(),
+                        'imageUrl' => $blogPost->getImageUrl()
+                    ]
+                ]);
+            } catch (\Exception $e) {
+                return $this->json([
+                    'success' => false,
+                    'message' => 'Error updating post'
+                ], 500);
+            }
+        }
+
+        return $this->json([
+            'success' => true,
+            'message' => 'No changes made'
+        ]);
+    }
 
     private function handleImageUpload($form, BlogPost $blogPost): void
     {
@@ -347,22 +373,22 @@ public function edit(
         return $errors;
     }
     #[Route('/blog/generate-content', name: 'app_generate_content', methods: ['POST'])]
-public function generateContent(
-    Request $request,
-    HuggingFaceService $huggingFace
-): Response {
-    $title = $request->request->get('title');
-    
-    if (empty($title)) {
-        return $this->json(['error' => 'Title is required'], 400);
+    public function generateContent(
+        Request $request,
+        HuggingFaceService $huggingFace
+    ): Response {
+        $title = $request->request->get('title');
+        
+        if (empty($title)) {
+            return $this->json(['error' => 'Title is required'], 400);
+        }
+
+        $prompt = "Write a detailed blog post about: $title\n\n";
+        $generatedContent = $huggingFace->generateContent($prompt);
+
+        return $this->json([
+            'content' => $generatedContent
+        ]);
     }
-
-    $prompt = "Write a detailed blog post about: $title\n\n";
-    $generatedContent = $huggingFace->generateContent($prompt);
-
-    return $this->json([
-        'content' => $generatedContent
-    ]);
-}
    
 }

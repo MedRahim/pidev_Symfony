@@ -8,6 +8,7 @@ use App\Entity\Product; // Add this import
 use App\Form\OrderType;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
+use App\Service\CurrentUserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,6 +28,13 @@ use Symfony\Component\Mercure\Update;
 #[Route('/order')]
 final class OrderController extends AbstractController
 {
+    private CurrentUserService $currentUserService;
+
+    public function __construct(CurrentUserService $currentUserService)
+    {
+        $this->currentUserService = $currentUserService;
+    }
+
     #[Route('/BackOffice/orders', name: 'orders_page', methods: ['GET'])]
     public function index(OrderRepository $orderRepository, Request $request, PaginatorInterface $paginator): Response
     {
@@ -136,6 +144,13 @@ final class OrderController extends AbstractController
             $order->setStatus('not approved');
             $order->setCreatedAt(new \DateTime());
 
+            // Set the current user
+            $user = $this->currentUserService->getUser();
+            if (!$user) {
+                return new JsonResponse(['success' => false, 'error' => 'User not authenticated'], 403);
+            }
+            $order->setUser($user);
+
             // Calculate total price
             $quantity = (int)$data['quantity'];
             $unitPrice = $product->getPrice();
@@ -218,10 +233,14 @@ final class OrderController extends AbstractController
     #[Route('/pannier', name: 'app_order_pannier', methods: ['GET'])]
     public function pannier(OrderRepository $orderRepository): Response
     {
-        $confirmedOrders = $orderRepository->findBy(['status' => 'confirmed']); // Fetch orders with status 'confirmed'
+        $user = $this->currentUserService->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_user_login');
+        }
+        $orders = $orderRepository->findBy(['user' => $user]);
 
         return $this->render('FrontOffice/pannier.html.twig', [
-            'orders' => $confirmedOrders, // Pass confirmed orders to the template
+            'orders' => $orders,
         ]);
     }
 

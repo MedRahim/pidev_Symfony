@@ -61,6 +61,10 @@ class Order
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $confirmedAt = null;
 
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\User')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $user = null;
+
     public function getConfirmedAt(): ?\DateTimeInterface
     {
         return $this->confirmedAt;
@@ -159,6 +163,17 @@ class Order
     {
         $this->createdAt = $createdAt;
 
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
         return $this;
     }
 

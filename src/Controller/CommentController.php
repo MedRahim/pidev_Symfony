@@ -5,6 +5,7 @@ namespace App\Controller; // Updated namespace to include 'Rahim'
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
+use App\Service\CurrentUserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,6 +34,7 @@ final class CommentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setUser($this->getUser());
             $entityManager->persist($comment);
             $entityManager->flush();
 
@@ -58,8 +60,16 @@ final class CommentController extends AbstractController
         Request $request,
         Comment $comment,
         EntityManagerInterface $entityManager,
-        CsrfTokenManagerInterface $csrfTokenManager
+        CsrfTokenManagerInterface $csrfTokenManager,
+        CurrentUserService $currentUserService
     ): Response {
+        $currentUser = $currentUserService->getUser();
+        if ($comment->getUser() !== $currentUser) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], Response::HTTP_FORBIDDEN);
+        }
         // Validate CSRF token
         $submittedToken = $request->request->get('_token');
         if (!$csrfTokenManager->isTokenValid(new CsrfToken('edit-comment', $submittedToken))) {
@@ -97,8 +107,16 @@ final class CommentController extends AbstractController
         Request $request, 
         Comment $comment, 
         EntityManagerInterface $entityManager,
-        CsrfTokenManagerInterface $csrfTokenManager
+        CsrfTokenManagerInterface $csrfTokenManager,
+        CurrentUserService $currentUserService
     ): Response {
+        $currentUser = $currentUserService->getUser();
+        if ($comment->getUser() !== $currentUser) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], Response::HTTP_FORBIDDEN);
+        }
         // Validate CSRF token
         $submittedToken = $request->request->get('_token');
         if (!$csrfTokenManager->isTokenValid(new CsrfToken('delete-comment', $submittedToken))) {
@@ -117,6 +135,7 @@ final class CommentController extends AbstractController
                 'message' => 'Comment deleted successfully'
             ]);
         } catch (\Exception $e) {
+            error_log('Error deleting comment: ' . $e->getMessage());
             return $this->json([
                 'success' => false,
                 'message' => 'Error deleting comment'

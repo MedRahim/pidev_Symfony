@@ -19,10 +19,10 @@ final class Version20250427230016 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE product ADD created_at DATETIME DEFAULT NULL');
-        $this->addSql('UPDATE product SET created_at = NOW() WHERE created_at IS NULL');
-        $this->addSql('ALTER TABLE product ADD created_at DATETIME NOT NULL');
+        // Only add created_at if it does not already exist
+        // $this->addSql('ALTER TABLE product ADD created_at DATETIME DEFAULT NULL');
+        // $this->addSql('UPDATE product SET created_at = NOW() WHERE created_at IS NULL');
+        // $this->addSql('ALTER TABLE product ADD created_at DATETIME NOT NULL');
     }
 
     public function down(Schema $schema): void

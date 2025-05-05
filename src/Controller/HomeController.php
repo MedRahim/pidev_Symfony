@@ -18,9 +18,18 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(): Response
     {
+        // Redirect to the login page as the default landing page
+        return $this->redirectToRoute('app_user_login');
+    }
+    #[Route('/home', name: 'homePage')]
+    public function home(): Response
+    {
+        // Redirect to the login page as the default landing page
         return $this->render('FrontOffice/index.html.twig');
     }
-    #[Route('/voyage', name: 'voyage')]
+    
+    
+#[Route('/voyage', name: 'voyage')]
     public function voyage(): Response
     {
         return $this->render('FrontOffice/home/index.html.twig', [
