@@ -108,10 +108,14 @@
         <a href="{{ path('connect_google_start') }}" class="btn btn-outline-danger w-100 mb-2" style="font-weight:600;">
             <i class="fab fa-google me-2"></i> Sign in with Google
         </a>
+        <a href="{{ path('app_forgot_password_request') }}" class="btn btn-info w-100 mb-2" style="font-weight:600;">
+            <i class="fab fa-google me-2"></i> Forgot your password?
+        </a>
         <a href="{{ path('app_user_new') }}" class="auth-link">Don't have an account? <b>Register</b></a>
         <div class="text-center mt-2">
             <span class="text-muted">If you were already signed in before, please log in again.</span>
         </div>
+
     </div>
 </div>
 <script src="{{ asset('FrontOffice/assets/js/bootstrap.bundle.min.js') }}"></script>
