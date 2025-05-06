@@ -1,4 +1,10 @@
 {
+    "a2lix/auto-form-bundle": {
+        "version": "0.4.8"
+    },
+    "a2lix/translation-form-bundle": {
+        "version": "3.2.4"
+    },
     "doctrine/annotations": {
         "version": "2.0",
         "recipe": {
@@ -47,6 +53,30 @@
             "./migrations/.gitignore"
         ]
     },
+    "friendsofsymfony/ckeditor-bundle": {
+        "version": "2.6",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "2.0",
+            "ref": "f5ad42002183a6881962683e6d84bbb25cdfce5d"
+        }
+    },
+    "knplabs/knp-markdown-bundle": {
+        "version": "1.10.0"
+    },
+    "knplabs/knp-paginator-bundle": {
+        "version": "v6.8.0"
+    },
+    "liip/imagine-bundle": {
+        "version": "2.13",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.8",
+            "ref": "d1227d002b70d1a1f941d91845fcd7ac7fbfc929"
+        }
+    },
     "hwi/oauth-bundle": {
         "version": "2.3",
         "recipe": {
@@ -66,6 +96,18 @@
             "branch": "main",
             "version": "1.20",
             "ref": "1ff300d8c030f55c99219cc55050b97a695af3f6"
+        }
+    },
+    "knplabs/knp-paginator-bundle": {
+        "version": "v6.8.0"
+    },
+    "knplabs/knp-snappy-bundle": {
+        "version": "1.10",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.5",
+            "ref": "c81bdcf4a9d4e7b1959071457f9608631865d381"
         }
     },
     "phpunit/phpunit": {
@@ -175,6 +217,18 @@
             "./src/Kernel.php"
         ]
     },
+    "symfony/lock": {
+        "version": "6.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "5.2",
+            "ref": "8e937ff2b4735d110af1770f242c1107fdab4c8e"
+        },
+        "files": [
+            "./config/packages/lock.yaml"
+        ]
+    },
     "symfony/mailer": {
         "version": "6.4",
         "recipe": {
@@ -194,6 +248,27 @@
             "branch": "main",
             "version": "1.0",
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
+        }
+    },
+    "symfony/mercure-bundle": {
+        "version": "0.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "0.3",
+            "ref": "528285147494380298f8f991ee8c47abebaf79db"
+        },
+        "files": [
+            "./config/packages/mercure.yaml"
+        ]
+    },
+    "symfony/mercure-notifier": {
+        "version": "6.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "5.3",
+            "ref": "98a27687305d236709390ff01d7a6a9818735b97"
         }
     },
     "symfony/messenger": {
@@ -316,6 +391,9 @@
     "symfony/ux-chartjs": {
         "version": "v2.24.0"
     },
+    "symfony/ux-notify": {
+        "version": "v2.24.0"
+    },
     "symfony/ux-turbo": {
         "version": "2.24",
         "recipe": {
@@ -383,5 +461,14 @@
     },
     "twig/extra-bundle": {
         "version": "v3.20.0"
+    },
+    "vich/uploader-bundle": {
+        "version": "2.6",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.13",
+            "ref": "1b3064c2f6b255c2bc2f56461aaeb76b11e07e36"
+        }
     }
 }

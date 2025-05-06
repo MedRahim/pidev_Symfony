@@ -528,7 +528,6 @@
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
                       <img src="{{ asset('BackOffice/assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
-                      <img src="{{ asset('BackOffice/assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -589,98 +588,116 @@
       </nav>
 
       <!-- / Navbar -->
-
-      <!-- Content wrapper -->
-      <div class="content-wrapper">
-        <!-- Content -->
-
-            <div class="container-xxl flex-grow-1 container-p-y">
-              <div class="row">
-               <!-- Rendez-vous Card -->
-      <div class="col-lg-4 mb-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Rendez-vous</h5>
-            <p class="card-text">Gérez les rendez-vous des patients ici.</p>
-          <a href="{{ path('backoffice_rendezvous_list') }}" class="btn btn-primary">Voir les Rendez-vous</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Médecins Card -->
-      <div class="col-lg-4 mb-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Médecins</h5>
-            <p class="card-text">Consultez et gérez les médecins de l’hôpital.</p>
-            <a href="{{ path('backoffice_medecin_list') }}" class="btn btn-primary">Voir les Médecins</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Services hospitaliers Card -->
-      <div class="col-lg-4 mb-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Services hospitaliers</h5>
-            <p class="card-text">Liste des services disponibles dans l’établissement.</p>
-            <a href="{{ path('backoffice_service_list') }}" class="btn btn-primary">Voir les Services</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- / Content -->
-</div>
-                <!-- Products Card -->
-                <div class="col-lg-6 mb-4">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title">Products</h5>
-                      <p class="card-text">Manage your products here. Add, edit, or delete products as needed.</p>
-                      <a href="{{ path('products_page') }}" class="btn btn-primary">View Products</a>
-                    </div>
+  <!-- Content wrapper -->
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row g-4 justify-content-center">
+              <!-- Rendez-vous Card -->
+              <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100">
+                  <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Rendez-vous</h5>
+                    <p class="card-text">Gérez les rendez-vous des patients ici.</p>
+                    <a href="{{ path('backoffice_rendezvous_list') }}" class="btn btn-primary mt-auto">Voir les Rendez‑vous</a>
                   </div>
                 </div>
-                <!-- Orders Card -->
-                <div class="col-lg-6 mb-4">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title">Orders</h5>
-                      <p class="card-text">Track and manage customer orders efficiently.</p>
-                      <a href="{{ path('orders_page') }}" class="btn btn-primary">View Orders</a>
-                    </div>
+              </div>
+
+              <!-- Médecins Card -->
+              <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100">
+                  <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Médecins</h5>
+                    <p class="card-text">Consultez et gérez les médecins de l’hôpital.</p>
+                    <a href="{{ path('backoffice_medecin_list') }}" class="btn btn-primary mt-auto">Voir les Médecins</a>
                   </div>
                 </div>
-              <div class="row justify-content-center">
-                <!-- Blog Card -->
-                <div class="col-lg-4 col-md-6 mb-4">
-                  <div class="card text-center shadow-lg">
-                    <div class="card-body">
-                      <div class="mb-3">
-                        <i class="bx bx-news bx-lg text-success"></i>
-                      </div>
-                      <h5 class="card-title">Blog</h5>
-                      <p class="card-text">Create and manage engaging blog posts effortlessly.</p>
-                      <a href="{{ path('blog_page') }}" class="btn btn-success">Go to Blog</a>
-                    </div>
+              </div>
+
+              <!-- Services hospitaliers Card -->
+              <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100">
+                  <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Services</h5>
+                    <p class="card-text">Liste des services disponibles dans l’établissement.</p>
+                    <a href="{{ path('backoffice_service_list') }}" class="btn btn-primary mt-auto">Voir les Services</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Trajets Card -->
+              <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100">
+                  <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Trajets</h5>
+                    <p class="card-text">Gérez les trajets ici.</p>
+                    <a href="{{ path('app_admin_trips_index') }}" class="btn btn-primary mt-auto">Voir les Trajets</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Réservations Card -->
+              <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100">
+                  <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Réservations</h5>
+                    <p class="card-text">Gérez les réservations ici.</p>
+                    <a href="{{ path('app_admin_reservations_index') }}" class="btn btn-primary mt-auto">Voir les Réservations</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Produits Card -->
+              <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100">
+                  <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Produits</h5>
+                    <p class="card-text">Ajoutez, modifiez ou supprimez des produits.</p>
+                    <a href="{{ path('products_page') }}" class="btn btn-primary mt-auto">Voir les Produits</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Commandes Card -->
+              <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100">
+                  <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Commandes</h5>
+                    <p class="card-text">Suivez et gérez les commandes clients.</p>
+                    <a href="{{ path('orders_page') }}" class="btn btn-primary mt-auto">Voir les Commandes</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Blog Card -->
+              <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100 text-center">
+                  <div class="card-body d-flex flex-column">
+                    <div class="mb-3"><i class="bx bx-news bx-lg text-success"></i></div>
+                    <h5 class="card-title">Blog</h5>
+                    <p class="card-text">gérez des articles de blog.</p>
+                    <a href="{{ path('blog_page') }}" class="btn btn-success mt-auto">Accéder au Blog</a>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- / Content -->
+          </div>
 
-        <!-- Footer -->
-        <footer class="content-footer footer bg-footer-theme">
-          <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-            <div class="mb-2 mb-md-0">
-              ©
-              <script>
-                document.write(new Date().getFullYear());
-              </script>
-              , made with ❤️ by
-              <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
+          <!-- Footer -->
+          <footer class="content-footer footer bg-footer-theme">
+            <div class="container-xxl d-flex justify-content-between py-2">
+              <div>© {{ "now"|date('Y') }}, made with ❤️</div>
+              <div>
+                <a href="#" class="footer-link me-4">Licence</a>
+                <a href="#" class="footer-link">Support</a>
+              </div>
             </div>
+          </footer>
+          <!-- / Footer -->
+        </div>
+      </div>
+    </div>
+  </div>
             <div>
               <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
               <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>

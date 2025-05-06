@@ -8,6 +8,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Choice;
 
 class BlogPostType extends AbstractType
 {
@@ -18,19 +20,35 @@ class BlogPostType extends AbstractType
             ->add('content')
             ->add('category', ChoiceType::class, [
                 'choices' => [
-                    'Technology' => 'technology',
-                    'Health' => 'health',
-                    'Lifestyle' => 'lifestyle',
-                    'Education' => 'education',
-                    'Travel' => 'travel',
+                    'Technology' => 'Technology',
+                    'Travel' => 'Travel',
+                    'Food' => 'Food',
+                    'Lifestyle' => 'Lifestyle',
+                    'Fashion' => 'Fashion',
+                    'Health' => 'Health',
+                    'Sports' => 'Sports',
+                    'Business' => 'Business'
                 ],
-                'placeholder' => 'Select Category',
                 'required' => true,
+                'placeholder' => 'Select a category',
+                'attr' => [
+                    'class' => 'form-control',
+                    'data-validation' => 'required'
+                ],
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Please select a category.'
+                    ]),
+                    new Choice([
+                        'choices' => ['Technology', 'Travel', 'Food', 'Lifestyle', 'Fashion', 'Health', 'Sports', 'Business'],
+                        'message' => 'Please select a valid category.'
+                    ])
+                ]
             ])
             // Use a file upload field that is not mapped directly to the entity
             ->add('imageFile', FileType::class, [
-                'label'    => 'Upload Image',
-                'mapped'   => false,
+                'required' => false,
+                'mapped' => false
             ]);
     }
 

@@ -580,6 +580,63 @@
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductModal">
                   Add New Product
                 </button>
+                <a href="{{ path('api_products_low_stock') }}" class="btn btn-warning">
+                  <i class="fas fa-exclamation-triangle"></i> View Low Stock Products
+                </a>
+                <a href="{{ path('api_invoices_stock') }}" class="btn btn-info">
+                  <i class="fas fa-file-pdf"></i> Generate Stock Invoice
+                </a>
+              </div>
+
+              <div class="card">
+                <div class="table-responsive">
+                  <table class="table align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th scope="col">PRODUCT</th>
+                        <th scope="col">PRICE</th>
+                        <th scope="col">STOCK</th>
+                        <th scope="col">ACTIONS</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for product in pagination %}
+                        <tr>
+                          <td>
+                            <div class="d-flex align-items-center">
+                              {% if product.imagePath %}
+                                <img src="{{ asset(product.imagePath) }}" alt="{{ product.name }}" class="rounded-circle" width="46" height="46">
+                              {% endif %}
+                              <div class="ms-3">
+                                <p class="fw-bold mb-1">{{ product.name }}</p>
+                                <p class="text-muted mb-0">{{ product.reference }}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td>{{ product.price }} TND</td>
+                          <td>
+                            <span class="badge {% if product.stock < product.stockLimit %}bg-danger{% else %}bg-success{% endif %}">
+                              {{ product.stock }}
+                            </span>
+                          </td>
+                          <td>
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editProductModal" data-edit-url="{{ path('app_product_edit_modal', {'id': product.id}) }}">
+                              Edit
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" data-delete-url="{{ path('app_product_delete', {'id': product.id}) }}" data-csrf-token="{{ csrf_token('delete' ~ product.id) }}">
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Pagination -->
+              <div class="d-flex justify-content-center mt-4">
+                {% include 'pagination.html.twig' %}
               </div>
 
               <!-- Add Product Modal -->
@@ -663,47 +720,6 @@
                 </div>
               </div>
 
-              <div class="row">
-                {% if products is defined and products is not empty %}
-                  {% for product in products %}
-                    <div class="col-lg-4 mb-4" id="product-card-{{ product.id }}">
-                      <div class="card">
-                        <img
-                          src="{{ product.imagePath ? asset(product.imagePath) : asset('BackOffice/assets/img/default-product.jpg') }}"
-                          class="card-img-top"
-                          alt="{{ product.name }}"
-                        />
-                        <div class="card-body">
-                          <h5 class="card-title">{{ product.name }}</h5>
-                          <p class="card-text">{{ product.description }}</p>
-                          <p class="card-text"><strong>Price:</strong> {{ product.price }} USD</p>
-                          <p class="card-text"><strong>Stock:</strong> {{ product.stock }}</p>
-                          <button
-                            type="button"
-                            class="btn btn-primary edit-product-btn"
-                            data-bs-toggle="modal"
-                            data-bs-target="#editProductModal"
-                            data-edit-url="{{ path('app_product_edit_modal', { id: product.id }) }}"
-                          >
-                            Edit
-                          </button>
-                          <button type="button" 
-                                  class="btn btn-danger" 
-                                  data-bs-toggle="modal" 
-                                  data-bs-target="#deleteModal"
-                                  data-delete-url="{{ path('app_product_delete', {'id': product.id}) }}"
-                                  data-csrf-token="{{ csrf_token('delete' ~ product.id) }}">
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  {% endfor %}
-                {% else %}
-                  <p>No products available.</p>
-                {% endif %}
-              </div>
-
               <!-- Delete Confirmation Modal -->
               <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -728,20 +744,6 @@
 
               <script>
                 document.addEventListener('DOMContentLoaded', () => {
-                  const deleteModal = document.getElementById('deleteModal');
-                  const deleteForm = document.getElementById('deleteForm');
-                  const csrfTokenInput = document.getElementById('csrfToken');
-
-                  deleteModal.addEventListener('show.bs.modal', function (event) {
-                    const button = event.relatedTarget; // Button that triggered the modal
-                    const deleteUrl = button.getAttribute('data-delete-url');
-                    const csrfToken = button.getAttribute('data-csrf-token');
-
-                    // Set the form action and CSRF token
-                    deleteForm.setAttribute('action', deleteUrl);
-                    csrfTokenInput.value = csrfToken;
-                  });
-
                   const editModal = document.getElementById('editProductModal');
                   const modalBody = editModal.querySelector('.modal-body');
 
@@ -767,15 +769,9 @@
                   });
 
                   document.addEventListener('submit', function(e) {
-                    if (
-                      e.target.closest('#editProductModal') &&
-                      e.target.matches('form')
-                    ) {
+                    if (e.target.closest('#editProductModal') && e.target.matches('form')) {
                       e.preventDefault();
                       const form = e.target;
-                      const productId = form.querySelector('[name="product[id]"]')?.value ||
-                                        form.dataset.productId ||
-                                        form.action.match(/\/product\/(\d+)\//)?.[1];
 
                       fetch(form.action, {
                         method: form.method,
@@ -783,21 +779,55 @@
                         headers: { 'X-Requested-With': 'XMLHttpRequest' }
                       })
                       .then(async res => {
-                        if (res.headers.get('content-type')?.includes('application/json')) {
+                        if (res.ok) {
                           const data = await res.json();
-                          if (data.success && productId) {
-                            const card = document.getElementById(`product-card-${productId}`);
-                            if (card) card.outerHTML = data.html;
-                            bootstrap.Modal.getInstance(document.getElementById('editProductModal')).hide();
+                          if (data.success) {
+                            document.querySelector('tbody').innerHTML = data.html;
+                            bootstrap.Modal.getInstance(editModal).hide();
                           }
-                        } else if (res.status === 422) {
-                          // Validation error: replace modal body with returned HTML
+                        } else {
                           const html = await res.text();
-                          document.getElementById('editProductModalBody').innerHTML = html;
+                          modalBody.innerHTML = html; // Replace modal body with validation errors
                         }
                       })
                       .catch(console.error);
                     }
+                  });
+
+                  const deleteModal = document.getElementById('deleteModal');
+                  const deleteForm = document.getElementById('deleteForm');
+                  const csrfTokenInput = document.getElementById('csrfToken');
+
+                  deleteModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget; // Button that triggered the modal
+                    const deleteUrl = button.getAttribute('data-delete-url');
+                    const csrfToken = button.getAttribute('data-csrf-token');
+
+                    // Set the form action and CSRF token
+                    deleteForm.setAttribute('action', deleteUrl);
+                    csrfTokenInput.value = csrfToken;
+                  });
+
+                  deleteForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    fetch(deleteForm.action, {
+                      method: 'POST',
+                      body: new FormData(deleteForm),
+                      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    })
+                      .then(async (res) => {
+                        if (res.ok) {
+                          const data = await res.json();
+                          if (data.success) {
+                            document.querySelector('tbody').innerHTML = data.html;
+                            bootstrap.Modal.getInstance(deleteModal).hide();
+                          }
+                        } else {
+                          console.error('Failed to delete product.');
+                        }
+                      })
+                      .catch(console.error);
                   });
                 });
               </script>

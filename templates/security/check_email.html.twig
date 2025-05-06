@@ -1,130 +1,85 @@
-{% extends 'FrontOffice/base.html.twig' %}
-
-{% block title %}Check Your Email{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Your Email | Your Market</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #4e73df;
-            --success-color: #1cc88a;
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-        }
-
-        body {
-            display: flex;
+        body { background: #f5f7fa; min-height: 100vh; }
+        .auth-wrapper {
             min-height: 100vh;
+            display: flex;
             align-items: center;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            justify-content: center;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f5f7fa 100%);
         }
-
-        .verification-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-            overflow: hidden;
-            transition: all 0.3s ease;
+        .auth-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.08);
+            padding: 2.5rem 2rem 2rem 2rem;
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+        }
+        .auth-card .brand {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .auth-card .brand img {
+            width: 60px;
+        }
+        .auth-card h2 {
+            font-weight: 700;
+            color: #2A4B7C;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .auth-card p.subtitle {
+            color: #6c757d;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .auth-card .icon {
+            font-size: 3rem;
+            color: #28A745;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .auth-card .btn-primary {
+            background: linear-gradient(135deg, #2A4B7C 0%, #4e73df 100%);
             border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 0.75rem 0;
+            margin-top: 1.5rem;
         }
-
-        .verification-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.2);
-        }
-
-        .email-icon {
-            font-size: 5rem;
-            color: var(--primary-color);
-            margin: 1.5rem 0;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .btn-resend {
-            background: var(--primary-color);
-            border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            color: white;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .btn-resend:hover {
-            background: #3a5ccc;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(78, 115, 223, 0.3);
-        }
-
-        .text-muted a {
-            color: var(--primary-color);
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .text-muted a:hover {
-            color: #3a5ccc;
-            text-decoration: underline;
+        .auth-card .btn-primary:hover {
+            background: linear-gradient(135deg, #4e73df 0%, #2A4B7C 100%);
         }
     </style>
-{% endblock %}
-
-{% block body %}
-    <div class="container mt-100 mb-100">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6 col-xl-5">
-                <div class="verification-card shadow-lg">
-                    <div class="card-body p-5 text-center">
-                        <h1 class="h3 mb-4 font-weight-bold">Check Your Email</h1>
-
-                        <div class="email-icon">
-                            <i class="bi bi-envelope-check-fill"></i>
-                        </div>
-
-                        <p class="lead mb-4">
-                            We've sent a verification link to your email address.
-                        </p>
-
-                        <div class="alert alert-light border mb-4">
-                            <i class="bi bi-info-circle me-2"></i>
-                            The link will expire in 24 hours
-                        </div>
-
-                        <p class="text-muted mb-4">
-                            Didn't receive the email?
-                            <a href="{{ path('app_resend_verification') }}" class="genric-btn primary-border">
-                                Resend Verification
-                            </a>
-                        </p>
-
-                        <div class="mt-4 text-muted small">
-                            <i class="bi bi-shield-check me-1"></i>
-                            Check your spam folder if you can't find our email
-                        </div>
-                    </div>
-                </div>
-            </div>
+</head>
+<body>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="brand">
+            <img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt="Logo">
         </div>
+        <div class="icon">
+            <i class="fas fa-envelope-circle-check"></i>
+        </div>
+        <h2>Check Your Email</h2>
+        <p class="subtitle">We have sent you a verification email.<br>Please check your inbox and follow the instructions to verify your account.</p>
+        <a href="{{ path('app_user_login') }}" class="btn btn-primary w-100 mt-3">Back to Login</a>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        // Add animation to the resend button
-        document.querySelector('.btn-resend').addEventListener('mouseenter', function() {
-            this.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i> Resend Verification';
-        });
-
-        document.querySelector('.btn-resend').addEventListener('mouseleave', function() {
-            this.innerHTML = 'Resend Verification';
-        });
-    </script>
-{% endblock %}
+</div>
+<script src="{{ asset('FrontOffice/assets/js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>

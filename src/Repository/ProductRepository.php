@@ -46,4 +46,12 @@ class ProductRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findLowStock(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.stock < p.stockLimit')
+            ->getQuery()
+            ->getResult();
+    }
 }

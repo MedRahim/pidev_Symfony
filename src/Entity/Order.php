@@ -58,6 +58,23 @@ class Order
 
     #[ORM\Column(type: 'datetime')]
     private $createdAt;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $confirmedAt = null;
+
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\User')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $user = null;
+
+    public function getConfirmedAt(): ?\DateTimeInterface
+    {
+        return $this->confirmedAt;
+    }
+
+    public function setConfirmedAt(?\DateTimeInterface $confirmedAt): self
+    {
+        $this->confirmedAt = $confirmedAt;
+        return $this;
+    }
 
     public function __construct()
     {
@@ -149,6 +166,17 @@ class Order
         return $this;
     }
 
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
     // Custom Validation
     #[Assert\Callback]
     public function validateCancellation(ExecutionContextInterface $context): void
@@ -156,6 +184,7 @@ class Order
         if ($this->status === 'cancelled') {
             $now = new \DateTime();
             $interval = $now->diff($this->date);
+           
            
             if ($interval->h < 24 && $interval->d === 0) {
                 $context->buildViolation('Orders can only be cancelled within 24 hours of creation.')
@@ -179,5 +208,8 @@ class Order
     {
         return sprintf('Order #%d - %s', $this->id, $this->status);
     }
+    
 }
+
+
 

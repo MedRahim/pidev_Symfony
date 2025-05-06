@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Comment;
 use App\Entity\PostLike;
+use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: BlogPostRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -54,9 +55,11 @@ class BlogPost
     private ?string $imageUrl = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Assert\Length(
-        max: 255,
-        maxMessage: "The category cannot exceed {{ limit }} characters."
+    #[Assert\NotBlank(message: "Please select a category.")]
+    
+    #[Assert\Choice(
+        choices: ['Technology', 'Travel', 'Food', 'Lifestyle', 'Fashion', 'Health', 'Sports', 'Business'],
+        message: 'Please select a valid category.'
     )]
     private ?string $category = null;
 
@@ -68,6 +71,10 @@ class BlogPost
 
     #[ORM\OneToMany(mappedBy: 'blogPost', targetEntity: PostLike::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $likes;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
     public function __construct()
     {
@@ -215,6 +222,16 @@ class BlogPost
             }
         }
 
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
         return $this;
     }
 }

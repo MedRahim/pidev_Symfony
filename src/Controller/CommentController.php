@@ -5,11 +5,15 @@ namespace App\Controller; // Updated namespace to include 'Rahim'
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
+use App\Service\CurrentUserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+
 
 #[Route('/comment')]
 final class CommentController extends AbstractController
@@ -30,6 +34,7 @@ final class CommentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setUser($this->getUser());
             $entityManager->persist($comment);
             $entityManager->flush();
 
@@ -50,32 +55,91 @@ final class CommentController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_comment_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(CommentType::class, $comment);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
+    #[Route('/comment/{id}/edit', name: 'app_comment_edit', methods: ['POST'])]
+    public function editComment(
+        Request $request,
+        Comment $comment,
+        EntityManagerInterface $entityManager,
+        CsrfTokenManagerInterface $csrfTokenManager,
+        CurrentUserService $currentUserService
+    ): Response {
+        $currentUser = $currentUserService->getUser();
+        if ($comment->getUser() !== $currentUser) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], Response::HTTP_FORBIDDEN);
         }
-
-        return $this->render('comment/edit.html.twig', [
-            'comment' => $comment,
-            'form' => $form,
+        // Validate CSRF token
+        $submittedToken = $request->request->get('_token');
+        if (!$csrfTokenManager->isTokenValid(new CsrfToken('edit-comment', $submittedToken))) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Invalid security token'
+            ], Response::HTTP_FORBIDDEN);
+        }
+    
+        // Validate content
+        $content = $request->request->get('content');
+        if (empty($content)) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Comment cannot be empty'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    
+        // Update and save
+        $comment->setContent($content);
+        $entityManager->flush();
+    
+        return $this->json([
+            'success' => true,
+            'comment' => [
+                'id' => $comment->getId(),
+                'content' => $comment->getContent(),
+                'createdAt' => $comment->getCreatedAt()->format('d M Y, H:i')
+            ]
         ]);
     }
 
-    #[Route('/{id}', name: 'app_comment_delete', methods: ['POST'])]
-    public function delete(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($comment);
-            $entityManager->flush();
+    #[Route('/comment/{id}/delete', name: 'app_comment_delete', methods: ['POST'])]
+    public function delete(
+        Request $request, 
+        Comment $comment, 
+        EntityManagerInterface $entityManager,
+        CsrfTokenManagerInterface $csrfTokenManager,
+        CurrentUserService $currentUserService
+    ): Response {
+        $currentUser = $currentUserService->getUser();
+        if ($comment->getUser() !== $currentUser) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], Response::HTTP_FORBIDDEN);
+        }
+        // Validate CSRF token
+        $submittedToken = $request->request->get('_token');
+        if (!$csrfTokenManager->isTokenValid(new CsrfToken('delete-comment', $submittedToken))) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Invalid CSRF token'
+            ], Response::HTTP_FORBIDDEN);
         }
 
-        return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
+        try {
+            $entityManager->remove($comment);
+            $entityManager->flush();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Comment deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            error_log('Error deleting comment: ' . $e->getMessage());
+            return $this->json([
+                'success' => false,
+                'message' => 'Error deleting comment'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
