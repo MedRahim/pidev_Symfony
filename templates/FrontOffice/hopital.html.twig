@@ -103,66 +103,88 @@
  
  
  
- 
  <!-- Hero Start-->
-        <div class="hero-area2  slider-height2 hero-overly2 d-flex align-items-center ">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="hero-cap text-center pt-50">
-                            <h2>Services hospitaliers</h2>
-                        </div>
-                    </div>
+<div class="hero-area2 slider-height2 hero-overly2 d-flex align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="hero-cap text-center pt-50">
+                    <h2>Services hospitaliers</h2>
                 </div>
             </div>
         </div>
-        <!--Hero End -->
-        <!-- Categories Area Start -->
-        <div class="categories-area section-padding30">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <!-- Section Tittle -->
-                        <div class="section-tittle text-center mb-80">
-                            <span>Nous offrons pour vous</span>
-                            <h2>differents services hospitaliers</h2>
-                        </div>
-                    </div>
-                </div>
-
-
-    
-    <div class="row">
-    {% if services is defined and services is not empty %}
-        {% for service in services %}
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="single-cat text-center mb-50">
-                    <div class="cat-icon">
-    <img src="{{ asset('FrontOffice/assets/img/serviceIMG/' ~ service.nomService|lower ~ '.png') }}" style="width: 100px; height: 100px; object-fit: cover;">
+    </div>
 </div>
+<!-- Hero End -->
 
-                    <div class="cat-cap">
-                        <h5><a href="#">{{ service.nomService }}</a></h5>
-                        <p>{{ service.description }}</p>
-                        <a href="{{ path('medecins_par_service', {'id': service.idService}) }}">Voir médecins</a>
+<!-- Categories Area Start -->
+<div class="categories-area section-padding30">
+    <div class="container">
 
-
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>Aucun service disponible.</p>  {# Message au cas où la variable 'services' est vide #}
-    {% endif %}
-</div>
-
-
-
-
+        <!-- Section Title -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8 text-center">
+                <span class="text-muted">Nous offrons pour vous</span>
+                <h2>Différents services hospitaliers</h2>
             </div>
         </div>
-       
-       
+
+        <!-- Champ de recherche -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-6">
+                <input type="text" id="searchService" class="form-control" placeholder="🔍 Rechercher un service...">
+            </div>
+        </div>
+
+        <!-- Flash messages -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }} alert-dismissible fade show shadow-sm mt-4 text-center" role="alert">
+                            <strong>
+                                {% if label == 'success' %}
+                                    ✅ Succès :
+                                {% elseif label == 'danger' %}
+                                    ❌ Erreur :
+                                {% endif %}
+                            </strong>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Liste des services -->
+        <div class="row" id="servicesContainer">
+           {% include 'FrontOffice/_services.html.twig' with { services: services } %}
+
+        </div>
+    </div>
+</div>
+
+<!-- Script AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#searchService').on('input', function () {
+      let searchTerm = $(this).val();
+      $.ajax({
+        url: "{{ path('recherche_service') }}",
+        type: "GET",
+        data: { nom: searchTerm },
+        success: function (data) {
+          $('#servicesContainer').html(data);
+        },
+        error: function () {
+          $('#servicesContainer').html('<p class="text-danger">Erreur lors du chargement des services.</p>');
+        }
+      });
+    });
+  });
+</script>
        
        
        

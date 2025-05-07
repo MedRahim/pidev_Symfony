@@ -125,6 +125,21 @@
             "ref": "c81bdcf4a9d4e7b1959071457f9608631865d381"
         }
     },
+    "google/apiclient": {
+        "version": "2.18",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "2.10",
+            "ref": "07a97ec434d43b7903c78069a04c92adb6442e52"
+        },
+        "files": [
+            "./config/packages/google_apiclient.yaml"
+        ]
+    },
+    "knplabs/knp-paginator-bundle": {
+        "version": "v6.8.0"
+    },
     "phpunit/phpunit": {
         "version": "9.6",
         "recipe": {
@@ -508,6 +523,9 @@
             "branch": "main",
             "version": "1.13",
             "ref": "1b3064c2f6b255c2bc2f56461aaeb76b11e07e36"
-        }
+        },
+        "files": [
+            "./config/packages/vich_uploader.yaml"
+        ]
     }
 }

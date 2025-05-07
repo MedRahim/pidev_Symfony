@@ -68,7 +68,7 @@
                                                 <li><a href="{{ asset('FrontOffice/index.html.twig') }}">Home</a></li>
                                                 <li><a href="{{ asset('FrontOffice/about.html.twig') }}">About</a></li>
                                                 <li><a href="{{ asset('FrontOffice/hopital.html.twig') }}">Categories</a></li>
-                                                <li><a href="{{ asset('FrontOffice/market.html.twig') }}">market</a></li>
+                                                <li><a href="{{ asset('FrontOffice/listing.html.twig') }}">Listing</a></li>
                                                 <li><a href="{{ asset('FrontOffice/#') }}">Page</a>
                                                     <ul class="submenu">
                                                         <li><a href="{{ asset('FrontOffice/blog.html.twig') }}">Blog</a></li>
@@ -100,11 +100,9 @@
         <main>
 
  
- 
- 
- 
- 
- 
+
+
+
  
  <!-- Hero Start-->
         <div class="hero-area2  slider-height2 hero-overly2 d-flex align-items-center ">
@@ -121,52 +119,41 @@
         <!--Hero End -->
 
 
+ <div class="container mt-5">
+        <h2 class="mb-4">Liste des Rendez-vous</h2>
 
-
-
-
-
-{% block body %}
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="appointment-card wow fadeInUp" data-wow-delay="0.2s">
-                    <h2 class="text-center mb-4">Prendre un Rendez-vous</h2>
-
-                   
-
-                    {{ form_start(form, {'attr': {'class': 'modern-form', 'novalidate': 'novalidate'}}) }}
-
-                        {% for field in form %}
-                            {% if field.vars.name != 'submit' %}
-                                <div class="form-group mb-3">
-                                    {{ form_label(field) }}
-                                    {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
-                                    {{ form_errors(field) }}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-
-                    {{ form_end(form) }}
-                </div>
-            </div>
-        </div>
+        {% if rendezvous is empty %}
+            <p>Aucun rendez-vous trouvé.</p>
+        {% else %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Heure</th>
+                        <th>Lieu</th>
+                        <th>Status</th>
+                        <th>ID Médecin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rdv in rendezvous %}
+                        <tr>
+                            <td>{{ rdv.idRendezVous }}</td>
+                            <td>{{ rdv.dateRendezVous ? rdv.dateRendezVous|date('Y-m-d') : '' }}</td>
+                            <td>{{ rdv.timeRendezVous ? rdv.timeRendezVous|date('H:i') : '' }}</td>
+                            <td>{{ rdv.lieu }}</td>
+                            <td>{{ rdv.status }}</td>
+                            <td>{{ rdv.idMedecin }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
     </div>
-{% endblock %}
-
-<script src="{{ asset('FrontOffice/assets/js/wow.min.js') }}"></script>
-<script>
-    new WOW().init();
-</script>
 
 
-
-
-
-
-
-
-
+    
 
 
 <footer>
@@ -191,7 +178,7 @@
                                     <h4>Quick Link</h4>
                                     <ul>
                                         <li><a href="{{ path('home') }}">Home</a></li>
-                                        <li><a href="{{ path('market') }}">market</a></li>
+                                        <li><a href="{{ path('listing') }}">Listing</a></li>
                                         <li><a href="{{ path('about') }}">About</a></li>
                                         <li><a href="{{ path('contact') }}">Contact</a></li>
                                     </ul>

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 <!-- =========================================================
@@ -152,79 +153,134 @@
       </aside>
 
 
-   <!-- /Menu -->
-
-      <!-- Main content -->
-      <div class="layout-page">
-        <!-- Content wrapper -->
-        <div class="content-wrapper">
-          <!-- Content -->
-          <div class="container-xxl flex-grow-1 container-p-y">
-            <!-- ✅ Ton bloc de rendez-vous ici -->
-            <div class="container mt-4">
-              <h1 class="mb-4">Gestion des Rendez-vous</h1>
 
 
 
-             
-        {% for message in app.flashes('success') %}
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
-          </div>
-        {% endfor %}
-
-              <div class="mb-3">
-  <a href="{{ path('backoffice_rendezvous_new') }}" class="btn btn-primary">
-    <i class="bx bx-plus"></i> Ajouter un rendez-vous
-  </a>
-</div>
 
 
-              <table class="table table-striped">
-                <thead>
+
+<!-- Main content -->
+<div class="layout-page">
+  <div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="container mt-4">
+        <div class="card shadow-sm border-0 rounded-4">
+          <div class="card-body p-4">
+
+            <h1 class="mb-4 text-center text-primary">📅 Gestion des Rendez-vous</h1>
+
+            {% for message in app.flashes('success') %}
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+              </div>
+            {% endfor %}
+
+            <!-- 🔎 Filtres -->
+            <form method="get" class="row align-items-end mb-4 g-3">
+              <div class="col-md-4">
+                <label for="status" class="form-label fw-bold">Filtrer par statut</label>
+                <select name="status" id="status" class="form-select">
+                  <option value="">Tous les statuts</option>
+                  <option value="En attente" {% if app.request.query.get('status') == 'En attente' %}selected{% endif %}>En attente</option>
+                  <option value="confirmé" {% if app.request.query.get('status') == 'confirmé' %}selected{% endif %}>Confirmé</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 d-flex justify-content-start gap-2">
+                <button type="submit" class="btn btn-outline-primary mt-4">
+                  <i class="bx bx-filter-alt"></i> Filtrer
+                </button>
+                <a href="{{ path('backoffice_rendezvous_new') }}" class="btn btn-success mt-4">
+                  <i class="bx bx-plus"></i> Ajouter un rendez-vous
+                </a>
+              </div>
+            </form>
+
+            <!-- 🔍 Recherche -->
+            <div class="input-group mb-4">
+              <span class="input-group-text bg-light"><i class="bx bx-search"></i></span>
+              <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un rendez-vous...">
+            </div>
+
+            <!-- 📋 Tableau des rendez-vous -->
+            <div class="table-responsive">
+              <table class="table table-hover align-middle border rounded-3">
+                <thead class="table-light">
                   <tr>
-                    <th>Date</th>
-                    <th>Heure</th>
-                    <th>Lieu</th>
-                    <th>Status</th>
-                    <th>ID Médecin</th>
-                    <th>Actions</th> <!-- ✅ Nouvelle colonne -->
+                    <th>{{ knp_pagination_sortable(pagination, '📅 Date', 'r.dateRendezVous') }}</th>
+                    <th>⏰ Heure</th>
+                    <th>🏥 Lieu</th>
+                    <th>🟢 Statut</th>
+                    <th>⚙️ Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for rdv in rendezvous %}
+                  {% for rdv in pagination %}
                     <tr>
                       <td>{{ rdv.dateRendezVous|date('d/m/Y') }}</td>
                       <td>{{ rdv.timeRendezVous|date('H:i') }}</td>
                       <td>{{ rdv.lieu }}</td>
-                      <td>{{ rdv.status }}</td>
-                      <td>{{ rdv.idMedecin }}</td>
-                       <td>
-                        <a href="{{ path('backoffice_rendezvous_edit', {id: rdv.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
-
-          <!-- ✅ Bouton Supprimer -->
-       
-          <form action="{{ path('backoffice_rendezvous_delete', {id: rdv.id}) }}" method="post" style="display:inline-block;" onsubmit="return confirm('Voulez-vous vraiment supprimer ce rendez-vous ?');">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rdv.id) }}">
-            <button class="btn btn-sm btn-danger">Supprimer</button>
-          </form>
-        </td>
+                      <td>
+                        <span class="badge bg-{{ rdv.status == 'confirmé' ? 'success' : 'warning' }}">{{ rdv.status }}</span>
+                      </td>
+                      <td>
+                        <div class="d-flex flex-column">
+                          <!-- Bouton Modifier -->
+                          <a href="{{ path('backoffice_rendezvous_edit', {id: rdv.id}) }}" class="btn btn-sm btn-warning w-50">
+                            <i class="bx bx-edit me-1"></i> Modifier
+                          </a>
+                          <!-- Bouton Supprimer -->
+                          <form action="{{ path('backoffice_rendezvous_delete', {id: rdv.id}) }}" method="post" onsubmit="return confirm('Voulez-vous vraiment supprimer ce rendez-vous ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rdv.id) }}">
+                            <button class="btn btn-sm btn-danger w-50">
+                              <i class="bx bx-trash me-1"></i> Supprimer
+                            </button>
+                          </form>
+                        </div>
+                      </td>
                     </tr>
                   {% else %}
                     <tr>
-                      <td colspan="5" class="text-center">Aucun rendez-vous trouvé</td>
+                      <td colspan="6" class="text-center">Aucun rendez-vous trouvé</td>
                     </tr>
                   {% endfor %}
                 </tbody>
               </table>
             </div>
+
+            <!-- 📄 Pagination -->
+            <div class="d-flex justify-content-center mt-4">
+              {{ knp_pagination_render(pagination) }}
+            </div>
+
+            <!-- 📅 Bouton vers le calendrier -->
+            <div class="d-flex justify-content-center mt-5">
+              <a href="https://calendar.google.com/calendar/u/0/r?pli=1" target="_blank" class="btn btn-primary btn-lg">
+                <i class="bx bx-calendar"></i> Accéder au Calendrier Google
+              </a>
+            </div>
+
           </div>
-          <!-- / Content -->
         </div>
-        <!-- / Content wrapper -->
       </div>
-      <!-- / Layout page -->
     </div>
   </div>
+</div>
+
+<!-- 🔍 Script de recherche instantanée -->
+<script>
+  document.getElementById('searchInput').addEventListener('keyup', function () {
+    let value = this.value.toLowerCase();
+    let rows = document.querySelectorAll('table tbody tr');
+    rows.forEach(row => {
+      row.style.display = row.textContent.toLowerCase().includes(value) ? '' : 'none';
+    });
+  });
+</script>
+
+
 </body>
+
+
+

@@ -32,6 +32,7 @@ services:
     App\Service\ProgressService: ~
 
     # Reste des services dans src/
+
     App\:
         resource: '../src/'
         exclude:
@@ -142,6 +143,5 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+
     # Ajoute ici d'autres définitions de services si nécessaire.

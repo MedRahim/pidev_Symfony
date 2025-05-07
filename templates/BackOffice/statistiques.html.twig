@@ -1,75 +1,27 @@
-
-
 <!DOCTYPE html>
-
-<!-- =========================================================
-* Sneat - Bootstrap 5 HTML Admin Template - Pro | v1.0.0
-==============================================================
-
-* Product Page: https://themeselection.com/products/sneat-bootstrap-html-admin-template/
-* Created by: ThemeSelection
-* License: You must have a valid license purchased in order to legally use the theme for your project.
-* Copyright ThemeSelection (https://themeselection.com)
-
-=========================================================
- -->
-<!-- beautify ignore:start -->
-<html
-  lang="en"
-  class="light-style layout-menu-fixed"
-  dir="ltr"
-  data-theme="theme-default"
-  data-assets-path="{{ asset('BackOffice/assets/') }}"
-  data-template="vertical-menu-template-free"
->
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="{{ asset('BackOffice/assets/') }}" data-template="vertical-menu-template-free">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
-    />
-
-    <title>Dashboard - Analytics | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Dashboard - Analytics</title>
     <meta name="description" content="" />
-
-    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('BackOffice/assets/img/favicon/favicon.ico') }}" />
-
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Icons. Uncomment required icon fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/fonts/boxicons.css') }}" />
-
-    <!-- Core CSS -->
     <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
     <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
     <link rel="stylesheet" href="{{ asset('BackOffice/assets/css/demo.css') }}" />
-
-    <!-- Vendors CSS -->
     <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
-
     <link rel="stylesheet" href="{{ asset('BackOffice/assets/vendor/libs/apex-charts/apex-charts.css') }}" />
-
-    <!-- Page CSS -->
-
-    <!-- Helpers -->
     <script src="{{ asset('BackOffice/assets/vendor/js/helpers.js') }}"></script>
-
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="{{ asset('BackOffice/assets/js/config.js') }}"></script>
   </head>
 
+  <body>
 
-<body>
-<!-- Layout wrapper -->
+  <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
         <!-- Menu -->
@@ -154,7 +106,6 @@
       </aside>
 
 
-   <!-- /Menu -->
 
 
 
@@ -174,85 +125,53 @@
 
 
 
+        <main class="layout-page">
+          <h2 class="text-center my-5 text-primary">Pourcentage des rendez-vous par service</h2>
 
-
-
-
-
-
-
-<div class="layout-page">
-  <div class="content-wrapper">
-    <div class="container-xxl flex-grow-1 container-p-y">
-      <div class="container mt-5">
-        <div class="card shadow-lg p-4">
-          <h1 class="mb-4 text-center">Ajouter un Médecin</h1>
-
-          <!-- Flash messages -->
-          {% for message in app.flashes('success') %}
-            <div class="alert alert-success">{{ message }}</div>
-          {% endfor %}
-
-          <!-- Formulaire -->
-          {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-
-          <!-- Nom -->
-          <div class="mb-3">
-            {{ form_label(form.nomM, 'Nom du Médecin', {'attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.nomM, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.nomM, {'attr': {'class': 'text-danger'}}) }}
+          <div class="chart-container" style="position: relative; height: 400px; width: 100%; background: #f4f6f9; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <canvas id="pieChart"></canvas>
           </div>
-
-          <!-- Prénom -->
-          <div class="mb-3">
-            {{ form_label(form.prenomM, 'Prénom du Médecin', {'attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.prenomM, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.prenomM, {'attr': {'class': 'text-danger'}}) }}
-          </div>
-
-          <!-- Spécialité -->
-          <div class="mb-3">
-            {{ form_label(form.specialite, 'Spécialité', {'attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.specialite, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.specialite, {'attr': {'class': 'text-danger'}}) }}
-          </div>
-
-          <!-- Contact -->
-          <div class="mb-3">
-            {{ form_label(form.contact, 'Contact', {'attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.contact, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.contact, {'attr': {'class': 'text-danger'}}) }}
-          </div>
-
-          <!-- Service -->
-          <div class="mb-3">
-            {{ form_label(form.service, 'Service', {'attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.service, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.service, {'attr': {'class': 'text-danger'}}) }}
-          </div>
-
-          <!-- Image -->
-          <div class="mb-3">
-            {{ form_label(form.imageFile, 'Image du Médecin', {'attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.imageFile, {'attr': {'class': 'form-control'}}) }} <!-- Champ géré par VichUploader -->
-            {{ form_errors(form.imageFile, {'attr': {'class': 'text-danger'}}) }}
-          </div>
-
-          <!-- Buttons -->
-          <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-success">
-              <i class="bx bx-check"></i> Enregistrer
-            </button>
-            <a href="{{ path('backoffice_medecin_list') }}" class="btn btn-secondary">
-              <i class="bx bx-arrow-back"></i> Retour à la liste
-            </a>
-          </div>
-
-          {{ form_end(form) }}
-        </div>
+        </main>
       </div>
     </div>
-  </div>
-</div>
 
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const ctx = document.getElementById('pieChart').getContext('2d');
+      const pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: {{ stats|map(s => s.label)|json_encode|raw }},
+          datasets: [{
+            data: {{ stats|map(s => s.percentage)|json_encode|raw }},
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.6)', // Pédiatrie
+              'rgba(54, 162, 235, 0.6)', // Neurologie
+              'rgba(255, 206, 86, 0.6)', // Jaune
+              'rgba(75, 192, 192, 0.6)', // Vert clair
+              'rgba(153, 102, 255, 0.6)', // Violet
+              'rgba(255, 159, 64, 0.6)'   // Orange
+            ],
+            borderColor: '#fff',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                font: {
+                  size: 14,
+                  weight: 'bold'
+                }
+              }
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+{% block title %}Calendrier Google{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 text-primary">Événements du Calendrier Public</h1>
+
+        {% if events is not empty %}
+            <div class="row">
+                {% for event in events %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card shadow-lg border-light rounded">
+                            <div class="card-body">
+                                <h5 class="card-title text-dark">{{ event.getSummary() }}</h5>
+                                <p class="card-text text-muted">
+                                    {% if event.getStart().getDateTime() %}
+                                        <strong>Date :</strong> {{ event.getStart().getDateTime()|date('d/m/Y H:i') }}
+                                    {% elseif event.getStart().getDate() %}
+                                        <strong>Date :</strong> {{ event.getStart().getDate()|date('d/m/Y') }}
+                                    {% endif %}
+                                </p>
+                                <a href="https://www.google.com/calendar/event?eid={{ event.getId() }}" class="btn btn-primary btn-block" target="_blank">
+                                    Voir sur Google Calendar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-warning text-center" role="alert">
+                Aucun événement trouvé.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Ajouter un peu de style personnalisé ici -->
+    <style>
+        body {
+            background-color: #f5f8fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            background-color: #ffffff;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .card-text {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .alert-warning {
+            background-color: #fffbcc;
+            color: #856404;
+        }
+    </style>
+{% endblock %}

@@ -96,5 +96,3 @@ class ServiceHospitalier
         return $this->medecins;
     }
 }
-
-

@@ -32,9 +32,7 @@ class RendezVousType extends AbstractType
                 'label' => 'Statut du rendez-vous',
                 'data' => 'En attente',
             ])
-            ->add('idMedecin', IntegerType::class, [
-                'label' => 'ID du Médecin',
-            ])
+           
             ->add('submit', SubmitType::class, [
                 'label' => 'Confirmer le rendez-vous',
                 'attr' => ['class' => 'btn btn-success'],
