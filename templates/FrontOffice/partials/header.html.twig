@@ -1,4 +1,4 @@
-    <header>
+<header>
     <!-- Principal Header from index.html.twig (no 'Page' menu) -->
     <div class="header-area header-transparent">
         <div class="main-header">
@@ -16,15 +16,14 @@
                             <div class="main-menu f-right d-none d-lg-block">
                                 <nav>
                                     <ul id="navigation">
-                                        <li><a href="{{ path('homePage') }}">Home</a></li>
-                                        <li><a href="{{ path('market') }}">Market</a></li>
-                                        <li><a href="{{ path('hopital') }}">Hospital</a></li>
-                                        <li><a href="{{ path('voyage') }}">Voyage</a></li>
-                                        <li><a href="{{ path('blog') }}">Blog</a></li>
-                                        <li><a href="{{ path('contact') }}">Contact</a></li>
-                                        <li><a href="{{ path('app_user_edit', {'id': app.session.get('user_id')?:56}) }}">Profile</a></li>
-                                        <li><a href="{{ path('app_logoutuser') }}">Logout</a></li>
-
+                                        <li><a href="{{ path('homePage') }}"><i class="fas fa-home"></i> Home</a></li>
+                                        <li><a href="{{ path('market') }}"><i class="fas fa-shopping-cart"></i> Market</a></li>
+                                        <li><a href="{{ path('hopital') }}"><i class="fas fa-hospital"></i> Hospital</a></li>
+                                        <li><a href="{{ path('voyage') }}"><i class="fas fa-plane"></i> Voyage</a></li>
+                                        <li><a href="{{ path('blog') }}"><i class="fas fa-newspaper"></i> Blog</a></li>
+                                        <li><a href="{{ path('contact') }}"><i class="fas fa-envelope"></i> Contact</a></li>
+                                        <li><a href="{{ path('app_user_edit', {'id': app.session.get('user_id')?:56}) }}"><i class="fas fa-user"></i> Profile</a></li>
+                                        <li><a href="{{ path('app_logoutuser') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                                     </ul>
                                 </nav>
                             </div>
