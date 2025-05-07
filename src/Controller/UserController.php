@@ -126,7 +126,6 @@ final class UserController extends AbstractController
         $user->setIsVerified(true);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Email verified! You can now log in.');
         return $this->redirectToRoute('app_login');
     }
 

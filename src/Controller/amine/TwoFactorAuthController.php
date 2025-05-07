@@ -74,6 +74,7 @@ class TwoFactorAuthController extends AbstractController
         if ($googleAuthenticator->checkCode($user, $code)) {
             $user->setIsGoogleAuthenticatorEnabled(true);
             $entityManager->flush();
+            $session->getFlashBag()->clear();
             $this->addFlash('success', '2FA enabled successfully');
             return $this->redirectToRoute('app_user_index');
         }
