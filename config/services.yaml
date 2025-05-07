@@ -1,7 +1,4 @@
-parameters:
-    twilio_sid: '%env(TWILIO_SID)%'
-    twilio_token: '%env(TWILIO_TOKEN)%'
-    twilio_from: '%env(TWILIO_FROM)%'
+
 services:
     _defaults:
         autowire: true
@@ -14,10 +11,5 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\Service\Ines\TwilioService:
-        arguments:
-            $sid: '%twilio_sid%'
-            $token: '%twilio_token%'
-            $from: '%twilio_from%'
 
     Symfony\Component\Finder\Finder: ~

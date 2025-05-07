@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Repository\Ines\RendezvousRepository;
-use App\Entity\Ines\Users;
+use App\Entity\Ines\User;
 
 #[ORM\Entity]
 #[ORM\Table(name: "rendezvous")]
@@ -48,9 +48,9 @@ class Rendezvous
     private ?Medecin $medecin = null;
 
 
-    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
 #[ORM\JoinColumn(name: "id_user", referencedColumnName: "id", nullable: false)]
-private ?Users $user = null;
+private ?User $user = null;
 
     
 
@@ -121,12 +121,12 @@ private ?Users $user = null;
 
 
 
-    public function getUser(): ?Users
+    public function getUser(): ?User
 {
     return $this->user;
 }
 
-public function setUser(?Users $user): self
+public function setUser(?User $user): self
 {
     $this->user = $user;
     return $this;

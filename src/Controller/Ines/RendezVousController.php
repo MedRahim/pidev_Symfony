@@ -14,9 +14,7 @@ use App\Repository\Ines\RendezvousRepository;
 use App\Entity\Ines\Medecin;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-
-// Importer l'entité Users
-use App\Entity\Ines\Users;
+use App\Entity\Ines\User;
 
 #[Route('/rendezvous', name: 'rendezvous_')]
 class RendezVousController extends AbstractController
@@ -39,7 +37,7 @@ class RendezVousController extends AbstractController
         $rendezvous->setMedecin($medecin);
 
         // Récupérer l'utilisateur avec l'ID 1 (utilisateur par défaut)
-        $user = $em->getRepository(Users::class)->find(1);  // Utilisez `Users::class` ici
+        $user = $em->getRepository(User::class)->find(1);  // Utilisez `Users::class` ici
         if (!$user) {
             throw $this->createNotFoundException('Utilisateur non trouvé.');
         }
