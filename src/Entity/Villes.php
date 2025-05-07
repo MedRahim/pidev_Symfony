@@ -2,36 +2,73 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
 #[ORM\Table(name: 'villes')]
+#[ORM\Entity]
 class Villes
 {
+    #[ORM\Column(name: 'id', type: Types::INTEGER, nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
-    private int $id;
+    private ?int $id = null;
 
-    #[ORM\Column(name: 'nom', type: 'string', length: 100, nullable: false)]
+    #[ORM\Column(name: 'nom', type: Types::STRING, length: 100, nullable: false)]
     private string $nom;
 
-    #[ORM\Column(name: 'histoire', type: 'text', nullable: true, options: ['default' => null])]
+    #[ORM\Column(
+        name: 'histoire', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
     private ?string $histoire = null;
 
-    #[ORM\Column(name: 'anecdotes', type: 'text', nullable: true, options: ['default' => null])]
+    #[ORM\Column(
+        name: 'anecdotes', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
     private ?string $anecdotes = null;
 
-    #[ORM\Column(name: 'activites', type: 'text', nullable: true, options: ['default' => null])]
+    #[ORM\Column(
+        name: 'activites', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
     private ?string $activites = null;
 
-    #[ORM\Column(name: 'gastronomie', type: 'text', nullable: true, options: ['default' => null])]
+    #[ORM\Column(
+        name: 'gastronomie', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
     private ?string $gastronomie = null;
 
-    #[ORM\Column(name: 'nature', type: 'text', nullable: true, options: ['default' => null])]
+    #[ORM\Column(
+        name: 'nature', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
     private ?string $nature = null;
 
-    #[ORM\Column(name: 'histoire_interactive', type: 'text', nullable: true, options: ['default' => null])]
+    #[ORM\Column(
+        name: 'histoire_interactive', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
     private ?string $histoireInteractive = null;
 
     public function getId(): ?int

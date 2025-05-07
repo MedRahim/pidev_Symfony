@@ -1,17 +1,112 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Paiement confirmé{% endblock %}
+{% block title %}Paiement réussi{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    .qr-code-container {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      display: inline-block;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin: 20px 0;
+    }
+    .ticket-card {
+      border-left: 4px solid #4361ee;
+      transition: all 0.3s ease;
+    }
+    .ticket-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+  </style>
+{% endblock %}
 
 {% block body %}
-<div class="container py-5 text-center">
-  {{ include('flash_messages.html.twig') }}
-  <h1 class="text-success mb-4">
-    <i class="fas fa-check-circle"></i> Paiement confirmé !
-  </h1>
-  <p>Réservation n°{{ reservation.id }} — Montant payé : {{ paidAmount }} TND</p>
-  <p>Date : {{ reservation.reservationTime|date('d/m/Y H:i') }}</p>
-  <a href="{{ path('app_reservations_details', {id: reservation.id}) }}" class="btn btn-primary mt-3">
-    Voir mes réservations
-  </a>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="text-center mb-5">
+        <div class="mb-4">
+          <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+        </div>
+        <h1 class="fw-bold mb-3">Paiement confirmé !</h1>
+        <p class="lead text-muted">
+          Votre réservation #{{ reservation.id }} a été payée avec succès.
+        </p>
+      </div>
+
+      <div class="card ticket-card mb-5">
+        <div class="card-body p-4">
+          <div class="row">
+            <div class="col-md-8">
+              <h5 class="card-title fw-bold mb-4">Détails de la réservation</h5>
+              
+              <div class="row mb-3">
+                <div class="col-6">
+                  <p class="mb-1 text-muted">Numéro</p>
+                  <p class="fw-bold">#{{ reservation.id }}</p>
+                </div>
+                <div class="col-6">
+                  <p class="mb-1 text-muted">Date</p>
+                  <p class="fw-bold">{{ reservation.reservationTime|date('d/m/Y H:i') }}</p>
+                </div>
+              </div>
+              
+              <div class="row mb-3">
+                <div class="col-6">
+                  <p class="mb-1 text-muted">Trajet</p>
+                  <p class="fw-bold">
+                    {{ reservation.trip.departure }} → {{ reservation.trip.destination }}
+                  </p>
+                </div>
+                <div class="col-6">
+                  <p class="mb-1 text-muted">Sièges</p>
+                  <p class="fw-bold">{{ reservation.seatNumber }}</p>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-6">
+                  <p class="mb-1 text-muted">Montant</p>
+                  <p class="fw-bold text-success">{{ paidAmount }} TND</p>
+                </div>
+                <div class="col-6">
+                  <p class="mb-1 text-muted">Statut</p>
+                  <span class="badge bg-success rounded-pill">
+                    Confirmé
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4 text-center border-start">
+              <div class="qr-code-container mb-3">
+                <img src="{{ path('app_reservations_qrcode', {'id': reservation.id}) }}" 
+                     alt="QR Code de la réservation"
+                     class="img-fluid">
+              </div>
+              <p class="small text-muted">
+                Présentez ce QR code à l'embarquement
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-center gap-3">
+        <a href="{{ path('app_reservations_list') }}" class="btn btn-primary px-4">
+          <i class="bi bi-list-ul me-2"></i>Mes réservations
+        </a>
+        <a href="{{ path('app_reservations_qrcode', {'id': reservation.id}) }}" 
+           class="btn btn-outline-primary px-4"
+           download="QRCode-Reservation-{{ reservation.id }}.png">
+          <i class="bi bi-download me-2"></i>Télécharger
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

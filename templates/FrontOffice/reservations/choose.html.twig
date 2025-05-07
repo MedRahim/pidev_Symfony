@@ -1,61 +1,85 @@
+{# templates/FrontOffice/reservations/choose.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Confirmer votre réservation{% endblock %}
 
 {% block body %}
 <div class="container py-5">
-    <div class="card shadow-lg">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0 text-center">Confirmation de réservation</h2>
-        </div>
-        
-        <div class="card-body">
-            <div class="row mb-4">
-                <!-- Détails du trajet -->
-                <div class="col-md-6 border-end">
-                    <h4 class="text-primary"><i class="fas fa-route me-2"></i>Détails du trajet</h4>
-                    <hr>
-                    <p><strong><i class="fas fa-map-marker-alt me-2"></i>Départ:</strong> {{ trip.departure }}</p>
-                    <p><strong><i class="fas fa-map-marker me-2"></i>Destination:</strong> {{ trip.destination }}</p>
-                    <p><strong><i class="fas fa-calendar-alt me-2"></i>Date:</strong> {{ trip.departureTime|date('d/m/Y H:i') }}</p>
-                    <p><strong><i class="fas fa-tag me-2"></i>Prix unitaire:</strong> {{ trip.price }} TND</p>
-                </div>
-                
-                <!-- Détails de réservation -->
-                <div class="col-md-6">
-                    <h4 class="text-primary"><i class="fas fa-receipt me-2"></i>Détails de réservation</h4>
-                    <hr>
-                    <p><strong>Nombre de sièges:</strong> {{ seatNumber }}</p>
-                    <p>
-                        <strong>Type de siège:</strong>
-                        <span class="badge bg-{{ seatType == 'Standard' ? 'info' : 'warning' }}">
-                            {{ seatType }}
-                        </span>
-                    </p>
-                    
-                    <div class="bg-light p-3 rounded mb-3">
-                        <p class="mb-1"><strong>Calcul du prix:</strong></p>
-                        <p class="mb-1">{{ trip.price }} TND × {{ seatNumber }} sièges</p>
-                        {% if seatType == 'Standard' %}
-                            <p class="mb-1">+ 10 TND × {{ seatNumber }} (supplément siège standard)</p>
-                        {% endif %}
-                        <hr class="my-1">
-                        <p class="fw-bold mb-0">Total: {{ price }} TND</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="d-grid gap-3">
-                <a href="{{ path('app_reservations_payment') }}" class="btn btn-success btn-lg py-3">
-                    <i class="fas fa-credit-card me-2"></i> Payer maintenant ({{ price }} TND)
-                </a>
-                <form method="POST" action="{{ path('app_reservations_reserve') }}">
-                    <button type="submit" class="btn btn-outline-primary btn-lg w-100 py-3">
-                        <i class="fas fa-clock me-2"></i> Payer plus tard
-                    </button>
-                </form>
-            </div>
-        </div>
+  <div class="card shadow-lg mx-auto" style="max-width: 900px;">
+    <div class="card-header bg-primary text-white">
+      <h2 class="mb-0 text-center">Confirmation de réservation</h2>
     </div>
+    <div class="card-body">
+      <div class="row gy-4">
+        {# Détails du trajet #}
+        <div class="col-md-6 border-end">
+          <h4 class="text-primary mb-3">
+            <i class="fas fa-route me-2"></i>Détails du trajet
+          </h4>
+          <p><strong>Départ :</strong> {{ trip.departure }}</p>
+          <p><strong>Destination :</strong> {{ trip.destination }}</p>
+          <p><strong>Date :</strong> {{ trip.departureTime|date('d/m/Y H:i') }}</p>
+          <p><strong>Prix unitaire :</strong> {{ trip.price }} TND</p>
+        </div>
+
+        {# Récapitulatif de la sélection #}
+        <div class="col-md-6">
+          <h4 class="text-primary mb-3">
+            <i class="fas fa-receipt me-2"></i>Détails de réservation
+          </h4>
+
+          {# On découpe les chaînes CSV en tableaux #}
+          {% set seats = seatNumber ? seatNumber|split(',') : [] %}
+          {% set types = seatType   ? seatType|split(',')   : [] %}
+
+          <p><strong>Nombre de sièges :</strong> {{ seats|length }}</p>
+          <p>
+            <strong>Types de siège :</strong>
+            {% for t in types %}
+              <span class="badge bg-{{ t == 'Premium' ? 'warning' : 'info' }} me-1">
+                {% if t == 'Premium' %}<i class="fas fa-star me-1"></i>{% endif %}
+                {{ t }}
+              </span>
+            {% endfor %}
+          </p>
+
+          <div class="bg-light p-3 rounded mb-3">
+            <p class="mb-1"><strong>Calcul du prix :</strong></p>
+            <ul class="mb-2">
+              {% for idx, seat in seats %}
+                {% set unit = (types[idx] == 'Premium') ? (trip.price * 1.5) : trip.price %}
+                <li>
+                  Siège <strong>{{ seat }}</strong>
+                  (<em>{{ types[idx] }}</em>) :
+                  {{ unit|number_format(2, '.', ',') }} TND
+                </li>
+              {% endfor %}
+            </ul>
+            <hr class="my-2">
+            <p class="fw-bold mb-0">
+              Total : {{ price|number_format(2, '.', ',') }} TND
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {# Actions de paiement ou de report #}
+      <div class="d-grid gap-3 mt-4">
+        <a href="{{ path('app_reservations_payment') }}"
+           class="btn btn-success btn-lg py-3">
+          <i class="fas fa-credit-card me-2"></i>
+          Payer maintenant ({{ price|number_format(2, '.', ',') }} TND)
+        </a>
+
+        <form method="POST" action="{{ path('app_reservations_reserve') }}">
+          <button type="submit"
+                  class="btn btn-outline-primary btn-lg py-3">
+            <i class="fas fa-clock me-2"></i>
+            Payer plus tard
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

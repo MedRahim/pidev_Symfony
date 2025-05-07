@@ -4,33 +4,34 @@ parameters:
     trips_images_directory: '%kernel.project_dir%/public/uploads/trips'
     stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
     stripe_public_key: '%env(STRIPE_PUBLIC_KEY)%'
-
+    reward.thresholds:
+        5:   'small_discount'
+        10:  'medium_discount'
+        15:  'big_discount'
 
     
 services:
-    # Default configuration for services in the `src/` directory
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
-
-
-
 
     Symfony\Component\Finder\Finder: ~
     # Définition du service annotation_reader
     annotation_reader:
         class: Doctrine\Common\Annotations\AnnotationReader
         public: false
-
-    # Configuration par défaut pour les services dans ce fichier
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true
+        autoconfigure: true
+        bind:
+            # Par défaut, on pourrait binder d’autres scalaires si besoin
 
-    # Rendre disponibles les classes de src/ en tant que services
-    # Cela crée un service par classe dont l'identifiant est le nom de classe complet
+    # Configuration explicite de RewardConfig
+    App\Service\RewardConfig:
+        arguments:
+            $seuils: '%reward.thresholds%'
+
+    # ProgressService reste en autowire
+    App\Service\ProgressService: ~
+
+    # Reste des services dans src/
     App\:
         resource: '../src/'
         exclude:

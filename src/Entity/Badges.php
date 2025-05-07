@@ -4,20 +4,32 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
 #[ORM\Table(name: 'badges')]
+#[ORM\Entity]
 class Badges
 {
+    #[ORM\Column(name: 'id', type: 'string', length: 50, nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    #[ORM\Column(name: 'id', type: 'string', length: 50, nullable: false)]
     private string $id;
 
-    #[ORM\Column(name: 'description', type: 'string', length: 255, nullable: true, options: ['default' => 'NULL'])]
-    private ?string $description = 'NULL';
+    #[ORM\Column(
+        name: 'description', 
+        type: 'string', 
+        length: 255, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
+    private ?string $description = null;
 
-    #[ORM\Column(name: 'image_path', type: 'string', length: 255, nullable: true, options: ['default' => 'NULL'])]
-    private ?string $imagePath = 'NULL';
+    #[ORM\Column(
+        name: 'image_path', 
+        type: 'string', 
+        length: 255, 
+        nullable: true, 
+        options: ['default' => null]
+    )]
+    private ?string $imagePath = null;
 
     public function getId(): ?string
     {

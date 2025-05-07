@@ -9,12 +9,16 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Positive;
-use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Symfony\Component\Form\Extension\Core\Type\{
+    IntegerType,
+    ChoiceType,
+    DateTimeType
+};
+use Symfony\Component\Validator\Constraints\{
+    NotBlank,
+    Positive,
+    LessThanOrEqual
+};
 
 class ReservationsType extends AbstractType
 {
@@ -23,10 +27,10 @@ class ReservationsType extends AbstractType
         $builder
             ->add('seatNumber', IntegerType::class, [
                 'label'       => 'Nombre de sièges',
-                'attr'        => ['class' => 'form-control', 'min' => 1, 'max' => 10],
+                'attr'        => ['min' => 1, 'max' => 10],
                 'constraints' => [
                     new NotBlank(['message' => 'Veuillez entrer un nombre de sièges']),
-                    new Positive(['message'   => 'Le nombre de sièges doit être positif']),
+                    new Positive(['message' => 'Le nombre de sièges doit être positif']),
                     new LessThanOrEqual([
                         'value'   => 10,
                         'message' => 'Maximum {{ compared_value }} sièges'
@@ -35,52 +39,48 @@ class ReservationsType extends AbstractType
             ])
             ->add('trip', EntityType::class, [
                 'class'        => Trips::class,
-                'choice_label' => function(Trips $t) {
-                    return sprintf(
-                        '%s → %s (%s)',
-                        $t->getDeparture(),
-                        $t->getDestination(),
-                        $t->getDepartureTime()->format('d/m/Y H:i')
-                    );
-                },
+                'choice_label' => fn(Trips $t) => sprintf(
+                    '%s → %s (%s)',
+                    $t->getDeparture(),
+                    $t->getDestination(),
+                    $t->getDepartureTime()->format('d/m/Y H:i')
+                ),
                 'label'       => 'Trajet',
                 'placeholder' => 'Sélectionnez un trajet',
-                'attr'        => ['class' => 'form-select'],
                 'constraints' => [
                     new NotBlank(['message' => 'Choisissez un trajet']),
                 ],
             ])
             ->add('seatType', ChoiceType::class, [
                 'label'   => 'Type de siège',
-                'choices' => ['Standard' => 'Standard', 'Premium' => 'Premium'],
-                'attr'    => ['class' => 'form-select'],
+                'choices' => [
+                    'Standard' => Reservations::SEAT_STANDARD,
+                    'Premium'  => Reservations::SEAT_PREMIUM,
+                    'Économique' => Reservations::SEAT_ECONOMIQUE,
+                ],
             ])
             ->add('status', ChoiceType::class, [
                 'label'   => 'Statut',
                 'choices' => [
-                    'En attente' => 'Pending',
-                    'Confirmée'  => 'Confirmed',
-                    'Annulée'    => 'Cancelled'
+                    'En attente' => Reservations::STATUS_PENDING,
+                    'Confirmée'  => Reservations::STATUS_CONFIRMED,
+                    'Annulée'    => Reservations::STATUS_CANCELED,
                 ],
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('reservationTime', DateTimeType::class, [
-                'widget' => 'single_text',
-                'label' => 'Date de réservation',
-                'required' => false,
+                'widget'  => 'single_text',
+                'label'   => 'Date de réservation',
+                'required'=> false,
             ])
             ->add('paymentStatus', ChoiceType::class, [
                 'label'   => 'Statut de paiement',
                 'choices' => [
-                    'En attente' => 'Pending',
-                    'Payé'       => 'Paid',
-                    'Annulé'     => 'Cancelled',
-                    'Remboursé'  => 'Refunded'
+                    'En attente' => Reservations::PAYMENT_PENDING,
+                    'Payé'       => Reservations::PAYMENT_PAID,
+                    'Annulé'     => Reservations::PAYMENT_FAILED,
+                    'Remboursé'  => Reservations::PAYMENT_REFUNDED,
                 ],
-                'attr' => ['class' => 'form-select'],
-            ])
-            // On retire reservationTime : il est fixé en controller
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
