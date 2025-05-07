@@ -1,0 +1,54 @@
+<div class="card shadow">
+    <div class="card-header bg-dark text-white">
+        <h2 class="h5 mb-0">{{ form_title|default('Create Reclamation') }}</h2>
+    </div>
+    <div class="card-body">
+        {{ form_start(form) }}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {{ form_row(form.clientId, {
+                        label: 'Client ID',
+                        attr: { class: 'form-control' }
+                    }) }}
+                </div>
+                
+                <div class="col-md-6">
+                    {{ form_row(form.type, {
+                        label: 'Type',
+                        attr: { class: 'form-select' }
+                    }) }}
+                </div>
+                
+                <div class="col-12">
+                    {{ form_row(form.description, {
+                        label: 'Description',
+                        attr: { class: 'form-control', rows: 4 }
+                    }) }}
+                </div>
+                
+                <div class="col-md-6">
+                    {{ form_row(form.email, {
+                        label: 'Email',
+                        attr: { class: 'form-control' }
+                    }) }}
+                </div>
+                
+                <div class="col-md-6">
+                    {{ form_row(form.photo, {
+                        label: 'Attachment (optional)',
+                        attr: { class: 'form-control' }
+                    }) }}
+                </div>
+                
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a href="{{ path('app_reclamation_index') }}" class="btn btn-secondary">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-2"></i> Save
+                    </button>
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
