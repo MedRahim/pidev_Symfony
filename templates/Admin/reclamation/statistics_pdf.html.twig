@@ -1,0 +1,396 @@
+{% set locale = 'fr' %}
+{% set months = {
+    1: 'Janvier',
+    2: 'Février',
+    3: 'Mars',
+    4: 'Avril',
+    5: 'Mai',
+    6: 'Juin',
+    7: 'Juillet',
+    8: 'Août',
+    9: 'Septembre',
+    10: 'Octobre',
+    11: 'Novembre',
+    12: 'Décembre'
+} %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Rapport des Réclamations - Smart City</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+            @bottom-center {
+                content: "Page " counter(page) " sur " counter(pages);
+                font-size: 0.7rem;
+                color: #666;
+            }
+        }
+        body { 
+            font-family: 'Helvetica Neue', Arial, sans-serif; 
+            background: #fff; 
+            color: #333;
+            line-height: 1.4;
+            font-size: 12px;
+        }
+        .pdf-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #2c5cc5;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .pdf-header .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        .pdf-header .logo {
+            height: 60px;
+            margin-right: 15px;
+        }
+        .pdf-header .logo-text {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #2c5cc5;
+        }
+        .pdf-header .title {
+            font-size: 1.4rem;
+            color: #2c5cc5;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+        .pdf-header .date {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: right;
+            min-width: 150px;
+        }
+        .report-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .summary {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .summary-item {
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .summary-item-title {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .summary-item-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c5cc5;
+        }
+        .summary-item-change {
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        .positive { color: #10b981; }
+        .negative { color: #ef4444; }
+        .neutral { color: #64748b; }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c5cc5;
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .charts-row { 
+            display: flex; 
+            gap: 25px; 
+            margin-bottom: 35px; 
+        }
+        .chart-card {
+            width: 800px;
+            flex: 1;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(44,92,197,0.08);
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+        }
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c5cc5;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .chart-title svg {
+            margin-right: 8px;
+        }
+        .chart-img {
+            width: 100%;
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        .chart-description {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .data-table th {
+            background-color: #2c5cc5;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+            font-weight: 500;
+        }
+        .data-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .data-table tr:hover {
+            background-color: #f0f7ff;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .status-pending {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .status-resolved {
+            background-color: #d1fae5;
+            color: #059669;
+        }
+        
+        .top-issues {
+            margin: 30px 0;
+        }
+        .issue-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid #2c5cc5;
+        }
+        .issue-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .issue-meta {
+            display: flex;
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .issue-meta span {
+            margin-right: 15px;
+        }
+        .issue-description {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .signature-block {
+            margin-top: 40px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .signature-area {
+            text-align: center;
+            width: 250px;
+        }
+        .signature-line {
+            border-top: 1px solid #cbd5e1;
+            margin: 30px 0 8px 0;
+        }
+        .signature-text {
+            font-size: 0.9rem;
+            color: #475569;
+        }
+        .signature-name {
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            border-top: 1px solid #e2e8f0;
+            padding: 8px 0;
+            background: white;
+        }
+        
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+<div class="pdf-header">
+    <div class="logo-container">
+        <div class="logo-text">Smart City<br><span style="font-size:0.8rem;">Plateforme de Gestion Citoyenne</span></div>
+    </div>
+    <div class="title">Rapport des Réclamations</div>
+    <div class="date">
+        Généré le {{ "now"|date('d/m/Y à H:i') }}<br>
+        Période: {{ start_date|date('d/m/Y') }} - {{ end_date|date('d/m/Y') }}
+    </div>
+</div>
+
+<div class="report-meta">
+    <div>Référence: RAPP-{{ "now"|date('Ym') }}-{{ random(1000, 9999) }}</div>
+    <div>Version: 1.0</div>
+</div>
+
+<div class="summary">
+    <h3 style="margin-top:0;color:#2c5cc5;">Aperçu des Réclamations</h3>
+    <div class="summary-grid">
+        <div class="summary-item">
+            <div class="summary-item-title">Total Réclamations</div>
+            <div class="summary-item-value">{{ reclamations|length }}</div>
+            <div class="summary-item-change neutral">
+                {% if prev_period_count %}
+                    {% set change = ((reclamations|length - prev_period_count) / prev_period_count * 100) %}
+                    {{ change > 0 ? '+' : '' }}{{ change|number_format(1) }}% vs période précédente
+                {% else %}
+                  
+                {% endif %}
+            </div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-item-title">En Attente</div>
+            <div class="summary-item-value">{{ reclamations|filter(rec => not rec.state)|length }}</div>
+           
+        </div>
+        <div class="summary-item">
+            <div class="summary-item-title">Résolues</div>
+            <div class="summary-item-value">{{ reclamations|filter(rec => rec.state)|length }}</div>
+           
+        </div>
+        <div class="summary-item">
+            <div class="summary-item-title">Taux de Résolution</div>
+            <div class="summary-item-value">
+                {% if reclamations|length > 0 %}{{ ((reclamations|filter(rec => rec.state)|length / reclamations|length) * 100)|number_format(1) }}%{% else %}0%{% endif %}
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+<div class="section-title">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 17V15M12 17V13M15 17V11M9 22H15C19.4183 22 23 18.4183 23 14V10C23 5.58172 19.4183 2 15 2H9C4.58172 2 1 5.58172 1 10V14C1 18.4183 4.58172 22 9 22Z" stroke="#2c5cc5" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    Analyse des Données
+</div>
+
+<div class="charts-row">
+    <div class="chart-card">
+        <div class="chart-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 20V10M18 20V4M6 20V16" stroke="#2c5cc5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Évolution Mensuelle
+        </div>
+        {% if monthly_chart_img %}
+            <img src="{{ monthly_chart_img }}" alt="Statistiques Mensuelles" class="chart-img">
+        {% else %}
+            <p>[Graphique Statistiques Mensuelles]</p>
+        {% endif %}
+        <div class="chart-description">
+            Ce graphique montre l'évolution du nombre de réclamations au cours des 12 derniers mois. 
+            Les barres bleues représentent les nouvelles réclamations, tandis que la ligne orange 
+            montre le taux de résolution mensuel.
+        </div>
+    </div>
+    <br>
+     <br>
+    <div class="chart-card">
+        <div class="chart-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21.21 15.89C20.5738 17.3945 19.5788 18.7202 18.312 19.7514C17.0453 20.7826 15.5448 21.4875 13.9424 21.8048C12.34 22.1221 10.6843 22.0421 9.12006 21.5718C7.55578 21.1015 6.13054 20.2551 4.96891 19.1066C3.80728 17.9581 2.94473 16.5428 2.45655 14.984C1.96837 13.4251 1.86951 11.7705 2.16851 10.1647C2.46751 8.55886 3.15541 7.05063 4.17204 5.77203C5.18867 4.49343 6.50283 3.48338 8 2.83" stroke="#2c5cc5" stroke-width="2" stroke-linecap="round"/>
+                <path d="M22 12C22 10.6868 21.7413 9.38642 21.2388 8.17317C20.7362 6.95991 19.9997 5.85752 19.0711 4.92893C18.1425 4.00035 17.0401 3.26375 15.8268 2.7612C14.6136 2.25866 13.3132 2 12 2V12H22Z" stroke="#2c5cc5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Répartition par Type
+        </div>
+        {% if type_chart_img %}
+            <img src="{{ type_chart_img }}" alt="Répartition par Type" class="chart-img">
+        {% else %}
+            <p>[Graphique Répartition par Type]</p>
+        {% endif %}
+        <div class="chart-description">
+            Répartition des réclamations par catégorie. Les 3 principaux types représentent 
+            {{ top_categories_percentage|default('75') }}% du total des réclamations. 
+            La catégorie "{{ top_category|default('Infrastructure') }}" est la plus fréquente avec 
+            {{ top_category_percentage|default('35') }}% des cas.
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<div class="signature-block">
+    <div class="signature-area">
+        <div class="signature-line"></div>
+        <div class="signature-text">Pour la Mairie de Smart City</div>
+        <div class="signature-name">Dridi Mohamed</div>
+        <div class="signature-text">Directeur des Services Citoyens</div>
+        <div style="margin-top:15px;font-size:0.8rem;">{{ "now"|date('d F Y') }}</div>
+    </div>
+</div>
+
+<div class="footer">
+    &copy; {{ "now"|date('Y') }} Ville de Smart City - Service des Réclamations Citoyennes. 
+    Ce document est confidentiel et destiné à un usage interne.
+</div>
+</body>
+</html>

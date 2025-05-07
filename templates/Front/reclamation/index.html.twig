@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Réclamations{% endblock %}
+
+
+
+
+
+{% block body %}
+<style>
+    .reclamation-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    .reclamation-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 500;
+    }
+    .status-pending {
+        background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);
+        color: white;
+    }
+    .status-resolved {
+        background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);
+        color: white;
+    }
+    .action-btn {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    .action-btn:hover {
+        transform: translateY(-2px);
+    }
+    .new-reclamation-btn {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        border: none;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+    .new-reclamation-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(78, 115, 223, 0.4);
+        color: white;
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+    .pagination .btn {
+        min-width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem;
+    }
+</style>
+{# Flash messages #}
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-primary">Mes Réclamations</h1>
+        <a href="{{ path('app_reclamation_new') }}" class="new-reclamation-btn">
+            <i class="fas fa-plus me-2"></i>Nouvelle Réclamation
+        </a>
+    </div>
+
+    {% if reclamations|length > 0 %}
+        <div class="row g-4">
+            {% for rec in reclamations %}
+                <div class="col-12">
+                    <div class="card reclamation-card">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <span class="status-badge {{ rec.state ? 'status-resolved' : 'status-pending' }}">
+                                            {{ rec.state ? 'Résolue' : 'En Attente' }}
+                                        </span>
+                                        <span class="ms-3 text-muted">
+                                            <i class="far fa-calendar-alt me-2"></i>{{ rec.datee|date('d M Y') }}
+                                        </span>
+                                    </div>
+                                    <h5 class="card-title mb-2">{{ rec.type }}</h5>
+                                </div>
+                                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                    <div class="d-flex flex-column flex-md-row justify-content-md-end gap-2">
+                                        {% if not rec.state %}
+                                            <a href="{{ path('app_reclamation_edit', {'id': rec.id}) }}" 
+                                               class="action-btn btn btn-outline-primary">
+                                                <i class="fas fa-edit me-2"></i>Modifier
+                                            </a>
+                                            <form method="post" 
+                                                  action="{{ path('app_reclamation_delete', {'id': rec.id}) }}" 
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette réclamation ?');"
+                                                  class="d-inline">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rec.id) }}">
+                                                <button class="action-btn btn btn-outline-danger">
+                                                    <i class="fas fa-trash me-2"></i>Supprimer
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        <a href="{{ path('app_reclamation_show', {'id': rec.id}) }}" 
+                                           class="action-btn btn btn-outline-info">
+                                            <i class="fas fa-eye me-2"></i>Détails
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-inbox fa-4x text-muted"></i>
+            </div>
+            <h4 class="text-muted mb-3">Aucune réclamation trouvée</h4>
+            <p class="text-muted mb-4">Vous n'avez pas encore créé de réclamation.</p>
+            <a href="{{ path('app_reclamation_new') }}" class="new-reclamation-btn">
+                <i class="fas fa-plus me-2"></i>Créer une nouvelle réclamation
+            </a>
+        </div>
+    {% endif %}
+
+    <div class="pagination">
+        {% if currentPage > 1 %}
+            <a href="{{ path('app_reclamation_index', {'page': currentPage - 1}) }}" class="btn btn-primary">Previous</a>
+        {% endif %}
+        
+        {% for i in 1..totalPages %}
+            <a href="{{ path('app_reclamation_index', {'page': i}) }}" 
+               class="btn {{ i == currentPage ? 'btn-success' : 'btn-primary' }}">
+                {{ i }}
+            </a>
+        {% endfor %}
+        
+        {% if currentPage < totalPages %}
+            <a href="{{ path('app_reclamation_index', {'page': currentPage + 1}) }}" class="btn btn-primary">Next</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

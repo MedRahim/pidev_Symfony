@@ -1,0 +1,646 @@
+{% extends 'admin/reclamation/base.html.twig' %}
+
+{% block title %}Statistiques Réclamations{% endblock %}
+
+{% block body %}
+<style>
+    :root {
+        --primary: #4e73df;
+        --secondary: #858796;
+        --success: #1cc88a;
+        --info: #36b9cc;
+        --warning: #f6c23e;
+        --danger: #e74a3b;
+        --light: #f8f9fc;
+        --dark: #5a5c69;
+        --card-radius: 16px;
+        --shadow: 0 4px 24px rgba(80, 80, 120, 0.13);
+    }
+    body, .container-fluid, .container {
+        background: linear-gradient(135deg, #f8f9fc 0%, #eaecf4 100%) !important;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    .container {
+        max-width: 1400px;
+    }
+    h1, h2, h5, .card-title {
+        font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+        font-weight: 700;
+        color: var(--primary);
+    }
+    /* Stat Cards */
+    .stat-card-blue {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        border-radius: 15px;
+        color: #fff;
+    }
+    .stat-card-yellow {
+        background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);
+        border-radius: 15px;
+        color: #fff;
+    }
+    .stat-card-green {
+        background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);
+        border-radius: 15px;
+        color: #fff;
+    }
+    .stat-card-cyan {
+        background: linear-gradient(135deg, #36b9cc 0%, #258391 100%);
+        border-radius: 15px;
+        color: #fff;
+    }
+    .stat-card-title {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+        opacity: 0.85;
+    }
+    .stat-card-value {
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 2.2rem;
+        margin-bottom: 0.3rem;
+    }
+    .stat-card-text {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+    /* Card Styles & Hover */
+    .card {
+        border-radius: var(--card-radius) !important;
+        box-shadow: var(--shadow);
+        border: none;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+    .card.shadow-sm {
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+    }
+    .card.shadow-sm:hover {
+        transform: none;
+    }
+    .card-header {
+        background: var(--light);
+        border-bottom: 1px solid #e3e6f0;
+        font-weight: 600;
+        color: var(--primary);
+        border-radius: var(--card-radius) var(--card-radius) 0 0 !important;
+        text-align: left;
+    }
+    .card-footer {
+        border-radius: 0 0 var(--card-radius) var(--card-radius) !important;
+        background: var(--light) !important;
+        border-top: 1px solid #e3e6f0;
+    }
+    /* Table Styles & Hover */
+    .table {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        margin-bottom: 1.5rem;
+    }
+    .table thead th {
+        background: rgba(255, 255, 255, 0.8);
+        border-bottom: 2px solid #e3e6f0;
+        color: #4e73df;
+        font-weight: 600;
+        letter-spacing: 0.7px;
+    }
+    .table tbody tr.reclamation-row {
+        transition: all 0.2s ease;
+        cursor: pointer !important;
+    }
+    .table tbody tr.reclamation-row:hover {
+        background: rgba(78, 115, 223, 0.05);
+    }
+    .table tbody tr {
+        transition: background 0.15s;
+    }
+    .table tbody tr:hover {
+        background: #e9ecef;
+    }
+    .table td, .table th {
+        vertical-align: middle !important;
+        padding: 0.85rem 1rem;
+    }
+    /* Badge Styles */
+    .badge {
+        padding: 0.5em 0.8em;
+        font-weight: 500;
+        border-radius: 10px;
+    }
+    .badge.bg-success {
+        background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%) !important;
+    }
+    .badge.bg-warning {
+        background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%) !important;
+    }
+    /* Button Styles & Hover */
+    .btn, .btn-group .btn {
+        border-radius: 10px !important;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+    .btn-success {
+        background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);
+        border: none;
+        color: white;
+    }
+    .btn-warning {
+        background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);
+        border: none;
+        color: white;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        border: none;
+    }
+    .btn-outline-warning {
+        color: var(--warning);
+        border-color: var(--warning);
+    }
+    .btn-outline-warning:hover {
+        background: var(--warning);
+        color: #fff;
+    }
+    .btn-outline-success {
+        color: var(--success);
+        border-color: var(--success);
+    }
+    .btn-outline-success:hover {
+        background: var(--success);
+        color: #fff;
+    }
+    .btn-outline-primary {
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+    .btn-outline-primary:hover {
+        background: var(--primary);
+        color: #fff;
+    }
+    /* Photo Preview Styles */
+    .photo-preview-container {
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .photo-thumbnail {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    .photo-thumbnail:hover {
+        transform: scale(1.2);
+    }
+    .photo-preview-large {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 70vw;
+        max-width: 600px;
+        height: 70vh;
+        max-height: 500px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        display: none;
+        overflow: hidden;
+        z-index: 1050;
+    }
+    .photo-preview-large img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    .photo-preview-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        z-index: 1040;
+    }
+    .photo-close-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(0, 0, 0, 0.5);
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1051;
+        padding: 0;
+    }
+    .photo-close-btn i {
+        color: white;
+        font-size: 10px;
+    }
+    .photo-close-btn:hover {
+        background: rgba(0, 0, 0, 0.7);
+    }
+    /* Filter Button States */
+    .filter-btn[data-state="pending"].active {
+        background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);
+    }
+    .filter-btn[data-state="resolved"].active {
+        background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);
+    }
+    .filter-btn[data-state="all"].active {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+    }
+    .card-bodyy {
+        height: 300px !important;
+        min-height: 15px !important;
+    }
+    /* Action Buttons */
+    .action-btn {
+        cursor: pointer !important;
+    }
+    /* Chart Styles */
+    .card-body canvas {
+        width: 100% !important;
+        max-width: 80% !important;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #typeChart {
+        max-width: 88% !important;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #typeChart + .chartjs-size-monitor,
+    #typeChart + div {
+        font-size: 12px !important;
+        padding: 0 !important;
+    }
+    /* Reclamation List Styles */
+    .reclamation-list-body {
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        border: none;
+        overflow: hidden;
+    }
+    .reclamation-list-body .table-responsive {
+        margin: -1.5rem;
+    }
+    /* Forms */
+    .form-select, .form-control {
+        border-radius: 8px;
+        border: 1px solid #d1d3e2;
+        transition: border-color 0.2s;
+    }
+    .form-select:focus, .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.15rem rgba(78, 115, 223, 0.20);
+    }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .stat-card-title, .stat-card-value, .stat-card-text {
+            text-align: center;
+        }
+        .card-header, .card-footer {
+            text-align: center;
+        }
+        .btn-group {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+</style>
+    {% set locale = 'fr' %}
+    {% set months = {
+        1: 'Janvier',
+        2: 'Février',
+        3: 'Mars',
+        4: 'Avril',
+        5: 'Mai',
+        6: 'Juin',
+        7: 'Juillet',
+        8: 'Août',
+        9: 'Septembre',
+        10: 'Octobre',
+        11: 'Novembre',
+        12: 'Décembre'
+    } %}
+    <div class="container-fluid px-4 py-4">
+        <div class="container">
+            <h1 class="mb-4 text-primary">Statistiques Réclamations</h1>
+            <!-- Statistics Cards (copied from admin reclamation list) -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card shadow-lg border-0 stat-card-blue">
+                        <div class="card-body">
+                            <h5 class="card-title stat-card-title">Total Réclamations</h5>
+                            <h2 class="mb-0 stat-card-value">{{ reclamations|length }}</h2>
+                            <p class="card-text stat-card-text"><small>Depuis le début</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-lg border-0 stat-card-yellow">
+                        <div class="card-body">
+                            <h5 class="card-title stat-card-title">En Attente</h5>
+                            <h2 class="mb-0 stat-card-value">{{ reclamations|filter(rec => not rec.state)|length }}</h2>
+                            <p class="card-text stat-card-text"><small>À traiter</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-lg border-0 stat-card-green">
+                        <div class="card-body">
+                            <h5 class="card-title stat-card-title">Résolues</h5>
+                            <h2 class="mb-0 stat-card-value">{{ reclamations|filter(rec => rec.state)|length }}</h2>
+                            <p class="card-text stat-card-text"><small>Cette année</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-lg border-0" style="background: linear-gradient(135deg, #36b9cc 0%, #258391 100%); border-radius: 15px;">
+                        <div class="card-body">
+                            <h5 class="card-title" style="color: rgba(255, 255, 255, 0.9); font-weight: 500;">Taux de Résolution</h5>
+                            <h2 class="mb-0" style="color: #ffffff; font-weight: 600;">
+                                {% if reclamations|length > 0 %}
+                                    {{ ((reclamations|filter(rec => rec.state)|length / reclamations|length) * 100)|number_format(1) }}%
+                                {% else %}
+                                    0%
+                                {% endif %}
+                            </h2>
+                            <p class="card-text" style="color: rgba(255, 255, 255, 0.8);"><small>Global</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end mb-3">
+                <form id="exportPdfForm" method="post" action="{{ path('admin_reclamation_statistics_pdf') }}">
+                    <input type="hidden" name="monthly_chart_img" id="monthly_chart_img">
+                    <input type="hidden" name="type_chart_img" id="type_chart_img">
+                    <button type="button" class="btn btn-danger" onclick="exportChartsToPdf()">
+                        <i class="bi bi-file-earmark-pdf"></i> Exporter les Statistiques (PDF)
+                    </button>
+                </form>
+            </div>
+            <!-- Charts Section -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Statistiques Mensuelles</h5>
+                            <div class="d-flex gap-2">
+                                <select class="form-select form-select-sm" id="yearFilter" style="width: 100px;">
+                                    {% for y in range("now"|date("Y"), "now"|date("Y") - 5) %}
+                                        <option value="{{ y }}" {% if y == "now"|date("Y") %}selected{% endif %}>{{ y }}</option>
+                                    {% endfor %}
+                                </select>
+                                <select class="form-select form-select-sm" id="monthFilter" style="width: 120px;">
+                                    <option value="">Tous les mois</option>
+                                    {% for m in 1..12 %}
+                                        <option value="{{ m }}" {% if m == "now"|date("m") %}selected{% endif %}>{{ months[m] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Répartition par Type</h5>
+                            <div class="d-flex gap-2">
+                                <select class="form-select form-select-sm" id="typeYearFilter" style="width: 100px;">
+                                    {% for y in range("now"|date("Y"), "now"|date("Y") - 5) %}
+                                        <option value="{{ y }}" {% if y == "now"|date("Y") %}selected{% endif %}>{{ y }}</option>
+                                    {% endfor %}
+                                </select>
+                                <select class="form-select form-select-sm" id="typeMonthFilter" style="width: 120px;">
+                                    <option value="">Tous les mois</option>
+                                    {% for m in 1..12 %}
+                                        <option value="{{ m }}" {% if m == "now"|date("m") %}selected{% endif %}>{{ months[m] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="typeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize charts with fixed height
+        const chartHeight = 300; // Fixed height for both charts
+        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+        const typeCtx = document.getElementById('typeChart').getContext('2d');
+        monthlyCtx.canvas.parentNode.style.height = `${chartHeight}px`;
+        typeCtx.canvas.parentNode.style.height = `${chartHeight}px`;
+
+        window.monthlyChart = null;
+        window.typeChart = null;
+
+        function updateMonthlyChart(year, month) {
+            const url = `/admin/reclamations/stats/monthly${year ? `?year=${year}` : ''}${month ? `&month=${month}` : ''}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data || !data.labels || !data.data) {
+                        console.error('Monthly stats data missing or invalid:', data);
+                        return;
+                    }
+                    if (window.monthlyChart) {
+                        window.monthlyChart.destroy();
+                    }
+                    window.monthlyChart = new Chart(monthlyCtx, {
+                        type: 'line',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Nombre de Réclamations',
+                                data: data.data,
+                                borderColor: 'rgba(78, 115, 223, 1)',
+                                backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                                tension: 0.4,
+                                fill: true,
+                                pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: 'rgba(78, 115, 223, 1)',
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { position: 'top', labels: { font: { size: 12 } } },
+                                tooltip: {
+                                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                                    titleColor: '#333',
+                                    bodyColor: '#666',
+                                    borderColor: '#ddd',
+                                    borderWidth: 1,
+                                    padding: 12,
+                                    displayColors: false,
+                                    callbacks: {
+                                        label: function(context) {
+                                            return `${context.dataset.label}: ${context.raw}`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: { stepSize: 1, font: { size: 12 } },
+                                    grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { font: { size: 12 } }
+                                }
+                            }
+                        }
+                    });
+                    console.log('Monthly chart rendered:', window.monthlyChart);
+                })
+                .catch(error => {
+                    console.error('Error fetching monthly stats:', error);
+                });
+        }
+
+        function updateTypeChart(year, month) {
+            const url = `/admin/reclamations/stats/types${year ? `?year=${year}` : ''}${month ? `&month=${month}` : ''}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data || !data.labels || !data.data) {
+                        console.error('Type stats data missing or invalid:', data);
+                        return;
+                    }
+                    if (window.typeChart) window.typeChart.destroy();
+                    window.typeChart = new Chart(typeCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                data: data.data,
+                                backgroundColor: data.colors,
+                                borderColor: data.colors.map(color => color.replace('0.8', '1')),
+                                borderWidth: 2,
+                                hoverBackgroundColor: data.colors.map(color => color.replace('0.8', '1'))
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { position: 'right', labels: { padding: 20, font: { size: 12 } } },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            const percentage = ((context.raw / total) * 100).toFixed(1);
+                                            return `${context.label}: ${context.raw} (${percentage}%)`;
+                                        }
+                                    },
+                                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                                    titleColor: '#333',
+                                    bodyColor: '#666',
+                                    borderColor: '#ddd',
+                                    borderWidth: 1,
+                                    padding: 12,
+                                    displayColors: true,
+                                    boxPadding: 6
+                                }
+                            },
+                            cutout: '60%',
+                            animation: { animateScale: true, animateRotate: true }
+                        }
+                    });
+                    console.log('Type chart rendered:', window.typeChart);
+                })
+                .catch(error => {
+                    console.error('Error fetching type stats:', error);
+                });
+        }
+
+        document.getElementById('yearFilter').addEventListener('change', function() {
+            const year = this.value;
+            const month = document.getElementById('monthFilter').value;
+            updateMonthlyChart(year, month);
+        });
+        document.getElementById('monthFilter').addEventListener('change', function() {
+            const month = this.value;
+            const year = document.getElementById('yearFilter').value;
+            updateMonthlyChart(year, month);
+        });
+        document.getElementById('typeYearFilter').addEventListener('change', function() {
+            const year = this.value;
+            const month = document.getElementById('typeMonthFilter').value;
+            updateTypeChart(year, month);
+        });
+        document.getElementById('typeMonthFilter').addEventListener('change', function() {
+            const month = this.value;
+            const year = document.getElementById('typeYearFilter').value;
+            updateTypeChart(year, month);
+        });
+        // Initialize charts with current year
+        const currentYear = new Date().getFullYear();
+        updateMonthlyChart(currentYear, '');
+        updateTypeChart(currentYear, '');
+    });
+
+    function exportChartsToPdf() {
+        if (!window.monthlyChart || typeof window.monthlyChart.toBase64Image !== 'function') {
+            alert('Le graphique mensuel n\'est pas prêt. Veuillez patienter.');
+            return;
+        }
+        if (!window.typeChart || typeof window.typeChart.toBase64Image !== 'function') {
+            alert('Le graphique par type n\'est pas prêt. Veuillez patienter.');
+            return;
+        }
+        const monthlyChartImg = window.monthlyChart.toBase64Image();
+        const typeChartImg = window.typeChart.toBase64Image();
+        document.getElementById('monthly_chart_img').value = monthlyChartImg;
+        document.getElementById('type_chart_img').value = typeChartImg;
+        document.getElementById('exportPdfForm').submit();
+    }
+    </script>
+{% endblock %} 

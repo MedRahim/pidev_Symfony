@@ -1,0 +1,2099 @@
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 02:40:33
+Description: cas Urgent  : Unable to access the service since this morning, all our clients are blocked
+Request Payload: {
+    "inputs": "cas Urgent  : Unable to access the service since this morning, all our clients are blocked",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+ERROR: HTTP/2 401  returned for "https://api-inference.huggingface.co/models/facebook/bart-large-mnli".
+Stack trace: #0 C:\Users\Mega-PC\reclamation\vendor\symfony\http-client\Response\TraceableResponse.php(118): Symfony\Component\HttpClient\Response\TraceableResponse->checkStatusCode(401)
+#1 C:\Users\Mega-PC\reclamation\src\Service\PriorityClassifier.php(58): Symfony\Component\HttpClient\Response\TraceableResponse->toArray()
+#2 C:\Users\Mega-PC\reclamation\src\Controller\Front\ReclamationController.php(69): App\Service\PriorityClassifier->determinePriority('cas Urgent  : U...')
+#3 C:\Users\Mega-PC\reclamation\vendor\symfony\http-kernel\HttpKernel.php(183): App\Controller\Front\ReclamationController->new(Object(Symfony\Component\HttpFoundation\Request), Object(ContainerDxqyZ6E\EntityManagerGhost614a58f), Object(Symfony\Component\Mailer\Mailer), Object(App\Service\PriorityClassifier))
+#4 C:\Users\Mega-PC\reclamation\vendor\symfony\http-kernel\HttpKernel.php(76): Symfony\Component\HttpKernel\HttpKernel->handleRaw(Object(Symfony\Component\HttpFoundation\Request), 1)
+#5 C:\Users\Mega-PC\reclamation\vendor\symfony\http-kernel\Kernel.php(182): Symfony\Component\HttpKernel\HttpKernel->handle(Object(Symfony\Component\HttpFoundation\Request), 1, true)
+#6 C:\Users\Mega-PC\reclamation\vendor\symfony\runtime\Runner\Symfony\HttpKernelRunner.php(35): Symfony\Component\HttpKernel\Kernel->handle(Object(Symfony\Component\HttpFoundation\Request))
+#7 C:\Users\Mega-PC\reclamation\vendor\autoload_runtime.php(29): Symfony\Component\Runtime\Runner\Symfony\HttpKernelRunner->run()
+#8 C:\Users\Mega-PC\reclamation\public\index.php(5): require_once('C:\\Users\\Mega-P...')
+#9 {main}
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 02:46:19
+Description: Cas urrgent  : Unable to access the service since this morning, all our clients are blocked
+API Key (first 10 chars): sk-proj-Dl...
+Request Payload: {
+    "inputs": "Cas urrgent  : Unable to access the service since this morning, all our clients are blocked",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 401
+ERROR: HTTP/2 401  returned for "https://api-inference.huggingface.co/models/facebook/bart-large-mnli".
+Error Class: Symfony\Component\HttpClient\Exception\ClientException
+Stack trace: #0 C:\Users\Mega-PC\reclamation\vendor\symfony\http-client\Response\TransportResponseTrait.php(65): Symfony\Component\HttpClient\Response\CurlResponse->checkStatusCode()
+#1 C:\Users\Mega-PC\reclamation\vendor\symfony\http-client\Response\TraceableResponse.php(79): Symfony\Component\HttpClient\Response\CurlResponse->getHeaders(true)
+#2 C:\Users\Mega-PC\reclamation\src\Service\PriorityClassifier.php(61): Symfony\Component\HttpClient\Response\TraceableResponse->getHeaders()
+#3 C:\Users\Mega-PC\reclamation\src\Controller\Front\ReclamationController.php(69): App\Service\PriorityClassifier->determinePriority('Cas urrgent  : ...')
+#4 C:\Users\Mega-PC\reclamation\vendor\symfony\http-kernel\HttpKernel.php(183): App\Controller\Front\ReclamationController->new(Object(Symfony\Component\HttpFoundation\Request), Object(ContainerDxqyZ6E\EntityManagerGhost614a58f), Object(Symfony\Component\Mailer\Mailer), Object(App\Service\PriorityClassifier))
+#5 C:\Users\Mega-PC\reclamation\vendor\symfony\http-kernel\HttpKernel.php(76): Symfony\Component\HttpKernel\HttpKernel->handleRaw(Object(Symfony\Component\HttpFoundation\Request), 1)
+#6 C:\Users\Mega-PC\reclamation\vendor\symfony\http-kernel\Kernel.php(182): Symfony\Component\HttpKernel\HttpKernel->handle(Object(Symfony\Component\HttpFoundation\Request), 1, true)
+#7 C:\Users\Mega-PC\reclamation\vendor\symfony\runtime\Runner\Symfony\HttpKernelRunner.php(35): Symfony\Component\HttpKernel\Kernel->handle(Object(Symfony\Component\HttpFoundation\Request))
+#8 C:\Users\Mega-PC\reclamation\vendor\autoload_runtime.php(29): Symfony\Component\Runtime\Runner\Symfony\HttpKernelRunner->run()
+#9 C:\Users\Mega-PC\reclamation\public\index.php(5): require_once('C:\\Users\\Mega-P...')
+#10 {main}
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 02:51:25
+Description: urgent  : Unable to access the service since this morning, all our clients are blocked
+API Key (first 10 chars): sk-proj-Dl...
+Request Payload: {
+    "inputs": "urgent  : Unable to access the service since this morning, all our clients are blocked",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 401
+ERROR: HTTP/2 401  returned for "https://api-inference.huggingface.co/models/facebook/bart-large-mnli".
+Error Class: Symfony\Component\HttpClient\Exception\ClientException
+Stack trace: #0 C:\Users\Mega-PC\reclamation\vendor\symfony\http-client\Response\TransportResponseTrait.php(65): Symfony\Component\HttpClient\Response\CurlResponse->checkStatusCode()
+#1 C:\Users\Mega-PC\reclamation\vendor\symfony\http-client\Response\TraceableResponse.php(79): Symfony\Component\HttpClient\Response\CurlResponse->getHeaders(true)
+#2 C:\Users\Mega-PC\reclamation\src\Service\PriorityClassifier.php(61): Symfony\Component\HttpClient\Response\TraceableResponse->getHeaders()
+#3 C:\Users\Mega-PC\reclamation\src\Controller\Front\ReclamationController.php(69): App\Service\PriorityClassifier->determinePriority('urgent  : Unabl...')
+#4 C:\Users\Mega-PC\reclamation\vendor\symfony\http-kernel\HttpKernel.php(183): App\Controller\Front\ReclamationController->new(Object(Symfony\Component\HttpFoundation\Request), Object(ContainerDxqyZ6E\EntityManagerGhost614a58f), Object(Symfony\Component\Mailer\Mailer), Object(App\Service\PriorityClassifier))
+#5 C:\Users\Mega-PC\reclamation\vendor\symfony\http-kernel\HttpKernel.php(76): Symfony\Component\HttpKernel\HttpKernel->handleRaw(Object(Symfony\Component\HttpFoundation\Request), 1)
+#6 C:\Users\Mega-PC\reclamation\vendor\symfony\http-kernel\Kernel.php(182): Symfony\Component\HttpKernel\HttpKernel->handle(Object(Symfony\Component\HttpFoundation\Request), 1, true)
+#7 C:\Users\Mega-PC\reclamation\vendor\symfony\runtime\Runner\Symfony\HttpKernelRunner.php(35): Symfony\Component\HttpKernel\Kernel->handle(Object(Symfony\Component\HttpFoundation\Request))
+#8 C:\Users\Mega-PC\reclamation\vendor\autoload_runtime.php(29): Symfony\Component\Runtime\Runner\Symfony\HttpKernelRunner->run()
+#9 C:\Users\Mega-PC\reclamation\public\index.php(5): require_once('C:\\Users\\Mega-P...')
+#10 {main}
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 15:57:56
+Description: Test description for API connection
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Test description for API connection",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 13:58:03 GMT"
+    ],
+    "x-compute-time": [
+        "0.220"
+    ],
+    "x-compute-characters": [
+        "35"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68122c6b-1307f2b974afe7724c6cf6ff"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-inference-id": [
+        "HukUwDYT3w5mTCtPdfrGi"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 eb74da03a6626a936c0a186cfdc8a472.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "t2mrPD5UN_RWVCznBZ14NFnVZwNHUxbrbojFjsUss0vYN7UzdQ39HQ=="
+    ]
+}
+API Response: {
+    "sequence": "Test description for API connection",
+    "labels": [
+        "high priority",
+        "low priority"
+    ],
+    "scores": [
+        0.8293624520301819,
+        0.17063753306865692
+    ]
+}
+
+Classification Details:
+Label: high priority, Score: 0.82936245203018
+Label: low priority, Score: 0.17063753306866
+Final Priority Decision: Haute
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 16:00:48
+Description: Le système de sécurité incendie ne fonctionne pas dans le bâtiment principal. Il y a un risque immédiat pour la sécurité des employés. Besoin d'une intervention urgente.
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le syst\u00e8me de s\u00e9curit\u00e9 incendie ne fonctionne pas dans le b\u00e2timent principal. Il y a un risque imm\u00e9diat pour la s\u00e9curit\u00e9 des employ\u00e9s. Besoin d'une intervention urgente.",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 14:00:55 GMT"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68122d16-3a6e0a21487b1262682a52cf"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-compute-characters": [
+        "169"
+    ],
+    "x-compute-time": [
+        "0.402"
+    ],
+    "x-inference-id": [
+        "rvca30l6spKYAxq_9oQkB"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 bd3f8a07a0dda8b80498a0b92378cd90.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "OIGR-0DYTmVeBURQkDZMNKEgXLyGhFNwNm3S4uU6Bt4rx9rN8da0og=="
+    ]
+}
+API Response: {
+    "sequence": "Le syst\u00e8me de s\u00e9curit\u00e9 incendie ne fonctionne pas dans le b\u00e2timent principal. Il y a un risque imm\u00e9diat pour la s\u00e9curit\u00e9 des employ\u00e9s. Besoin d'une intervention urgente.",
+    "labels": [
+        "high priority",
+        "low priority"
+    ],
+    "scores": [
+        0.9726117849349976,
+        0.027388209477066994
+    ]
+}
+
+Classification Details:
+Label: high priority, Score: 0.972611784935
+Label: low priority, Score: 0.027388209477067
+Final Priority Decision: Haute
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 16:05:35
+Description: Le système de rendez-vous en ligne pour la mairie affiche parfois des créneaux déjà pris. Pas de problème majeur, juste une synchronisation à améliorer
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le syst\u00e8me de rendez-vous en ligne pour la mairie affiche parfois des cr\u00e9neaux d\u00e9j\u00e0 pris. Pas de probl\u00e8me majeur, juste une synchronisation \u00e0 am\u00e9liorer",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 14:05:42 GMT"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-compute-characters": [
+        "151"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68122e35-0d7a7b0e6ea56dd179b942d4"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "x-compute-time": [
+        "0.749"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-inference-id": [
+        "XJKT3UPL2zzsUu20L0Gym"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 c1dea0aa72b287ac912450e6d64e135e.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "4QWdXwgEldrhxqBSYDQUjjxc_HALTbGpBTvBLbz3yG-SCSwIEuxBJw=="
+    ]
+}
+API Response: {
+    "sequence": "Le syst\u00e8me de rendez-vous en ligne pour la mairie affiche parfois des cr\u00e9neaux d\u00e9j\u00e0 pris. Pas de probl\u00e8me majeur, juste une synchronisation \u00e0 am\u00e9liorer",
+    "labels": [
+        "low priority",
+        "high priority"
+    ],
+    "scores": [
+        0.9947852492332458,
+        0.005214739590883255
+    ]
+}
+
+Classification Details:
+Label: low priority, Score: 0.99478524923325
+Label: high priority, Score: 0.0052147395908833
+Final Priority Decision: Faible
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 16:06:28
+Description: L'application de fitness affiche parfois des statistiques arrondies au kilomètre près au lieu des mètres
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "L'application de fitness affiche parfois des statistiques arrondies au kilom\u00e8tre pr\u00e8s au lieu des m\u00e8tres",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 14:06:41 GMT"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-compute-characters": [
+        "104"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68122e6a-2496923f39c0469335208530"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "x-compute-time": [
+        "1.933"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-inference-id": [
+        "80Bixc3vY5ZtRz6sd_36x"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 0a9fd9b1edd4fcf9c2536f0010f33152.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "Zateg-31hRjWp7Dsi_PU0bpwP9Imv0Rhz00ovUZZWqnQFr_YJH2Ncg=="
+    ]
+}
+API Response: {
+    "sequence": "L'application de fitness affiche parfois des statistiques arrondies au kilom\u00e8tre pr\u00e8s au lieu des m\u00e8tres",
+    "labels": [
+        "low priority",
+        "high priority"
+    ],
+    "scores": [
+        0.9398862719535828,
+        0.06011373549699783
+    ]
+}
+
+Classification Details:
+Label: low priority, Score: 0.93988627195358
+Label: high priority, Score: 0.060113735496998
+Final Priority Decision: Faible
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 16:08:35
+Description: Le système de contrôle d'accès des bâtiments gouvernementaux ne reconnaît plus les badges de sécurité. Tous les employés sont bloqués à l'extérieur
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le syst\u00e8me de contr\u00f4le d'acc\u00e8s des b\u00e2timents gouvernementaux ne reconna\u00eet plus les badges de s\u00e9curit\u00e9. Tous les employ\u00e9s sont bloqu\u00e9s \u00e0 l'ext\u00e9rieur",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 14:08:43 GMT"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68122eea-604ed35305015d122324d7e6"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "x-compute-characters": [
+        "147"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-compute-time": [
+        "0.480"
+    ],
+    "x-inference-id": [
+        "R4sqjy0NFz_WHP-94bMv7"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 c0188b933ab57f39aa014ca7eb96ae9c.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "46dRF1fJqTG6NmW-aH6xcUVROhMh8gr8MtocHzVc-ZiXhV3PyDVA5A=="
+    ]
+}
+API Response: {
+    "sequence": "Le syst\u00e8me de contr\u00f4le d'acc\u00e8s des b\u00e2timents gouvernementaux ne reconna\u00eet plus les badges de s\u00e9curit\u00e9. Tous les employ\u00e9s sont bloqu\u00e9s \u00e0 l'ext\u00e9rieur",
+    "labels": [
+        "low priority",
+        "high priority"
+    ],
+    "scores": [
+        0.5553106069564819,
+        0.44468945264816284
+    ]
+}
+
+Classification Details:
+Label: low priority, Score: 0.55531060695648
+Label: high priority, Score: 0.44468945264816
+Final Priority Decision: Faible
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 16:09:12
+Description: L'application de gestion des urgences médicales ne transmet pas les coordonnées GPS des appels d'urgence. Risque de vie en danger
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "L'application de gestion des urgences m\u00e9dicales ne transmet pas les coordonn\u00e9es GPS des appels d'urgence. Risque de vie en danger",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 14:09:21 GMT"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68122f0f-470bda252c5757405d110b33"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-compute-characters": [
+        "129"
+    ],
+    "x-compute-time": [
+        "0.386"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "x-inference-id": [
+        "kSnEeW-qPsIpdZFoyKUyB"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 912fe8d927c37ab06a5ab9f3fd8505be.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "Ta4yh-5hGhKH21Oq6eEQRMBUvMjbuuvsuDcgvzQt5g5a9Y0My_6QYw=="
+    ]
+}
+API Response: {
+    "sequence": "L'application de gestion des urgences m\u00e9dicales ne transmet pas les coordonn\u00e9es GPS des appels d'urgence. Risque de vie en danger",
+    "labels": [
+        "low priority",
+        "high priority"
+    ],
+    "scores": [
+        0.5609646439552307,
+        0.4390352964401245
+    ]
+}
+
+Classification Details:
+Label: low priority, Score: 0.56096464395523
+Label: high priority, Score: 0.43903529644012
+Final Priority Decision: Faible
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 16:10:55
+Description: Le système de sécurité incendie ne fonctionne pas dans le bâtiment principal. Il y a un risque immédiat pour la sécurité des employés. Besoin d'une intervention urgente
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le syst\u00e8me de s\u00e9curit\u00e9 incendie ne fonctionne pas dans le b\u00e2timent principal. Il y a un risque imm\u00e9diat pour la s\u00e9curit\u00e9 des employ\u00e9s. Besoin d'une intervention urgente",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 14:11:02 GMT"
+    ],
+    "x-inference-id": [
+        "mP92WPoGNCjkl7l8c6OuO"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68122f76-4ba2329533dc406d63ffec81"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-compute-characters": [
+        "168"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-compute-time": [
+        "0.327"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 ab0b1e7cbd7487a4d0b7fa6622ab2758.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "mbrGLtpn4bEad1GWS-CTuT9l-9y074mGq5vHmXDkbfuyc5kLt8AWxA=="
+    ]
+}
+API Response: {
+    "sequence": "Le syst\u00e8me de s\u00e9curit\u00e9 incendie ne fonctionne pas dans le b\u00e2timent principal. Il y a un risque imm\u00e9diat pour la s\u00e9curit\u00e9 des employ\u00e9s. Besoin d'une intervention urgente",
+    "labels": [
+        "high priority",
+        "low priority"
+    ],
+    "scores": [
+        0.9711987972259521,
+        0.02880117855966091
+    ]
+}
+
+Classification Details:
+Label: high priority, Score: 0.97119879722595
+Label: low priority, Score: 0.028801178559661
+Final Priority Decision: Haute
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 16:18:33
+Description: Le service est vraiment merde, je suis très mécontent !
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le service est vraiment merde, je suis tr\u00e8s m\u00e9content !",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 14:18:42 GMT"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68123140-57d3b0ca3ef9cfb609d838d0"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-compute-characters": [
+        "55"
+    ],
+    "x-compute-time": [
+        "1.749"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "x-inference-id": [
+        "3Alzl_wATgG9G2NLA57pu"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 e5b482ce8b5bb64cfe4de1d81504c0b6.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "lBNbywMTZ7AleUVz2LNApio5RaCd2U6I6A8Pn4SfR2fSRCKqYO4Gzg=="
+    ]
+}
+API Response: {
+    "sequence": "Le service est vraiment merde, je suis tr\u00e8s m\u00e9content !",
+    "labels": [
+        "high priority",
+        "low priority"
+    ],
+    "scores": [
+        0.8817914128303528,
+        0.11820858716964722
+    ]
+}
+
+Classification Details:
+Label: high priority, Score: 0.88179141283035
+Label: low priority, Score: 0.11820858716965
+Final Priority Decision: Haute
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 16:22:38
+Description: Le service est vraiment merde, je suis très mécontent !
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le service est vraiment merde, je suis tr\u00e8s m\u00e9content !",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "content-length": [
+        "164"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 14:22:44 GMT"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68123234-073acb8322b1c0904b02ea0d"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Xet-Hash"
+    ],
+    "x-compute-type": [
+        "cache"
+    ],
+    "x-compute-time": [
+        "1.749"
+    ],
+    "x-inference-id": [
+        "FoEiXH0egRvRUl_-g6VOx"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 9874b25ddff24dd18d4122c6a190ace4.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "JvwJqLo8GNmrPh7ktUHynXx27TBqnVBuYSD7MwcT9sMVTxXEUJQasQ=="
+    ]
+}
+API Response: {
+    "sequence": "Le service est vraiment merde, je suis tr\u00e8s m\u00e9content !",
+    "labels": [
+        "high priority",
+        "low priority"
+    ],
+    "scores": [
+        0.8817914128303528,
+        0.11820858716964722
+    ]
+}
+
+Classification Details:
+Label: high priority, Score: 0.88179141283035
+Label: low priority, Score: 0.11820858716965
+Final Priority Decision: Haute
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 16:25:48
+Description: Le service est vraiment merde, putain de bordel !
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le service est vraiment merde, putain de bordel !",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 14:25:55 GMT"
+    ],
+    "x-compute-time": [
+        "0.327"
+    ],
+    "x-compute-characters": [
+        "49"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-681232f2-2ceee832556412281f27f037"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-inference-id": [
+        "2oPFBi5rF7yTaP8HUaCCu"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 164d117783fd653edf9d918ff78aa7e0.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "BHzFpdasSbXA2-tMP8pcDnpzm4OfvUdHUcoSYmsEibiEdyG_ypl_-g=="
+    ]
+}
+API Response: {
+    "sequence": "Le service est vraiment merde, putain de bordel !",
+    "labels": [
+        "low priority",
+        "high priority"
+    ],
+    "scores": [
+        0.90517657995224,
+        0.09482336044311523
+    ]
+}
+
+Classification Details:
+Label: low priority, Score: 0.90517657995224
+Label: high priority, Score: 0.094823360443115
+Final Priority Decision: Faible
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 16:27:43
+Description: Le service est vraiment ****, **** de ****
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le service est vraiment ****, **** de ****",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 14:27:50 GMT"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-inference-id": [
+        "K0eWevqgr26_rhjdSa2uU"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68123366-59e2bc2b57ac78327a7f4e0c"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-compute-time": [
+        "0.303"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "x-compute-characters": [
+        "42"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 c1dea0aa72b287ac912450e6d64e135e.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "lWXQ8XPlNjkICfvLy4pmJ5lvSA0EXS_ZHE5bpuiQaZEMvPxojSX4Qg=="
+    ]
+}
+API Response: {
+    "sequence": "Le service est vraiment ****, **** de ****",
+    "labels": [
+        "high priority",
+        "low priority"
+    ],
+    "scores": [
+        0.9745707511901855,
+        0.025429248809814453
+    ]
+}
+
+Classification Details:
+Label: high priority, Score: 0.97457075119019
+Label: low priority, Score: 0.025429248809814
+Final Priority Decision: Haute
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 16:36:26
+Description: Le service est vraiment ****, **** de **** !
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le service est vraiment ****, **** de **** !",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 14:36:33 GMT"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68123571-17ac894e2c25da8b3dcc5219"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-compute-characters": [
+        "44"
+    ],
+    "x-compute-time": [
+        "0.309"
+    ],
+    "x-inference-id": [
+        "qOrmraSFhpBbVkpWRZhad"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 164d117783fd653edf9d918ff78aa7e0.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "wlbyXW6ExoYgnXSI0XcejZBGMrrKMv0HVeCgVwnfOhVJI3lc-iv7GA=="
+    ]
+}
+API Response: {
+    "sequence": "Le service est vraiment ****, **** de **** !",
+    "labels": [
+        "high priority",
+        "low priority"
+    ],
+    "scores": [
+        0.9592614769935608,
+        0.040738485753536224
+    ]
+}
+
+Classification Details:
+Label: high priority, Score: 0.95926147699356
+Label: low priority, Score: 0.040738485753536
+Final Priority Decision: Haute
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 16:38:57
+Description: Le service est vraiment ****, **** de **** !
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le service est vraiment ****, **** de **** !",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "content-length": [
+        "152"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 14:39:03 GMT"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68123607-799ebab50ccafbb377a337be"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Xet-Hash"
+    ],
+    "x-inference-id": [
+        "ar521wPGuQCoiLma-BMjo"
+    ],
+    "x-compute-type": [
+        "cache"
+    ],
+    "x-compute-time": [
+        "0.309"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 3046b7404e796652c897921096103122.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "0JI0hH8ThsQuMJpSjjcaN5BV_JyRKSUGVKCgXH00IKR-bV4_et-HLw=="
+    ]
+}
+API Response: {
+    "sequence": "Le service est vraiment ****, **** de **** !",
+    "labels": [
+        "high priority",
+        "low priority"
+    ],
+    "scores": [
+        0.9592614769935608,
+        0.040738485753536224
+    ]
+}
+
+Classification Details:
+Label: high priority, Score: 0.95926147699356
+Label: low priority, Score: 0.040738485753536
+Final Priority Decision: Haute
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 17:04:11
+Description: L'interface des gestion des articles en ligne est tres joli , une suggestion just de changer couleur de background car il est tres lumineux
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "L'interface des gestion des articles en ligne est tres joli , une suggestion just de changer couleur de background car il est tres lumineux",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 15:04:19 GMT"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68123bf1-0c9f84362936bd81270b3118"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-inference-id": [
+        "2Zwox95TF-C7EdIIaWZmm"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-compute-characters": [
+        "139"
+    ],
+    "x-compute-time": [
+        "0.355"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 0d7deb275c6269c1898f9fac0cd690b6.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "pkHCJ5hafxkyxabZDMax2H-aLY0uF2rkmj_RwVH9AVXsQRgo-eQGjQ=="
+    ]
+}
+API Response: {
+    "sequence": "L'interface des gestion des articles en ligne est tres joli , une suggestion just de changer couleur de background car il est tres lumineux",
+    "labels": [
+        "high priority",
+        "low priority"
+    ],
+    "scores": [
+        0.7876021862030029,
+        0.21239782869815826
+    ]
+}
+
+Classification Details:
+Label: high priority, Score: 0.787602186203
+Label: low priority, Score: 0.21239782869816
+Final Priority Decision: Haute
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 17:05:28
+Description: Le formulaire de demande de carte d'identité en ligne ne sauvegarde pas automatiquement les données. Il faut recommencer si la page se ferme accidentellement
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le formulaire de demande de carte d'identité \u00e9 en ligne ne sauvegarde pas automatiquement les donn\u00e9es. Il faut recommencer si la page se ferme accidentellement",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 15:05:35 GMT"
+    ],
+    "x-inference-id": [
+        "7mSTQQPdpc2dJ7ms8bQ3h"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68123c3e-6a4df02e5ec2de792ae72874"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-compute-characters": [
+        "157"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-compute-time": [
+        "0.432"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 832009bc56ffa63a1a2a1fcf3f95b9e4.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "_17sBfNmVo3iEoFdchge9OTlGcgtUb_urVpD4XEbmlHB4IQkKc1WEw=="
+    ]
+}
+API Response: {
+    "sequence": "Le formulaire de demande de carte d'identit\u00e9 en ligne ne sauvegarde pas automatiquement les donn\u00e9es. Il faut recommencer si la page se ferme accidentellement",
+    "labels": [
+        "high priority",
+        "low priority"
+    ],
+    "scores": [
+        0.5892196893692017,
+        0.41078028082847595
+    ]
+}
+
+Classification Details:
+Label: high priority, Score: 0.5892196893692
+Label: low priority, Score: 0.41078028082848
+Final Priority Decision: Haute
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 17:06:46
+Description: L'application mobile de météo affiche parfois des icônes légèrement décalées sur certains modèles de téléphone
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "L'application mobile de m\u00e9t\u00e9o affiche parfois des ic\u00f4nes l\u00e9g\u00e8rement d\u00e9cal\u00e9es sur certains mod\u00e8les de t\u00e9l\u00e9phone",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 15:06:53 GMT"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-inference-id": [
+        "5e0Hu109hnECtSSllsBDp"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68123c8d-0ddb66150e366ab42d72c335"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "x-compute-time": [
+        "0.362"
+    ],
+    "x-compute-characters": [
+        "110"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 3046b7404e796652c897921096103122.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "QkTePZy6dt28UzMQkPk3a7VDRdxkvTqwVs4gJrsTyf_LTaD05HoC5g=="
+    ]
+}
+API Response: {
+    "sequence": "L'application mobile de m\u00e9t\u00e9o affiche parfois des ic\u00f4nes l\u00e9g\u00e8rement d\u00e9cal\u00e9es sur certains mod\u00e8les de t\u00e9l\u00e9phone",
+    "labels": [
+        "low priority",
+        "high priority"
+    ],
+    "scores": [
+        0.9456512331962585,
+        0.05434875935316086
+    ]
+}
+
+Classification Details:
+Label: low priority, Score: 0.94565123319626
+Label: high priority, Score: 0.054348759353161
+Final Priority Decision: Faible
+
+
+--- New Priority Classification Request ---
+Time: 2025-04-30 17:10:13
+Description: Le filtre par prix dans la section fruits et légumes ne prend pas en compte les promotions en cours
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le filtre par prix dans la section fruits et l\u00e9gumes ne prend pas en compte les promotions en cours",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Wed, 30 Apr 2025 15:10:23 GMT"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "x-compute-characters": [
+        "99"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-68123d5b-3ccbcf0c0ddb8c271cc9c754"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-inference-id": [
+        "fAUU_gClg3gcAUDyJShYd"
+    ],
+    "x-compute-time": [
+        "0.337"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 0d20bf93d01cd79d3eec10e42e06bb3c.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MRS52-P3"
+    ],
+    "x-amz-cf-id": [
+        "t4ZLsYQrHKDqTbiY-ulgJgaTeQDrFnRgrdiaxpX_HAiSpP6MMyswXg=="
+    ]
+}
+API Response: {
+    "sequence": "Le filtre par prix dans la section fruits et l\u00e9gumes ne prend pas en compte les promotions en cours",
+    "labels": [
+        "low priority",
+        "high priority"
+    ],
+    "scores": [
+        0.8871614336967468,
+        0.11283862590789795
+    ]
+}
+
+Classification Details:
+Label: low priority, Score: 0.88716143369675
+Label: high priority, Score: 0.1128386259079
+Final Priority Decision: Faible
+
+
+--- New Priority Classification Request ---
+Time: 2025-05-02 10:48:31
+Description: Le formulaire de demande de carte d'identité en ligne ne sauvegarde pas automatiquement les données. Il faut recommencer si la page se ferme accidentellement.
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le formulaire de demande de carte d'identit\u00e9 en ligne ne sauvegarde pas automatiquement les donn\u00e9es. Il faut recommencer si la page se ferme accidentellement.",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Fri, 02 May 2025 08:48:34 GMT"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-681486e1-1ac1ace60f3ce64513c901a3"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-inference-id": [
+        "qsCbYt9JEBFyE37cITssn"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-compute-characters": [
+        "158"
+    ],
+    "x-compute-time": [
+        "0.555"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 e16530c495b031b8d9b90de25e214284.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MXP64-P1"
+    ],
+    "x-amz-cf-id": [
+        "4oN_cbWrhBRikgkJfBTm126qhVk4oAynkvc22BZNP_Hd-fDYb50ksg=="
+    ]
+}
+API Response: {
+    "sequence": "Le formulaire de demande de carte d'identit\u00e9 en ligne ne sauvegarde pas automatiquement les donn\u00e9es. Il faut recommencer si la page se ferme accidentellement.",
+    "labels": [
+        "high priority",
+        "low priority"
+    ],
+    "scores": [
+        0.5949146747589111,
+        0.40508532524108887
+    ]
+}
+
+Classification Details:
+Label: high priority, Score: 0.59491467475891
+Label: low priority, Score: 0.40508532524109
+Final Priority Decision: Haute
+
+
+--- New Priority Classification Request ---
+Time: 2025-05-02 10:48:40
+Description: Le formulaire de demande de carte d'identité en ligne ne sauvegarde pas automatiquement les données. Il faut recommencer si la page se ferme accidentellement.
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le formulaire de demande de carte d'identit\u00e9 en ligne ne sauvegarde pas automatiquement les donn\u00e9es. Il faut recommencer si la page se ferme accidentellement.",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "content-length": [
+        "267"
+    ],
+    "date": [
+        "Fri, 02 May 2025 08:48:41 GMT"
+    ],
+    "x-compute-time": [
+        "0.555"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-681486e9-103e53805fbea6aa1e45f37f"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Xet-Hash"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-inference-id": [
+        "JEThqwDrXLgT4NDRSBDZ1"
+    ],
+    "x-compute-type": [
+        "cache"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 65678b013de2c2e6c05b27f6ecb2d78a.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "MXP64-P1"
+    ],
+    "x-amz-cf-id": [
+        "W7upLQvuj1dgef9F5TxbvotmVeJw9dLog8vv-oy5tYMWfwFjJiT3rw=="
+    ]
+}
+API Response: {
+    "sequence": "Le formulaire de demande de carte d'identit\u00e9 en ligne ne sauvegarde pas automatiquement les donn\u00e9es. Il faut recommencer si la page se ferme accidentellement.",
+    "labels": [
+        "high priority",
+        "low priority"
+    ],
+    "scores": [
+        0.5949146747589111,
+        0.40508532524108887
+    ]
+}
+
+Classification Details:
+Label: high priority, Score: 0.59491467475891
+Label: low priority, Score: 0.40508532524109
+Final Priority Decision: Haute
+
+
+--- New Priority Classification Request ---
+Time: 2025-05-02 10:50:04
+Description: Le système de rendez-vous en ligne pour la mairie affiche parfois des créneaux déjà pris. Pas de problème majeur, juste une synchronisation à améliorer.
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le syst\u00e8me de rendez-vous en ligne pour la mairie affiche parfois des cr\u00e9neaux d\u00e9j\u00e0 pris. Pas de probl\u00e8me majeur, juste une synchronisation \u00e0 am\u00e9liorer.",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "date": [
+        "Fri, 02 May 2025 08:50:06 GMT"
+    ],
+    "server": [
+        "uvicorn"
+    ],
+    "x-inference-id": [
+        "LjvLxMW4wVGH_h0X2gUvd"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-6814873d-39ed94857c3b220c0c08c291"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "x-compute-type, x-compute-time"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "x-compute-time": [
+        "0.411"
+    ],
+    "x-compute-characters": [
+        "152"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-compute-type": [
+        "cpu"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 11107a381200e56677821833e739dd0a.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "FCO50-P6"
+    ],
+    "x-amz-cf-id": [
+        "Emhwf_G8upQyW3KQsThBnZ9cT6lAEsvdgpZNLqlezhGDWXVODt4j0Q=="
+    ]
+}
+API Response: {
+    "sequence": "Le syst\u00e8me de rendez-vous en ligne pour la mairie affiche parfois des cr\u00e9neaux d\u00e9j\u00e0 pris. Pas de probl\u00e8me majeur, juste une synchronisation \u00e0 am\u00e9liorer.",
+    "labels": [
+        "low priority",
+        "high priority"
+    ],
+    "scores": [
+        0.9966638088226318,
+        0.0033362528774887323
+    ]
+}
+
+Classification Details:
+Label: low priority, Score: 0.99666380882263
+Label: high priority, Score: 0.0033362528774887
+Final Priority Decision: Faible
+
+
+--- New Priority Classification Request ---
+Time: 2025-05-02 12:03:24
+Description: Le système de rendez-vous en ligne pour la mairie affiche parfois des créneaux déjà pris. Pas de problème majeur, juste une synchronisation à améliorer.
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le syst\u00e8me de rendez-vous en ligne pour la mairie affiche parfois des cr\u00e9neaux d\u00e9j\u00e0 pris. Pas de probl\u00e8me majeur, juste une synchronisation \u00e0 am\u00e9liorer.",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+Response Status Code: 200
+Response Headers: {
+    "content-type": [
+        "application\/json"
+    ],
+    "content-length": [
+        "268"
+    ],
+    "date": [
+        "Fri, 02 May 2025 10:03:25 GMT"
+    ],
+    "x-inference-id": [
+        "jNoZ2qFgTu-faZ4ve541Z"
+    ],
+    "x-powered-by": [
+        "huggingface-moon"
+    ],
+    "cross-origin-opener-policy": [
+        "same-origin"
+    ],
+    "referrer-policy": [
+        "strict-origin-when-cross-origin"
+    ],
+    "x-request-id": [
+        "Root=1-6814986d-0d21debe06c590507cf0cc86"
+    ],
+    "vary": [
+        "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    ],
+    "access-control-allow-origin": [
+        "*"
+    ],
+    "access-control-expose-headers": [
+        "X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Xet-Hash"
+    ],
+    "x-sha": [
+        "d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
+    ],
+    "x-compute-time": [
+        "0.411"
+    ],
+    "access-control-allow-credentials": [
+        "true"
+    ],
+    "x-compute-type": [
+        "cache"
+    ],
+    "x-cache": [
+        "Miss from cloudfront"
+    ],
+    "via": [
+        "1.1 e32adf3ba04a9add04822b1ea956f18e.cloudfront.net (CloudFront)"
+    ],
+    "x-amz-cf-pop": [
+        "FCO50-P6"
+    ],
+    "x-amz-cf-id": [
+        "jzMM9JoOmVydpX9f6mEby-Iglycr_y0H3ItVsL0muWPdfNX2vv5KGw=="
+    ]
+}
+API Response: {
+    "sequence": "Le syst\u00e8me de rendez-vous en ligne pour la mairie affiche parfois des cr\u00e9neaux d\u00e9j\u00e0 pris. Pas de probl\u00e8me majeur, juste une synchronisation \u00e0 am\u00e9liorer.",
+    "labels": [
+        "low priority",
+        "high priority"
+    ],
+    "scores": [
+        0.9966638088226318,
+        0.0033362528774887323
+    ]
+}
+
+Classification Details:
+Label: low priority, Score: 0.99666380882263
+Label: high priority, Score: 0.0033362528774887
+Final Priority Decision: Faible
+
+
+--- New Priority Classification Request ---
+Time: 2025-05-02 12:08:34
+Description: Le formulaire de demande de carte d'identité en ligne ne sauvegarde pas automatiquement les données. Il faut recommencer si la page se ferme accidentellement. **** !
+API Key (first 10 chars): hf_tDVPlxu...
+Request Payload: {
+    "inputs": "Le formulaire de demande de carte d'identit\u00e9 en ligne ne sauvegarde pas automatiquement les donn\u00e9es. Il faut recommencer si la page se ferme accidentellement. **** !",
+    "parameters": {
+        "candidate_labels": [
+            "high priority",
+            "low priority"
+        ],
+        "multi_label": false
+    }
+}
+ERROR: SSL certificate problem: self-signed certificate in certificate chain for "https://api-inference.huggingface.co/models/facebook/bart-large-mnli".
+Error Class: Symfony\Component\HttpClient\Exception\TransportException
+Stack trace: #0 C:\Users\Mega-PC\reclamation\vendor\symfony\http-client\Response\CommonResponseTrait.php(146): Symfony\Component\HttpClient\Chunk\ErrorChunk->isFirst()
+#1 C:\Users\Mega-PC\reclamation\vendor\symfony\http-client\Response\TransportResponseTrait.php(52): Symfony\Component\HttpClient\Response\CurlResponse::initialize(Object(Symfony\Component\HttpClient\Response\CurlResponse))
+#2 C:\Users\Mega-PC\reclamation\vendor\symfony\http-client\Response\TraceableResponse.php(68): Symfony\Component\HttpClient\Response\CurlResponse->getStatusCode()
+#3 C:\Users\Mega-PC\reclamation\src\Service\PriorityClassifier.php(60): Symfony\Component\HttpClient\Response\TraceableResponse->getStatusCode()
+#4 C:\Users\Mega-PC\reclamation\src\Controller\Front\ReclamationController.php(92): App\Service\PriorityClassifier->determinePriority('Le formulaire d...')
+#5 C:\Users\Mega-PC\reclamation\vendor\symfony\http-kernel\HttpKernel.php(183): App\Controller\Front\ReclamationController->new(Object(Symfony\Component\HttpFoundation\Request), Object(Container9lsZWd7\EntityManagerGhost614a58f), Object(Symfony\Component\Mailer\Mailer))
+#6 C:\Users\Mega-PC\reclamation\vendor\symfony\http-kernel\HttpKernel.php(76): Symfony\Component\HttpKernel\HttpKernel->handleRaw(Object(Symfony\Component\HttpFoundation\Request), 1)
+#7 C:\Users\Mega-PC\reclamation\vendor\symfony\http-kernel\Kernel.php(182): Symfony\Component\HttpKernel\HttpKernel->handle(Object(Symfony\Component\HttpFoundation\Request), 1, true)
+#8 C:\Users\Mega-PC\reclamation\vendor\symfony\runtime\Runner\Symfony\HttpKernelRunner.php(35): Symfony\Component\HttpKernel\Kernel->handle(Object(Symfony\Component\HttpFoundation\Request))
+#9 C:\Users\Mega-PC\reclamation\vendor\autoload_runtime.php(29): Symfony\Component\Runtime\Runner\Symfony\HttpKernelRunner->run()
+#10 C:\Users\Mega-PC\reclamation\public\index.php(5): require_once('C:\\Users\\Mega-P...')
+#11 {main}
