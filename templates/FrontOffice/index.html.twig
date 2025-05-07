@@ -40,519 +40,146 @@
     {% include 'FrontOffice/partials/header.html.twig' %}
     
     <main>
-
         <!-- Hero Area Start-->
         <div class="slider-area hero-overly">
-            <div class="single-slider hero-overly  slider-height d-flex align-items-center">
+            <div class="single-slider hero-overly slider-height d-flex align-items-center">
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-xl-8 col-lg-9">
                             <!-- Hero Caption -->
-                            <div class="hero__caption">
-                                <span>Explore the city</span>
-                                <h1>Discover Great Places</h1>
+                            <div class="hero__caption text-center">
+                                <span>Plateforme unifiée des services publics</span>
+                                <h1>Bienvenue sur <span style="color:#007bff;">MdinTech</span></h1>
+                                <p class="mt-3">Comment créer une plateforme unifiée pour simplifier l'accès aux services publics d'un gouvernorat en Tunisie, tout en facilitant les démarches des infrastructures via une interface intuitive ?</p>
                             </div>
-                            <!--Hero form -->
-                            <form action="#" class="search-box">
+                            <!--Hero form-->
+                            <form action="#" class="search-box mt-4">
                                 <div class="input-form">
-                                    <input type="text" placeholder="What are you looking for?">
+                                    <input type="text" placeholder="Rechercher un service public, une démarche, une infrastructure...">
                                 </div>
                                 <div class="select-form">
                                     <div class="select-itms">
                                         <select name="select" id="select1">
-                                            <option value="">All Catagories</option>
-                                            <option value="">Catagories One</option>
-                                            <option value="">Catagories Two</option>
-                                            <option value="">Catagories Three</option>
-                                            <option value="">Catagories Four</option>
+                                            <option value="">Tous les services</option>
+                                            <option value="administration">Administration</option>
+                                            <option value="santé">Santé</option>
+                                            <option value="éducation">Éducation</option>
+                                            <option value="infrastructure">Infrastructure</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="search-form">
-                                    <a href="{{ path('search') }}">Search</a>
-                                </div>	
-                            </form>	
+                                    <a href="{{ path('search') }}">Rechercher</a>
+                                </div>
+                            </form>
+                            <img src="{{ asset('FrontOffice/assets/css/Smart City building outline logo.png') }}" alt="Logo" style="max-height: 80px; max-width: 220px; background: #222; border: 2px solid #007bff; border-radius: 12px; padding: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); display: block; margin: 0 auto;">
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
         <!--Hero Area End-->
-        <!-- Popular Locations Start -->
+        <!-- Gouvernorat Services Start -->
         <div class="popular-location section-padding30">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
                         <!-- Section Tittle -->
                         <div class="section-tittle text-center mb-80">
-                            <span>Most visited places</span>
-                            <h2>Popular Locations</h2>
+                            <span>Services essentiels</span>
+                            <h2>Accédez rapidement aux services du gouvernorat</h2>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-location mb-30">
-                            <div class="location-img">
-                                <img src="{{ asset('FrontOffice/assets/img/gallery/location1.png') }}" alt="">
-                            </div>
-                            <div class="location-details">
-                                <p>New York</p>
-                                <a href="{{ path('location', {'city': 'New York'}) }}" class="location-btn">65 <i class="ti-plus"></i> Location</a>
-                            </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="single-location mb-30 text-center p-4" style="background:#f8f9fa;border-radius:10px;min-height:180px;display:flex;flex-direction:column;justify-content:center;">
+                            <h3>Hôpital</h3>
+                            <p>Consultez les établissements de santé, prenez rendez-vous, accédez aux informations médicales et services d'urgence de votre gouvernorat.</p>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-location mb-30">
-                            <div class="location-img">
-                                <img src="{{ asset('FrontOffice/assets/img/gallery/location2.png') }}" alt="">
-                            </div>
-                            <div class="location-details">
-                                <p>Paris</p>
-                                <a href="{{ path('location', {'city': 'Paris'}) }}" class="location-btn">60 <i class="ti-plus"></i> Location</a>
-                            </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="single-location mb-30 text-center p-4" style="background:#f8f9fa;border-radius:10px;min-height:180px;display:flex;flex-direction:column;justify-content:center;">
+                            <h3>Market</h3>
+                            <p>Découvrez les marchés, commerces et produits locaux. Facilitez vos achats et soutenez l'économie régionale.</p>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-location mb-30">
-                            <div class="location-img">
-                                <img src="{{ asset('FrontOffice/assets/img/gallery/location3.png') }}" alt="">
-                            </div>
-                            <div class="location-details">
-                                <p>Rome</p>
-                                <a href="{{ path('location', {'city': 'Rome'}) }}" class="location-btn">50 <i class="ti-plus"></i> Location</a>
-                            </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="single-location mb-30 text-center p-4" style="background:#f8f9fa;border-radius:10px;min-height:180px;display:flex;flex-direction:column;justify-content:center;">
+                            <h3>Voyage par transport</h3>
+                            <p>Planifiez vos déplacements, consultez les horaires et réservez vos voyages en toute simplicité dans la région.</p>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-location mb-30">
-                            <div class="location-img">
-                                <img src="{{ asset('FrontOffice/assets/img/gallery/location4.png') }}" alt="">
-                            </div>
-                            <div class="location-details">
-                                <p>Italy</p>
-                                <a href="{{ path('location', {'city': 'Italy'}) }}" class="location-btn">28 <i class="ti-plus"></i> Location</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-location mb-30">
-                            <div class="location-img">
-                                <img src="{{ asset('FrontOffice/assets/img/gallery/location5.png') }}" alt="">
-                            </div>
-                            <div class="location-details">
-                                <p>Nepal</p>
-                                <a href="{{ path('location', {'city': 'Nepal'}) }}" class="location-btn">99 <i class="ti-plus"></i> Location</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-location mb-30">
-                            <div class="location-img">
-                                <img src="{{ asset('FrontOffice/assets/img/gallery/location6.png') }}" alt="">
-                            </div>
-                            <div class="location-details">
-                                <p>Indonesia</p>
-                                <a href="{{ path('location', {'city': 'Indonesia'}) }}" class="location-btn">78 <i class="ti-plus"></i> Location</a>
-                            </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="single-location mb-30 text-center p-4" style="background:#f8f9fa;border-radius:10px;min-height:180px;display:flex;flex-direction:column;justify-content:center;">
+                            <h3>Blog</h3>
+                            <p>Retrouvez des articles, conseils, actualités et informations utiles pour la vie quotidienne dans votre gouvernorat.</p>
                         </div>
                     </div>
                 </div>
                 <!-- More Btn -->
-                <div class="row justify-content-center">
-                    <div class="room-btn pt-20">
-                        <a href="{{ path('hopital') }}" class="btn view-btn1">View All Places</a>
-                    </div>
-                </div>
+                
             </div>
         </div>
-        <!-- Popular Locations End -->
-        <!-- Services Area Start -->
+        <!-- Gouvernorat Services End -->
+        <!-- Fonctionnement Start -->
         <div class="services-area pt-150 pb-150 section-bg" data-background="assets/img/gallery/section_bg02.jpg">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
                         <!-- Section Tittle -->
                         <div class="section-tittle section-tittle2 text-center mb-80">
-                            <span>Easy to explore</span>
-                            <h2>How It Works</h2>
+                            <span>Parcours simplifié</span>
+                            <h2>Comment fonctionne mdintech ?</h2>
                         </div>
                     </div>
                 </div>
                 <div class="row justify-content-between">
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-lg-4 col-md-6">
                         <div class="single-services text-center mb-50">
                             <div class="services-icon">
                                 <span class="flaticon-list"></span>
                             </div>
                             <div class="services-cap">
-                                <h5><a href="{{ path('how_it_works', {'step': 1}) }}">1. Choose a Category</a></h5>
-                                <p>incidid labore lore magna aliqua uisipsum suspendis loris.</p>
+                                <h5>1. Explorez les services</h5>
+                                <p>Consultez l'ensemble des services publics et démarches disponibles dans votre gouvernorat.</p>
                             </div>
-                            <!-- Shpape -->
-                            <img class="shape1 d-none d-lg-block" src="{{ asset('FrontOffice/assets/img/icon/serices1.png') }}" alt="">
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-lg-4 col-md-6">
                         <div class="single-services text-center mb-50">
                             <div class="services-icon">
                                 <span class="flaticon-problem"></span>
                             </div>
                             <div class="services-cap">
-                                <h5><a href="{{ path('how_it_works', {'step': 2}) }}">2. What you want</a></h5>
-                                <p>incidid labore lore magna aliqua uisipsum suspendis loris.</p>
+                                <h5>2. Effectuez vos démarches</h5>
+                                <p>Accédez à des formulaires et guides pour simplifier toutes vos procédures administratives.</p>
                             </div>
-                            <img class="shape2 d-none d-lg-block" src="{{ asset('FrontOffice/assets/img/icon/serices2.png') }}" alt="">
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-lg-4 col-md-6">
                         <div class="single-services text-center mb-50">
                             <div class="services-icon">
                                 <span class="flaticon-respect"></span>
                             </div>
                             <div class="services-cap">
-                                <h5><a href="{{ path('how_it_works', {'step': 3}) }}">3. Go out & Explore</a></h5>
-                                <p>incidid labore lore magna aliqua uisipsum suspendis loris.</p>
+                                <h5>3. Suivez vos demandes</h5>
+                                <p>Bénéficiez d'un suivi en temps réel et d'une assistance personnalisée pour chaque démarche.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Services Area End -->
-        <!-- Categories Area Start -->
-        <div class="categories-area section-padding30">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <!-- Section Tittle -->
-                        <div class="section-tittle text-center mb-80">
-                            <span>We are offering for you</span>
-                            <h2>Featured Categories</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <div class="single-cat text-center mb-50">
-                            <div class="cat-icon">
-                                <span class="flaticon-bed"></span>
-                            </div>
-                            <div class="cat-cap">
-                                <h5><a href="{{ path('hopital', {'type': 'hotel'}) }}">Living Hotel</a></h5>
-                                <p>Must explain your how this keind denoun pleasure</p>
-                                <a href="{{ path('hopital', {'type': 'hotel'}) }}">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <div class="single-cat text-center mb-50">
-                            <div class="cat-icon">
-                                <span class="flaticon-drink"></span>
-                            </div>
-                            <div class="cat-cap">
-                                <h5><a href="{{ path('hopital', {'type': 'night_life'}) }}">Night Life</a></h5>
-                                <p>Must explain your how this keind denoun pleasure</p>
-                                <a href="{{ path('hopital', {'type': 'night_life'}) }}">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <div class="single-cat text-center mb-50">
-                            <div class="cat-icon">
-                                <span class="flaticon-home"></span>
-                            </div>
-                            <div class="cat-cap">
-                                <h5><a href="{{ path('hopital', {'type': 'culture_place'}) }}">Culture Place</a></h5>
-                                <p>Must explain your how this keind denoun pleasure</p>
-                                <a href="{{ path('hopital', {'type': 'culture_place'}) }}">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <div class="single-cat text-center mb-50">
-                            <div class="cat-icon">
-                                <span class="flaticon-food"></span>
-                            </div>
-                            <div class="cat-cap">
-                                <h5><a href="{{ path('hopital', {'type': 'restaurant'}) }}">Restaurant</a></h5>
-                                <p>Must explain your how this keind denoun pleasure</p>
-                                <a href="{{ path('hopital', {'type': 'restaurant'}) }}">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                 </div>
-            </div>
-        </div>
-        <!-- Categories Area End -->
-         <!-- peoples-visit Start -->
-         <div class="peoples-visit dining-padding-top">
-            <!-- Single Left img -->
-            <div class="single-visit left-img">
-                <div class="container">
-                    <div class="row justify-content-end">
-                        <div class="col-lg-8">
-                            <div class="visit-caption">
-                                <span>We are offering for you</span>
-                                <h3>Every Month, Millions of People 
-                                    visit this site We’ve Built.</h3>
-                                <p>Unlike what its name implies, dry cleaning is not actually a 'dry' process. Clothes are soaked in a different solvent.</p>
-                                <!--Single Visit categories -->
-                                <div class="visit-categories mb-40">
-                                    <div class="visit-location">
-                                        <span class="flaticon-travel"></span>
-                                    </div>
-                                    <div class="visit-cap">
-                                        <h4>Great places in the world</h4>
-                                        <p>Unlike what its name implies, dry cleaning is not actu  process. Clothes soaked differentent.
-                                        </p>
-                                    </div>
-                                </div>
-                                <!--Single Visit categories -->
-                                <div class="visit-categories">
-                                    <div class="visit-location">
-                                        <span class="flaticon-work"></span>
-                                    </div>
-                                    <div class="visit-cap">
-                                        <h4>Biggest category listing</h4>
-                                        <p>Unlike what its name implies, dry cleaning is not actu  process. Clothes soaked differentent.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- peoples-visit End -->
-        <!-- Testimonial Start -->
-        <div class="testimonial-area testimonial-padding">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <!-- Section Tittle -->
-                        <div class="section-tittle text-center mb-80">
-                            <span>Our client testimonials</span>
-                            <h2>What our client say</h2>
-                        </div> 
-                    </div>
-                </div>
-                <div class="row align-items-center">
-                    <div class="col-lg-11 col-md-11">
-                        <div class="h1-testimonial-active">
-                            <!-- Single Testimonial -->
-                            <div class="single-testimonial text-center">
-                                <!-- Testimonial Content -->
-                                <div class="testimonial-caption ">
-                                    <div class="testimonial-top-cap">
-                                        <p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis por incididunt ut labore et dolore mas. </p>
-                                    </div>
-                                    <!-- founder -->
-                                    <div class="testimonial-founder d-flex align-items-center justify-content-center mb-30">
-                                        <div class="founder-img">
-                                            <img src="{{ asset('FrontOffice/assets/img/testmonial/Homepage_testi.png') }}" alt="">
-                                        </div>
-                                        <div class="founder-text">
-                                            <span>Oliva jems</span>
-                                            <p>UIX designer</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Single Testimonial -->
-                            <div class="single-testimonial text-center">
-                                <!-- Testimonial Content -->
-                                <div class="testimonial-caption ">
-                                    <div class="testimonial-top-cap">
-                                        <p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis por incididunt ut labore et dolore mas. </p>
-                                    </div>
-                                    <!-- founder -->
-                                    <div class="testimonial-founder d-flex align-items-center justify-content-center mb-30">
-                                        <div class="founder-img">
-                                            <img src="{{ asset('FrontOffice/assets/img/testmonial/Homepage_testi.png') }}" alt="">
-                                        </div>
-                                        <div class="founder-text">
-                                            <span>Oliva jems</span>
-                                            <p>UIX designer</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Testimonial End -->
-        <!-- Subscribe Area Start -->
-        <div class="subscribe-area section-bg pt-150 pb-150" data-background="assets/img/gallery/section_bg04.jpg">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-xl-6 col-lg-8">
-                        <!-- Section Tittle -->
-                        <div class="section-tittle section-tittle2 text-center mb-40">
-                            <span>Subscribe out newslatter</span>
-                            <h2>Subscribe For Newsletter</h2>
-                        </div> 
-                        <!--Hero form -->
-                        <form action="#" class="search-box">
-                            <div class="input-form">
-                                <input type="text" placeholder="What are you looking for?">
-                            </div>
-                            <div class="search-form">
-                                <a href="{{ path('subscribe') }}">Send Now</a>
-                            </div>	
-                        </form>	
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Subscribe Area End -->
-        <!-- Blog Ara Start -->
-        <div class="home-blog-area section-padding30">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <!-- Section Tittle -->
-                        <div class="section-tittle text-center mb-70">
-                            <span>Our blog</span>
-                            <h2>News and tips</h2>
-                        </div> 
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-team mb-30">
-                            <div class="team-img">
-                                <img src="{{ asset('FrontOffice/assets/img/gallery/home_blog1.png') }}" alt="">
-                            </div>
-                            <div class="team-caption">
-                                <span>HEALTH & CARE</span>
-                                <h3><a href="{{ path('blog') }}">The Best SPA Salons For
-                                    Your Relaxation</a></h3>
-                                <p>October 6, 2020by Steve</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-team mb-30">
-                            <div class="team-img">
-                                <img src="{{ asset('FrontOffice/assets/img/gallery/home_blog2.png') }}" alt="">
-                            </div>
-                            <div class="team-caption">
-                                <span>HEALTH & CARE</span>
-                                <h3><a href="{{ path('blog') }}">The Best SPA Salons For
-                                    Your Relaxation</a></h3>
-                                <p>October 6, 2020by Steve</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
-                        <div class="single-team mb-30">
-                            <div class="team-img">
-                                <img src="{{ asset('FrontOffice/assets/img/gallery/home_blog3.png') }}" alt="">
-                            </div>
-                            <div class="team-caption">
-                                <span>HEALTH & CARE</span>
-                                <h3><a href="{{ path('blog') }}">The Best SPA Salons For
-                                    Your Relaxation</a></h3>
-                                <p>October 6, 2020by Steve</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Blog Ara End -->
-
+        <!-- Fonctionnement End -->
     </main>
-    <footer>
-        <!-- Footer Start-->
-        <div class="footer-area">
-            <div class="container">
-               <div class="footer-top footer-padding">
-                    <div class="row justify-content-between">
-                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="single-footer-caption mb-30">
-                                    <!-- logo -->
-                                    <div class="footer-logo">
-                                        <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo2_footer.png') }}" alt=""></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>Quick Link</h4>
-                                    <ul>
-                                        <li><a href="{{ path('home') }}">Home</a></li>
-                                        <li><a href="{{ path('market') }}">market</a></li>
-                                        <li><a href="{{ path('market') }}">market</a></li>
-                                        <li><a href="{{ path('about') }}">About</a></li>
-                                        <li><a href="{{ path('contact') }}">Contact</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>Categories</h4>
-                                    <ul>
-                                        <li><a href="{{ path('hopital', {'type': 'hotel'}) }}">Reasonable Hotel</a></li>
-                                        <li><a href="{{ path('hopital', {'type': 'restaurant'}) }}">Popular Restaurant</a></li>
-                                        <li><a href="{{ path('hopital', {'type': 'shopping'}) }}">Easy Shopping</a></li>
-                                        <li><a href="{{ path('hopital', {'type': 'night_life'}) }}">Night Life</a></li>     
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>Download App</h4>
-                                    <ul>
-                                        <li class="app-log"><a href="{{ path('download_app', {'platform': 'android'}) }}"><img src="{{ asset('FrontOffice/assets/img/gallery/app-logo.png') }}" alt=""></a></li>
-                                        <li><a href="{{ path('download_app', {'platform': 'ios'}) }}"><img src="{{ asset('FrontOffice/assets/img/gallery/app-logo2.png') }}" alt=""></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-               </div>
-                <div class="footer-bottom">
-                    <div class="row d-flex justify-content-between align-items-center">
-                        <div class="col-xl-9 col-lg-8">
-                            <div class="footer-copy-right">
-                                <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-  Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-4">
-                            <!-- Footer Social -->
-                            <div class="footer-social f-right">
-                                <a href="{{ path('social', {'platform': 'facebook'}) }}"><i class="fab fa-facebook-f"></i></a>
-                                <a href="{{ path('social', {'platform': 'twitter'}) }}"><i class="fab fa-twitter"></i></a>
-                                <a href="{{ path('social', {'platform': 'website'}) }}"><i class="fas fa-globe"></i></a>
-                                <a href="{{ path('social', {'platform': 'instagram'}) }}"><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-               </div>
-            </div>
-        </div>
-        <!-- Footer End-->
-    </footer>
+    
+    {% include 'FrontOffice/partials/footer.html.twig' %}
+    
     <!-- Scroll Up -->
     <div id="back-top" >
         <a title="Go to Top" href="{{ path('back_to_top') }}"> <i class="fas fa-level-up-alt"></i></a>
     </div>
-
 
     <!-- JS here -->
 		<!-- All JS Custom Plugins Link Here here -->
