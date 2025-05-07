@@ -163,13 +163,21 @@
 
    <!-- /Menu -->
 
-     <!-- Main content -->
+    <!-- Main content -->
 <div class="layout-page">
-  <div class="content-wrapper bg-light">
+  <div class="content-wrapper bg-light min-vh-100">
     <div class="container-xxl flex-grow-1 container-p-y">
       <div class="container mt-5">
+
         <div class="card shadow-lg border-0 rounded-4 p-4">
-          <h2 class="text-center mb-4 text-primary">🩺 Gestion des Services Hospitaliers</h2>
+          <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+            <h2 class="text-primary fw-bold mb-3 mb-md-0">
+              🩺 Gestion des Services Hospitaliers
+            </h2>
+            <a href="{{ path('backoffice_service_new') }}" class="btn btn-primary rounded-pill px-4">
+              <i class="bx bx-plus"></i> Ajouter un Service
+            </a>
+          </div>
 
           {% for message in app.flashes('success') %}
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -178,21 +186,23 @@
             </div>
           {% endfor %}
 
-          <!-- 🔍 Barre de recherche + Bouton Statistique -->
+          <!-- 🔍 Barre de recherche + Statistiques -->
           <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-            <input type="text" id="searchInput" class="form-control w-50" placeholder="🔎 Rechercher un service...">
-            <a href="{{ path('backoffice_service_stats') }}" class="btn btn-outline-primary rounded-pill">📊 Voir les statistiques</a>
+            <input type="text" id="searchInput" class="form-control w-100 w-md-50" placeholder="🔎 Rechercher un service...">
+            <a href="{{ path('backoffice_service_stats') }}" class="btn btn-outline-primary rounded-pill px-4">
+              📊 Voir les statistiques
+            </a>
           </div>
 
-          <!-- 🏥 Tableau des services hospitaliers -->
+          <!-- 🏥 Tableau des services -->
           <div class="table-responsive">
-            <table class="table table-hover table-bordered align-middle bg-white">
-              <thead class="table-primary text-center">
+            <table class="table table-hover table-bordered align-middle bg-white rounded-3 overflow-hidden">
+              <thead class="table-primary text-center align-middle">
                 <tr>
-                  <th>Nom</th>
-                  <th>Description</th>
-                  <th>Lits disponibles</th>
-                  <th>Actions</th>
+                  <th>🧾 Nom</th>
+                  <th>📝 Description</th>
+                  <th>🛏️ Lits disponibles</th>
+                  <th>⚙️ Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -217,7 +227,9 @@
                   </tr>
                 {% else %}
                   <tr>
-                    <td colspan="4" class="text-center text-muted">Aucun service trouvé.</td>
+                    <td colspan="4" class="text-center text-muted fst-italic">
+                      Aucun service trouvé.
+                    </td>
                   </tr>
                 {% endfor %}
               </tbody>
@@ -229,6 +241,7 @@
             {{ knp_pagination_render(services) }}
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -237,13 +250,13 @@
 <!-- 🔍 Script de recherche en temps réel -->
 <script>
   document.getElementById('searchInput').addEventListener('keyup', function () {
-    let value = this.value.toLowerCase();
-    let rows = document.querySelectorAll('table tbody tr');
-    rows.forEach(row => {
+    const value = this.value.toLowerCase();
+    document.querySelectorAll('table tbody tr').forEach(row => {
       row.style.display = row.textContent.toLowerCase().includes(value) ? '' : 'none';
     });
   });
 </script>
+
 
 
 </body>

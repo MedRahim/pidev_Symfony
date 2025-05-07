@@ -33,6 +33,7 @@ class SendRappelMailCommand extends Command
 
         $date = $oneHourLater->format('Y-m-d');
         $time = $oneHourLater->format('H:i:00');
+        $output->writeln("Vérification des rendez-vous pour la date $date à l'heure $time");
 
         $qb = $this->rendezvousRepository->createQueryBuilder('r')
             ->where('r.dateRendezVous = :date')
@@ -41,7 +42,8 @@ class SendRappelMailCommand extends Command
             ->setParameter('time', new \DateTime($time));
 
         $rendezvousList = $qb->getQuery()->getResult();
-
+        
+        $output->writeln("Nombre de rendez-vous trouvés : " . count($rendezvousList));
         foreach ($rendezvousList as $rdv) {
             $user = $rdv->getUser();
             if ($user && $user->getEmail()) {

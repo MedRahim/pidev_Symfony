@@ -159,13 +159,8 @@
 
 
 
-
-
-
-   <!-- /Menu -->
-
-      <!-- Main content -->
-    <div class="layout-page">
+<!-- Main content -->
+<div class="layout-page">
   <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
       <div class="container mt-4">
@@ -217,7 +212,6 @@
                     <th>⏰ Heure</th>
                     <th>🏥 Lieu</th>
                     <th>🟢 Statut</th>
-                    <th>👨‍⚕️ ID Médecin</th>
                     <th>⚙️ Actions</th>
                   </tr>
                 </thead>
@@ -230,17 +224,20 @@
                       <td>
                         <span class="badge bg-{{ rdv.status == 'confirmé' ? 'success' : 'warning' }}">{{ rdv.status }}</span>
                       </td>
-                      <td>{{ rdv.idMedecin }}</td>
                       <td>
-                        <a href="{{ path('backoffice_rendezvous_edit', {id: rdv.id}) }}" class="btn btn-sm btn-warning">
-                          <i class="bx bx-edit"></i> Modifier
-                        </a>
-                        <form action="{{ path('backoffice_rendezvous_delete', {id: rdv.id}) }}" method="post" class="d-inline" onsubmit="return confirm('Voulez-vous vraiment supprimer ce rendez-vous ?');">
-                          <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rdv.id) }}">
-                          <button class="btn btn-sm btn-danger">
-                            <i class="bx bx-trash"></i> Supprimer
-                          </button>
-                        </form>
+                        <div class="d-flex flex-column">
+                          <!-- Bouton Modifier -->
+                          <a href="{{ path('backoffice_rendezvous_edit', {id: rdv.id}) }}" class="btn btn-sm btn-warning w-50">
+                            <i class="bx bx-edit me-1"></i> Modifier
+                          </a>
+                          <!-- Bouton Supprimer -->
+                          <form action="{{ path('backoffice_rendezvous_delete', {id: rdv.id}) }}" method="post" onsubmit="return confirm('Voulez-vous vraiment supprimer ce rendez-vous ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rdv.id) }}">
+                            <button class="btn btn-sm btn-danger w-50">
+                              <i class="bx bx-trash me-1"></i> Supprimer
+                            </button>
+                          </form>
+                        </div>
                       </td>
                     </tr>
                   {% else %}
@@ -256,6 +253,14 @@
             <div class="d-flex justify-content-center mt-4">
               {{ knp_pagination_render(pagination) }}
             </div>
+
+            <!-- 📅 Bouton vers le calendrier -->
+            <div class="d-flex justify-content-center mt-5">
+              <a href="https://calendar.google.com/calendar/u/0/r?pli=1" target="_blank" class="btn btn-primary btn-lg">
+                <i class="bx bx-calendar"></i> Accéder au Calendrier Google
+              </a>
+            </div>
+
           </div>
         </div>
       </div>
@@ -275,6 +280,7 @@
 </script>
 
 
-
-
 </body>
+
+
+
