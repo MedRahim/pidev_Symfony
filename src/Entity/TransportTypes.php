@@ -5,47 +5,35 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Table(
-    name: 'transport_types',
-    indexes: [
-        new ORM\Index(name: 'idx_transport_id', columns: ['transport_id'])
-    ]
-)]
+#[ORM\Table(name: 'transport_types')]
+#[ORM\Index(name: 'idx_transport_id', columns: ['transport_id'])]
 #[ORM\Entity]
 class TransportTypes
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    #[ORM\Column(
-        name: 'transport_id', 
-        type: Types::INTEGER
-    )]
+    #[ORM\Column(name: 'transport_id', type: Types::INTEGER)]
     private ?int $transportId = null;
 
-    #[ORM\Column(
-        name: 'name',
-        type: Types::STRING,
-        length: 50,
-        nullable: false
-    )]
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 50, nullable: false)]
     private string $name;
 
     #[ORM\Column(
-        name: 'description',
-        type: Types::TEXT,
-        nullable: true,
+        name: 'description', 
+        type: Types::TEXT, 
+        length: 65535, 
+        nullable: true, 
         options: ['default' => null]
     )]
     private ?string $description = null;
 
-    #[ORM\Column(
-        name: 'capacity',
-        type: Types::INTEGER,
-        nullable: false
-    )]
+    #[ORM\Column(name: 'capacity', type: Types::INTEGER, nullable: false)]
     private int $capacity;
 
-    // Getters and setters
+    public function __toString(): string
+    {
+        return $this->getName(); // Éviter les relations dans __toString()
+    }
     public function getTransportId(): ?int
     {
         return $this->transportId;

@@ -4,13 +4,13 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
 #[ORM\Table(name: 'cities')]
+#[ORM\Entity]
 class Cities
 {
+    #[ORM\Column(name: 'name', type: 'string', length: 100, nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    #[ORM\Column(name: 'name', type: 'string', length: 100, nullable: false)]
     private string $name;
 
     #[ORM\Column(name: 'latitude', type: 'float', precision: 10, scale: 0, nullable: false)]

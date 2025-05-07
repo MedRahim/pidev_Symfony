@@ -1,0 +1,17 @@
+/* Alignement horizontal des actions */
+td.actions {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Style des boutons */
+.btn {
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn i {
+    margin-right: 0.3rem;
+}

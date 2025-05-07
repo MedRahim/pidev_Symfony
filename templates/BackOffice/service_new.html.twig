@@ -156,44 +156,60 @@
 
    <!-- /Menu -->
 
+<!-- /Menu -->
 
-    <div class="layout-page">
+<div class="layout-page">
   <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
-       <div class="container mt-5">
-    <h1 class="mb-4">Ajouter un Service Hospitalier</h1>
+      <!-- Formulaire Ajouter un Service Hospitalier -->
+      <div class="container mt-5">
+        <div class="card shadow-lg p-4">
+          <h1 class="mb-4 text-center">Ajouter un Service Hospitalier</h1>
 
-    {% for message in app.flashes('success') %}
-      <div class="alert alert-success">{{ message }}</div>
-    {% endfor %}
+          <!-- Messages flash -->
+          {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+          {% endfor %}
 
-    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-  <div class="mb-3">
-    {{ form_label(form.nomService) }}
-    {{ form_widget(form.nomService) }}
-    {{ form_errors(form.nomService) }}
+          {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+          <!-- Nom du service -->
+          <div class="mb-3">
+            {{ form_label(form.nomService, 'Nom du Service', {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.nomService, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.nomService, {'attr': {'class': 'text-danger'}}) }}
+          </div>
+
+          <!-- Description -->
+          <div class="mb-3">
+            {{ form_label(form.description, 'Description', {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.description, {'attr': {'class': 'text-danger'}}) }}
+          </div>
+
+          <!-- Nombre de lits disponibles -->
+          <div class="mb-3">
+            {{ form_label(form.nombreLitsDisponibles, 'Nombre de Lits Disponibles', {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.nombreLitsDisponibles, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.nombreLitsDisponibles, {'attr': {'class': 'text-danger'}}) }}
+          </div>
+
+          <!-- Boutons -->
+          <div class="d-flex justify-content-between mt-4">
+            <button type="submit" class="btn btn-success">
+              <i class="bx bx-check"></i> Enregistrer les modifications
+            </button>
+            <a href="{{ path('backoffice_service_list') }}" class="btn btn-secondary">
+              <i class="bx bx-arrow-back"></i> Retour à la liste
+            </a>
+          </div>
+
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
   </div>
+</div>
 
-  <div class="mb-3">
-    {{ form_label(form.description) }}
-    {{ form_widget(form.description) }}
-    {{ form_errors(form.description) }}
-  </div>
-
-  <div class="mb-3">
-    {{ form_label(form.nombreLitsDisponibles) }}
-    {{ form_widget(form.nombreLitsDisponibles) }}
-    {{ form_errors(form.nombreLitsDisponibles) }}
-  </div>
-
-  <button type="submit" class="btn btn-success">
-    <i class="bx bx-check"></i> Enregistrer les modifications
-  </button>
-  <a href="{{ path('backoffice_service_list') }}" class="btn btn-secondary ms-2">
-    <i class="bx bx-arrow-back"></i> Retour à la liste
-  </a>
-{{ form_end(form) }}
-
-  </div>
 
   </body>

@@ -383,7 +383,7 @@ final class UserController extends AbstractController
             $this->addFlash('success', 'Login successful!');
 
             if (in_array('ROLE_ADMIN', $user->getRoles())) {
-                return $this->redirectToRoute('admin');
+                return $this->redirectToRoute('app_admin_dashboard');
             }
 
             return $this->redirectToRoute('app_user_index'); // Go to home after login
@@ -450,7 +450,7 @@ final class UserController extends AbstractController
         $this->addFlash('success', 'You have been logged out.');
 
         // Redirect to the home page or any other page after logout
-        return $this->redirectToRoute('app_user_index');
+        return $this->redirectToRoute('app_user_login');
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]

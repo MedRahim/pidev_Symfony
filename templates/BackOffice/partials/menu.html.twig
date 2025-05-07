@@ -1,0 +1,35 @@
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+  <div class="app-brand demo">
+    <a href="{{ path('backoffice_dashboard') }}" class="app-brand-link">
+      <span class="app-brand-logo demo">
+        <i class="bx bx-buildings bx-lg text-primary"></i>
+      </span>
+      <span class="app-brand-text demo menu-text fw-bolder ms-2">MdinTech</span>
+    </a>
+    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+      <i class="bx bx-chevron-left bx-sm align-middle"></i>
+    </a>
+  </div>
+  <div class="menu-inner-shadow"></div>
+  <ul class="menu-inner py-1">
+    <li class="menu-item {% if app.request.attributes.get('_route') starts with 'backoffice_dashboard' %}active{% endif %}">
+      <a href="{{ path('backoffice_dashboard') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-buildings"></i>
+        <div>Tableau de bord</div>
+      </a>
+    </li>
+    <li class="menu-item">
+      <a  class="menu-link">
+        <i class="menu-icon tf-icons bx bx-cog"></i>
+        <div>Paramètres</div>
+      </a>
+    </li>
+    <li class="menu-item">
+      <a href="{{ path('app_logout') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-power-off"></i>
+        <div>Déconnexion</div>
+      </a>
+    </li>
+    <!-- Ajoutez d'autres liens ici selon vos besoins -->
+  </ul>
+</aside>

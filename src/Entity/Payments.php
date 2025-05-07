@@ -5,13 +5,9 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Table(
-    name: 'payments',
-    indexes: [
-        new ORM\Index(name: 'reservation_id', columns: ['reservation_id']),
-        new ORM\Index(name: 'payments_fk_users', columns: ['user_id'])
-    ]
-)]
+#[ORM\Table(name: 'payments')]
+#[ORM\Index(name: 'reservation_id', columns: ['reservation_id'])]
+#[ORM\Index(name: 'payments_fk_users', columns: ['user_id'])]
 #[ORM\Entity]
 class Payments
 {
@@ -20,27 +16,15 @@ class Payments
     #[ORM\Column(name: 'payment_id', type: Types::INTEGER)]
     private ?int $paymentId = null;
 
-    #[ORM\Column(
-        name: 'amount', 
-        type: Types::DECIMAL, 
-        precision: 10, 
-        scale: 2, 
-        nullable: false
-    )]
+    #[ORM\Column(name: 'amount', type: Types::DECIMAL, precision: 10, scale: 2)]
     private string $amount;
 
-    #[ORM\Column(
-        name: 'method', 
-        type: Types::STRING, 
-        length: 50,  // Changed from 0 to valid length
-        nullable: false
-    )]
+    #[ORM\Column(name: 'method', type: Types::STRING, length: 0)]
     private string $method;
 
     #[ORM\Column(
         name: 'payment_date', 
-        type: Types::DATETIME_MUTABLE, 
-        nullable: false, 
+        type: Types::DATETIME_MUTABLE,
         options: ['default' => 'CURRENT_TIMESTAMP']
     )]
     private \DateTimeInterface $paymentDate;
@@ -59,7 +43,7 @@ class Payments
         return $this->paymentId;
     }
 
-    public function getAmount(): ?string
+    public function getAmount(): string
     {
         return $this->amount;
     }
@@ -70,7 +54,7 @@ class Payments
         return $this;
     }
 
-    public function getMethod(): ?string
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -81,7 +65,7 @@ class Payments
         return $this;
     }
 
-    public function getPaymentDate(): ?\DateTimeInterface
+    public function getPaymentDate(): \DateTimeInterface
     {
         return $this->paymentDate;
     }

@@ -1,0 +1,8 @@
+# config/packages/endroid_qr_code.yaml
+endroid_qr_code:
+  default:
+    writer: Endroid\QrCode\Writer\PngWriter      # Le writer PNG par défaut :contentReference[oaicite:1]{index=1}
+    encoding: 'UTF-8'                             # Encodage par défaut
+    error_correction_level: low                   # Niveau de correction d’erreur :contentReference[oaicite:2]{index=2}
+    size: 300                                     # Taille du QR code :contentReference[oaicite:3]{index=3}
+    margin: 10                                    # Marge autour du code :contentReference[oaicite:4]{index=4}

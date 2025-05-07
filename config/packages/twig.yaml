@@ -1,4 +1,9 @@
+# config/packages/twig.yaml
+
 twig:
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    cache: '%kernel.cache_dir%/twig'
     file_name_pattern: '*.twig'
     default_path: '%kernel.project_dir%/templates'
     form_themes:
@@ -10,7 +15,3 @@ twig:
 
 services:
     Twig\Extra\TwigExtraBundle\String\StringExtension: ~ # Ensure StringExtension is enabled
-
-when@test:
-    twig:
-        strict_variables: true
