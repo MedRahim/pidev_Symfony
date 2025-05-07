@@ -1,0 +1,314 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}
+<div class="d-flex justify-content-between align-items-center">
+    <h1 class="mb-0">Tableau de Bord Administratif</h1>
+    {# Vous pouvez ajouter des boutons ou infos ici si besoin #}
+</div>
+{% endblock %}
+
+{% block main %}
+<div class="container-fluid px-4">
+
+    {# Afficher les messages Flash #}
+    {% include '@EasyAdmin/flash_messages.html.twig' %}
+
+    {# Section des statistiques rapides - Exemple #}
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <div class="card text-white bg-primary shadow">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-route me-2"></i>Trajets Totaux</h5>
+                    <p class="card-text fs-4 fw-bold">{{ nbTrips|default(0) }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="card text-white bg-success shadow">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-clock me-2"></i>Trajets Actifs</h5>
+                    <p class="card-text fs-4 fw-bold">{{ nbActiveTrips|default(0) }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+             <div class="card text-white bg-info shadow">
+                 <div class="card-body">
+                     <h5 class="card-title"><i class="fas fa-ticket-alt me-2"></i>Réservations Totales</h5>
+                     <p class="card-text fs-4 fw-bold">{{ nbReservations|default(0) }}</p>
+                 </div>
+             </div>
+         </div>
+         <div class="col-sm-6 col-lg-3">
+             <div class="card text-white bg-warning shadow">
+                 <div class="card-body">
+                     <h5 class="card-title"><i class="fas fa-hourglass-half me-2"></i>Réservations en Attente</h5>
+                     <p class="card-text fs-4 fw-bold">{{ nbPendingReservations|default(0) }}</p>
+                 </div>
+             </div>
+         </div>
+    </div>
+
+
+    {# Section des graphiques #}
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-xl-8">
+            <div class="card shadow">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Tendance des Réservations (7 derniers jours)</h5>
+                </div>
+                <div class="card-body">
+                    {# S'assurer que le canvas a une ID unique et est présent #}
+                    <canvas id="trendChart" height="120"></canvas> {# Hauteur réduite pour potentiellement mieux s'adapter #}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-4">
+            <div class="card shadow">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Statut des Réservations</h5>
+                </div>
+                <div class="card-body d-flex justify-content-center align-items-center"> {# Centrer le graphique doughnut #}
+                     {# S'assurer que le canvas a une ID unique et est présent #}
+                    <canvas id="statusChart" style="max-height: 280px;"></canvas> {# Limiter la hauteur max #}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Section Activité Récente #}
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Activité Récente</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% if recentActivities is not empty %}
+                            {% for activity in recentActivities %}
+                                <a href="{{ activity.url|default('#') }}" class="list-group-item list-group-item-action"> {# Rendre l'élément cliquable #}
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong class="text-primary">{{ activity.title }}</strong>
+                                            <p class="mb-1 text-muted small">{{ activity.description }}</p>
+                                        </div>
+                                        {# Utiliser time_diff pour une date relative ou formater la date #}
+                                        <small class="text-muted ms-3 text-nowrap" title="{{ activity.date|date('d/m/Y H:i:s') }}">
+                                            {{ activity.date|date('d/m H:i') }}
+                                            {# Ou utiliser time_diff si le filtre Twig est installé: {{ activity.date|time_diff }} #}
+                                        </small>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <div class="list-group-item">
+                                <p class="text-muted mb-0">Aucune activité récente à afficher.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                 {% if recentActivities is not empty %}
+                 <div class="card-footer text-center">
+                     <a href="{{ ea_url().setController('App\\Controller\\Admin\\ReservationsCrudController').setAction('index') }}" class="btn btn-sm btn-outline-primary">
+                         Voir toutes les réservations <i class="fas fa-arrow-right ms-1"></i>
+                     </a>
+                 </div>
+                 {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body_javascript %}
+{# Appel à parent() est souvent fait ici plutôt que dans javascripts pour l'ordre d'exécution #}
+{{ parent() }}
+
+{# Assurez-vous que Chart.js est chargé AVANT ce script #}
+{# Si vous utilisez Webpack Encore, importez Chart.js là-bas #}
+{# Sinon, le CDN est ok mais placez-le peut-être dans le <head> ou avant ce script #}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM ready, initializing charts..."); // Log de débogage
+
+    // --- Graphique de Tendance ---
+    const trendCtx = document.getElementById('trendChart');
+    // Vérifier si l'élément canvas existe
+    if (trendCtx) {
+        console.log("Trend chart canvas found."); // Log
+        try {
+            // Utiliser les variables JSON passées depuis le contrôleur
+            const trendLabels = {{ trendDatesJson|raw }};
+            const trendData = {{ trendValuesJson|raw }};
+            console.log("Trend Data:", trendLabels, trendData); // Log les données reçues
+
+            // Vérifier si les données ne sont pas vides avant de créer le graphique
+            if (trendLabels && trendData && trendLabels.length > 0) {
+                 new Chart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: trendLabels,
+                        datasets: [{
+                            label: 'Réservations par jour',
+                            data: trendData,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 2,
+                            tension: 0.1, // tension 0.1 est moins courbé que 0.4
+                            fill: true,
+                            pointBackgroundColor: 'rgba(54, 162, 235, 1)', // Couleur des points
+                            pointRadius: 4 // Taille des points
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false, // Important pour contrôler la hauteur via CSS ou l'attribut height
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0 // Assure des nombres entiers sur l'axe Y
+                                }
+                            }
+                        },
+                        plugins: {
+                             legend: {
+                                 display: false // Cacher la légende si une seule série
+                             },
+                            tooltip: { // Options pour l'infobulle
+                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                titleFont: { size: 14 },
+                                bodyFont: { size: 12 },
+                                displayColors: false // Cacher la petite boîte de couleur
+                            }
+                         }
+                    }
+                });
+                 console.log("Trend chart initialized."); // Log
+            } else {
+                 console.log("Trend chart data is empty or invalid."); // Log si données vides
+                 // Afficher un message dans le canvas ? (Plus complexe)
+            }
+
+        } catch (e) {
+            console.error("Error initializing trend chart:", e); // Capturer les erreurs
+        }
+
+    } else {
+        console.error("Trend chart canvas ('trendChart') not found!"); // Erreur si canvas non trouvé
+    }
+
+    // --- Graphique des Statuts ---
+    const statusCtx = document.getElementById('statusChart');
+     // Vérifier si l'élément canvas existe
+    if (statusCtx) {
+         console.log("Status chart canvas found."); // Log
+        try {
+             // Utiliser les variables JSON passées depuis le contrôleur
+            const statusLabels = {{ statusLabelsJson|raw }};
+            const statusData = {{ statusValuesJson|raw }};
+            console.log("Status Data:", statusLabels, statusData); // Log les données reçues
+
+             // Vérifier si les données ne sont pas vides et si la somme est > 0
+            const totalStatus = statusData.reduce((a, b) => a + b, 0);
+            if (statusLabels && statusData && statusLabels.length > 0 && totalStatus > 0) {
+                 new Chart(statusCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: statusLabels,
+                        datasets: [{
+                            data: statusData,
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.8)',  // Confirmées (Vert/Cyan)
+                                'rgba(255, 99, 132, 0.8)',   // Annulées (Rouge)
+                                'rgba(255, 206, 86, 0.8)'    // En attente (Jaune)
+                            ],
+                             borderColor: [ // Ajouter une bordure pour séparer
+                                'rgba(255, 255, 255, 1)',
+                                'rgba(255, 255, 255, 1)',
+                                'rgba(255, 255, 255, 1)'
+                            ],
+                            borderWidth: 2 // Epaisseur de la bordure
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                         maintainAspectRatio: false, // Important pour contrôler la taille
+                        plugins: {
+                            legend: {
+                                position: 'bottom', // Légende en bas
+                                labels: {
+                                     padding: 20 // Espace pour la légende
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    // Afficher le pourcentage dans l'infobulle
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        const value = context.parsed || 0;
+                                        const sum = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = sum > 0 ? ((value / sum) * 100).toFixed(1) + '%' : '0%';
+                                        label += value + ' (' + percentage + ')';
+                                        return label;
+                                    }
+                                }
+                             }
+                        }
+                    }
+                });
+                console.log("Status chart initialized."); // Log
+            } else {
+                 console.log("Status chart data is empty or invalid."); // Log si données vides
+                 // Optionnel: Afficher un message indiquant qu'il n'y a pas de données
+                 const ctx = statusCtx.getContext('2d');
+                 ctx.textAlign = 'center';
+                 ctx.textBaseline = 'middle';
+                 ctx.font = '16px sans-serif';
+                 ctx.fillText("Aucune donnée de statut disponible", statusCtx.width / 2, statusCtx.height / 2);
+            }
+        } catch (e) {
+             console.error("Error initializing status chart:", e); // Capturer les erreurs
+        }
+    } else {
+         console.error("Status chart canvas ('statusChart') not found!"); // Erreur si canvas non trouvé
+    }
+});
+</script>
+
+{# Déplacer le style dans un fichier CSS est préférable, mais laissé ici pour l'exemple #}
+<style>
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border-radius: 0.5rem; /* Coins légèrement arrondis */
+    border: none; /* Enlever la bordure par défaut si shadow est utilisé */
+    height: 100%; /* Assurer que les cartes dans une ligne ont la même hauteur */
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important; /* Utiliser !important si nécessaire pour surcharger Bootstrap */
+}
+/* Styles pour les canvas pour s'assurer qu'ils ont une taille */
+#trendChart {
+    min-height: 250px; /* Hauteur minimale */
+    width: 100% !important;
+}
+#statusChart {
+    max-width: 300px; /* Limiter la largeur max du doughnut */
+    max-height: 300px; /* Limiter la hauteur max du doughnut */
+    margin: auto; /* Centrer si le conteneur est flex */
+}
+.list-group-item p {
+    font-size: 0.9em; /* Réduire légèrement la taille de la description */
+}
+.list-group-item strong {
+    font-size: 1em;
+}
+</style>
+{% endblock %}

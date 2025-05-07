@@ -1,0 +1,39 @@
+
+
+ 
+
+
+
+
+
+{% for service in services %}
+    <div class="col-lg-3 col-md-6 col-sm-6 d-flex align-items-stretch">
+        <div class="single-cat text-center mb-50 d-flex flex-column justify-content-between">
+            <div class="cat-icon mb-3">
+                <img src="{{ asset('FrontOffice/assets/img/serviceIMG/' ~ service.nomService|lower ~ '.png') }}" style="width: 100px; height: 100px; object-fit: cover;">
+            </div>
+            <div class="cat-cap mb-3">
+                <h5><a href="#">{{ service.nomService }}</a></h5>
+                <p>{{ service.description }}</p>
+                <a href="{{ path('medecins_par_service', {'id': service.idService}) }}" class="btn btn-sm btn-light mt-2">
+                    Voir médecins
+                </a>
+            </div>
+            <a href="{{ path('reserver_lit', {'id': service.idService}) }}" class="btn btn-sm btn-success mt-3">
+                🛏️ Réserver un lit
+            </a>
+        </div>
+    </div>
+{% else %}
+    <p class="text-center">Aucun service trouvé.</p>
+{% endfor %}
+
+
+
+
+
+
+
+
+
+

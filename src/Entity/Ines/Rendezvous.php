@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Repository\Ines\RendezvousRepository;
+use App\Entity\Ines\User;
 
 #[ORM\Entity]
 #[ORM\Table(name: "rendezvous")]
@@ -41,10 +42,17 @@ class Rendezvous
     #[Assert\NotBlank(message: "Le statut est obligatoire.")]
     private ?string $status = null;
 
-    #[ORM\Column(name: "idMedecin", type: "integer")]
-    #[Assert\NotBlank(message: "L'identifiant du médecin est obligatoire.")]
-    #[Assert\Positive(message: "L'ID du médecin doit être un nombre positif.")]
-    private ?int $idMedecin = null;
+
+    #[ORM\ManyToOne(targetEntity: Medecin::class)]
+    #[ORM\JoinColumn(name: "idMedecin", referencedColumnName: "idMedecin", nullable: false)]
+    private ?Medecin $medecin = null;
+
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+#[ORM\JoinColumn(name: "id_user", referencedColumnName: "id", nullable: false)]
+private ?User $user = null;
+
+    
 
     // ----------------- GETTERS & SETTERS -----------------
 
@@ -102,16 +110,32 @@ class Rendezvous
         return $this;
     }
 
-    public function getIdMedecin(): ?int
-    {
-        return $this->idMedecin;
-    }
 
-    public function setIdMedecin(?int $value): self
-    {
-        $this->idMedecin = $value;
+    public function getMedecin(): ?Medecin {
+        return $this->medecin;
+    }
+    public function setMedecin(?Medecin $medecin): self {
+        $this->medecin = $medecin;
         return $this;
     }
+
+
+
+    public function getUser(): ?User
+{
+    return $this->user;
+}
+
+public function setUser(?User $user): self
+{
+    $this->user = $user;
+    return $this;
+}
+
+
+
+    
+    
 
     // ----------------- VALIDATIONS PERSONNALISÉES -----------------
 

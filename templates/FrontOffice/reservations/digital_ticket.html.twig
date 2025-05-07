@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket de Réservation #{{ reservation.id }}</title>
+    <style>
+        /* Style moderne pour mobile */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f7f9fc;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .ticket-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .ticket-header {
+            background: linear-gradient(135deg, #4a6cf7, #6e8efb);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .ticket-body {
+            padding: 20px;
+        }
+        .ticket-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #eee;
+        }
+        .ticket-label {
+            color: #666;
+            font-weight: bold;
+        }
+        .ticket-value {
+            color: #333;
+        }
+        .status-confirmed {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: #ffc107;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="ticket-card">
+        <div class="ticket-header">
+            <h1>Votre Réservation</h1>
+            <p>ID: #{{ reservation.id }}</p>
+        </div>
+        <div class="ticket-body">
+            <div class="ticket-row">
+                <span class="ticket-label">Trajet</span>
+                <span class="ticket-value">{{ reservation.trip.departure }} → {{ reservation.trip.destination }}</span>
+            </div>
+            <div class="ticket-row">
+                <span class="ticket-label">Date</span>
+                <span class="ticket-value">{{ reservation.reservationTime|date('d/m/Y H:i') }}</span>
+            </div>
+            <div class="ticket-row">
+                <span class="ticket-label">Sièges</span>
+                <span class="ticket-value">{{ reservation.seatNumber }}</span>
+            </div>
+            <div class="ticket-row">
+                <span class="ticket-label">Classe</span>
+                <span class="ticket-value">{{ reservation.seatType }}</span>
+            </div>
+            <div class="ticket-row">
+                <span class="ticket-label">Statut</span>
+                <span class="ticket-value status-{{ reservation.status }}">
+                    {{ reservation.status|upper }}
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

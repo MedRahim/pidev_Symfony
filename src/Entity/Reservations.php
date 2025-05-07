@@ -1,104 +1,74 @@
 <?php
+// src/Entity/Reservations.php
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
+use App\Repository\ReservationsRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-#[ORM\Table(
-    name: 'reservations',
-    indexes: [
-        new ORM\Index(name: 'fk_reservation_trip', columns: ['trip_id']),
-        new ORM\Index(name: 'transport_id', columns: ['transport_id']),
-        new ORM\Index(name: 'reservations_fk_users', columns: ['user_id'])
-    ]
-)]
-#[ORM\Entity(repositoryClass: "App\Repository\ReservationsRepository")]
+#[ORM\Entity(repositoryClass: ReservationsRepository::class)]
+#[ORM\Table(name: 'reservations')]
 class Reservations
 {
     public const STATUS_CONFIRMED = 'confirmed';
-    public const STATUS_PENDING = 'pending';
-    public const STATUS_CANCELED = 'canceled';
+    public const STATUS_PENDING   = 'pending';
+    public const STATUS_CANCELED  = 'cancelled';
 
-    public const PAYMENT_PAID = 'paid';
-    public const PAYMENT_PENDING = 'pending';
-    public const PAYMENT_FAILED = 'failed';
+    public const PAYMENT_PAID     = 'paid';
+    public const PAYMENT_PENDING  = 'pending';
+    public const PAYMENT_FAILED   = 'failed';
+    public const PAYMENT_REFUNDED = 'refunded';
+
+
+    public const SEAT_STANDARD   = 'Standard';
+    public const SEAT_PREMIUM    = 'Premium';
+    public const SEAT_ECONOMIQUE = 'Économique';
 
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(
-        name: 'reservation_time',
-        type: Types::DATETIME_MUTABLE,
-        nullable: true,
-        options: ['default' => null]
-    )]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $reservationTime = null;
 
-    #[ORM\Column(
-        name: 'status',
-        type: Types::STRING,
-        length: 20,
-        nullable: true,
-        options: ['default' => self::STATUS_PENDING]
-    )]
-    #[Assert\Choice(
-        choices: [self::STATUS_PENDING, self::STATUS_CONFIRMED, self::STATUS_CANCELED],
-        message: 'Statut invalide'
-    )]
+    #[ORM\Column(type: 'string', length: 20, options: ['default' => self::STATUS_PENDING])]
     private ?string $status = self::STATUS_PENDING;
 
-    #[ORM\Column(name: 'transport_id', type: Types::INTEGER)]
-    private int $transportId;
-
-    #[ORM\Column(name: 'seat_number', type: Types::INTEGER)]
-    #[Assert\NotBlank(message: 'Le nombre de sièges est obligatoire')]
-    #[Assert\Positive(message: 'Le nombre de sièges doit être positif')]
-    #[Assert\LessThanOrEqual(
-        value: 10,
-        message: 'Vous ne pouvez pas réserver plus de 10 sièges'
+    #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank(message: 'Le nombre de sièges est obligatoire.')]
+    #[Assert\Positive(message: 'Le nombre de sièges doit être un entier positif.')]
+    #[Assert\Range(
+        min: 1,
+        notInRangeMessage: 'Vous devez réserver au moins {{ min }} siège.'
     )]
     private int $seatNumber;
 
-    #[ORM\Column(
-        name: 'payment_status',
-        type: Types::STRING,
-        length: 20,
-        nullable: true,
-        options: ['default' => self::PAYMENT_PENDING]
-    )]
+    #[ORM\Column(type: 'string', length: 20)]
+    #[Assert\NotBlank(message: 'Le type de siège est obligatoire.')]
     #[Assert\Choice(
-        choices: [self::PAYMENT_PENDING, self::PAYMENT_PAID, self::PAYMENT_FAILED],
-        message: 'Statut de paiement invalide'
+        choices: [
+            self::SEAT_STANDARD,
+            self::SEAT_PREMIUM,
+            self::SEAT_ECONOMIQUE,
+        ],
+        message: 'Le type de siège doit être Standard, Premium ou Économique.'
     )]
+    private string $seatType = self::SEAT_STANDARD;
+
+    #[ORM\Column(type: 'string', length: 20, options: ['default' => self::PAYMENT_PENDING])]
     private ?string $paymentStatus = self::PAYMENT_PENDING;
 
-    #[ORM\Column(
-        name: 'seat_type',
-        type: Types::STRING,
-        length: 20,
-        nullable: true,
-        options: ['default' => 'Standard']
-    )]
-    #[Assert\NotBlank(message: 'Le type de siège est obligatoire')]
-    #[Assert\Choice(
-        choices: ['Standard', 'Premium'],
-        message: 'Type de siège invalide'
-    )]
-    private ?string $seatType = 'Standard';
-
     #[ORM\ManyToOne(targetEntity: Trips::class)]
-    #[ORM\JoinColumn(name: 'trip_id', referencedColumnName: 'id', nullable: true)]
+    #[ORM\JoinColumn(nullable: false, name: 'trip_id', referencedColumnName: 'id')]
     private ?Trips $trip = null;
 
     #[ORM\ManyToOne(targetEntity: Users::class)]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true)]
+    #[ORM\JoinColumn(nullable: true, name: 'user_id', referencedColumnName: 'id')]
     private ?Users $user = null;
 
-    // Getters and setters remain the same as before
     public function getId(): ?int
     {
         return $this->id;
@@ -126,17 +96,6 @@ class Reservations
         return $this;
     }
 
-    public function getTransportId(): int
-    {
-        return $this->transportId;
-    }
-
-    public function setTransportId(int $transportId): static
-    {
-        $this->transportId = $transportId;
-        return $this;
-    }
-
     public function getSeatNumber(): int
     {
         return $this->seatNumber;
@@ -148,6 +107,18 @@ class Reservations
         return $this;
     }
 
+    public function getSeatType(): ?string
+    {
+        return $this->seatType;
+    }
+
+    public function setSeatType(string $seatType): static
+    {
+        $this->seatType = $seatType;
+
+        return $this;
+    }
+
     public function getPaymentStatus(): ?string
     {
         return $this->paymentStatus;
@@ -156,17 +127,6 @@ class Reservations
     public function setPaymentStatus(?string $paymentStatus): static
     {
         $this->paymentStatus = $paymentStatus;
-        return $this;
-    }
-
-    public function getSeatType(): ?string
-    {
-        return $this->seatType;
-    }
-
-    public function setSeatType(?string $seatType): static
-    {
-        $this->seatType = $seatType;
         return $this;
     }
 
@@ -190,5 +150,35 @@ class Reservations
     {
         $this->user = $user;
         return $this;
+    }
+
+    #[Assert\Callback]
+    public function validateSeatNumber(ExecutionContextInterface $context): void
+    {
+        if (null === $this->trip) {
+            return;
+        }
+
+        $capacity = $this->trip->getCapacity();
+        if ($this->seatNumber > $capacity) {
+            $context
+                ->buildViolation('Vous ne pouvez pas réserver plus de {{ limit }} sièges.')
+                ->atPath('seatNumber')
+                ->setParameter('{{ limit }}', (string) $capacity)
+                ->addViolation();
+        }
+    }
+
+    public function getQrCodeContent(): string
+    {
+        return json_encode([
+            'reservation_id'    => $this->getId(),
+            'user_id'           => $this->getUser()?->getId(),
+            'trip_id'           => $this->getTrip()?->getId(),
+            'seat_number'       => $this->getSeatNumber(),
+            'seat_type'         => $this->getSeatType(),
+            'status'            => $this->getStatus(),
+            'reservation_time'  => $this->getReservationTime()?->format('Y-m-d H:i:s'),
+        ]);
     }
 }

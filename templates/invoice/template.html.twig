@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MdinTech - Stock Invoice</title>
+    <style>
+        @page {
+            margin: 0;
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.05) 0%, rgba(255, 215, 0, 0.05) 100%);
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+            position: relative;
+            background: transparent;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+            padding: 20px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #1a237e 0%, #303f9f 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .text-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a237e;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .company-info {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: right;
+        }
+        .company-info h3 {
+            color: #1a237e;
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .company-info p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .invoice-title {
+            color: #1a237e;
+            font-size: 28px;
+            margin: 30px 0;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .invoice-details {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th {
+            background: linear-gradient(135deg, #1a237e 0%, #303f9f 100%);
+            color: #000000;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #000000;
+        }
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9ff;
+        }
+        tr:hover {
+            background-color: #f0f4ff;
+            transition: background-color 0.3s ease;
+        }
+        .total-section {
+            background: linear-gradient(135deg, #1a237e 0%, #303f9f 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-align: right;
+            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .total {
+            font-size: 18px;
+            margin: 10px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        .total:last-child {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .signature-section {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+        }
+        .signature-box {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .signature-line {
+            border-top: 2px solid #1a237e;
+            margin: 40px auto 10px;
+            width: 80%;
+        }
+        .smart-city {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 150px;
+            color: rgba(26, 35, 126, 0.03);
+            z-index: -1;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+        }
+        .contact-item i {
+            color: #1a237e;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+            background: #ffd700;
+            color: #1a237e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .product-name {
+            color: #1a237e;
+            font-weight: bold;
+        }
+        .category-badge {
+            background: #e8eaf6;
+            color: #1a237e;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="watermark">MdinTech</div>
+    
+    <div class="header">
+        <div class="logo-container">
+            <div>
+                <div class="text-logo">MdinTech</div>
+                <span class="smart-city">SMART CITY</span>
+            </div>
+        </div>
+        <div class="company-info">
+            <h3>Stock Invoice</h3>
+            <p>Date: {{ "now"|date("Y-m-d") }}</p>
+            <p>Invoice #: INV-{{ "now"|date("Ymd") }}-{{ random(1000, 9999) }}</p>
+            <span class="badge">Official Document</span>
+        </div>
+    </div>
+
+    <div class="invoice-details">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Details</th>
+                    <th>Category</th>
+                    <th>Unit Price (TND)</th>
+                    <th>Available Stock</th>
+                    <th>Total Value (TND)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>
+                            <span class="product-name">{{ product.name }}</span>
+                        </td>
+                        <td>
+                            <span class="category-badge">{{ product.category }}</span>
+                        </td>
+                        <td>{{ product.price|number_format(2) }}</td>
+                        <td>{{ product.stock }}</td>
+                        <td>{{ (product.price * product.stock)|number_format(2) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="total-section">
+            <p class="total">Subtotal: {{ total|number_format(2) }} TND</p>
+            <p class="total">Tax (19%): {{ (total * 0.19)|number_format(2) }} TND</p>
+            <p class="total">Total: {{ facture|number_format(2) }} TND</p>
+        </div>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-box">
+            <div class="signature-line"></div>
+            <p>Authorized Signature</p>
+        </div>
+        <div class="signature-box">
+            <div class="signature-line"></div>
+            <p>Received By</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>MdinTech SMART CITY - Your Trusted Partner in Smart City Solutions</p>
+        <div class="contact-info">
+            <span class="contact-item">
+                <i class="fas fa-envelope"></i>
+                contact@mdintech.com
+            </span>
+            <span class="contact-item">
+                <i class="fas fa-phone"></i>
+                +216 XX XXX XXX
+            </span>
+            <span class="contact-item">
+                <i class="fas fa-globe"></i>
+                www.mdintech.com
+            </span>
+        </div>
+        <p>Smart City Business Center, Tunisia</p>
+    </div>
+
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</body>
+</html> 

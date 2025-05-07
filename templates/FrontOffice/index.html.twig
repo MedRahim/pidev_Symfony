@@ -36,51 +36,9 @@
         </div>
     </div>
     <!-- Preloader Start -->
-    <header>
-        <!-- Header Start -->
-       <div class="header-area header-transparent">
-            <div class="main-header">
-               <div class="header-bottom  header-sticky">
-                    <div class="container-fluid">
-                        <div class="row align-items-center">
-                            <!-- Logo -->
-                            <div class="col-xl-2 col-lg-2 col-md-1">
-                                <div class="logo">
-                                  <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png" alt=""') }}"></a>
-                                </div>
-                            </div>
-                            <div class="col-xl-10 col-lg-10 col-md-8">
-                                <!-- Main-menu -->
-                                <div class="main-menu f-right d-none d-lg-block">
-                                    <nav>
-                                        <ul id="navigation">
-                                            <li><a href="{{ path('home') }}">Home</a></li>
-                                            <li><a href="{{ path('app_trips_index') }}">Voyage</a></li>
-                                            <li><a href="{{ path('hopital') }}">Hospital</a></li>
-                                            <li><a href="{{ path('market') }}">market</a></li>
-                                            <li><a href="{{ path('blog') }}">Blog</a></li>
-
-                                               
-                                            </li>
-                                            <li><a href="{{ path('contact') }}">Contact</a></li>
-                                            <li class="add-list"><a href="{{ path('listing_details') }}"><i class="ti-plus"></i> Add Listing</a></li>
-                                            {#<li class="login"><a href="{{ path('login') }}"><i class="ti-user"></i> Sign in</a></li>#}
-                                            <li class="register"><a href="{{ path('app_login') }}"><i class="ti-pencil"></i> Login</a></li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                            <!-- Mobile Menu -->
-                            <div class="col-12">
-                                <div class="mobile_menu d-block d-lg-none"></div>
-                            </div>
-                        </div>
-                    </div>
-               </div>
-            </div>
-       </div>
-        <!-- Header End -->
-    </header>
+    
+    {% include 'FrontOffice/partials/header.html.twig' %}
+    
     <main>
 
         <!-- Hero Area Start-->
@@ -532,6 +490,7 @@
                                     <h4>Quick Link</h4>
                                     <ul>
                                         <li><a href="{{ path('home') }}">Home</a></li>
+                                        <li><a href="{{ path('market') }}">market</a></li>
                                         <li><a href="{{ path('market') }}">market</a></li>
                                         <li><a href="{{ path('about') }}">About</a></li>
                                         <li><a href="{{ path('contact') }}">Contact</a></li>

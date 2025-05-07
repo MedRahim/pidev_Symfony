@@ -84,3 +84,18 @@
     margin-right: 10px;
     border-radius: 5px;
 }
+
+.alert-bad-words {
+    background: linear-gradient(90deg, #ff6b6b 0%, #ff4757 100%);
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 12px rgba(255,71,87,0.10);
+    animation: shake 0.5s;
+}

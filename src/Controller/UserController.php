@@ -29,7 +29,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 
-#[Route('/user')]
+#[Route('/home')]
 final class UserController extends AbstractController
 {
     private UserRepository $userRepository;
@@ -43,7 +43,7 @@ final class UserController extends AbstractController
     #[Route(name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
-        return $this->render('FrontOffice/home.html.twig', [
+        return $this->render('FrontOffice/index.html.twig', [
             'users' => $userRepository->findAll(),
         ]);
     }
@@ -387,7 +387,7 @@ final class UserController extends AbstractController
                 return $this->redirectToRoute('admin');
             }
 
-            return $this->redirectToRoute('app_user_index');
+            return $this->redirectToRoute('app_user_index'); // Go to home after login
         }
 
         return $this->render('user/login.html.twig', [

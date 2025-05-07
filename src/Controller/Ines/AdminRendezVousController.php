@@ -11,19 +11,53 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/backoffice/rendezvous', name: 'backoffice_rendezvous_')]
 class AdminRendezVousController extends AbstractController
 {
     #[Route('/', name: 'list', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
-    {
-        $rendezvous = $entityManager->getRepository(Rendezvous::class)->findAll();
+public function index(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+{
+    $status = $request->query->get('status');
+    $date = $request->query->get('date');
+    $sort = $request->query->get('sort', 'r.dateRendezVous');
+    $direction = $request->query->get('direction', 'asc');
 
+    $queryBuilder = $entityManager->getRepository(Rendezvous::class)->createQueryBuilder('r');
+
+    if ($status) {
+        $queryBuilder->where('LOWER(r.status) = LOWER(:status)')
+                     ->setParameter('status', trim($status));
+    }
+
+    if ($date) {
+        $queryBuilder->andWhere('DATE(r.dateRendezVous) = :date')
+                     ->setParameter('date', new \DateTime($date));
+    }
+
+    $queryBuilder->orderBy($sort, $direction);
+
+    $pagination = $paginator->paginate(
+        $queryBuilder,
+        $request->query->getInt('page', 1),
+        5
+    );
+
+    // Si c'est une requête AJAX, on ne renvoie que le bloc du tableau
+    if ($request->isXmlHttpRequest()) {
         return $this->render('BackOffice/rendezvous.html.twig', [
-            'rendezvous' => $rendezvous,
+            'pagination' => $pagination,
+            'isAjax' => true,
         ]);
     }
+
+    // Sinon, on rend toute la page
+    return $this->render('BackOffice/rendezvous.html.twig', [
+        'pagination' => $pagination,
+        'isAjax' => false,
+    ]);
+}
 
     #[Route('/edit/{id}', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Rendezvous $rendezvous, EntityManagerInterface $entityManager): Response
@@ -55,39 +89,41 @@ class AdminRendezVousController extends AbstractController
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $rendezvous = new Rendezvous();
-       
-        // Choisir un médecin par défaut ou laisser l'utilisateur en choisir un
-        $medecin = $entityManager->getRepository(Medecin::class)->findOneBy([]);
-   
-        if (!$medecin) {
-            throw $this->createNotFoundException('Aucun médecin disponible');
-        }
-   
-        // Utiliser getIdMedecin() pour récupérer l'ID du médecin
-        $rendezvous->setIdMedecin($medecin->getIdMedecin());
-   
-        $form = $this->createForm(RendezVousType::class, $rendezvous);
-        $form->handleRequest($request);
-   
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Sauvegarder le rendez-vous dans la base de données
-            $entityManager->persist($rendezvous);
-            $entityManager->flush();
-            $this->addFlash('success', 'Rendez-Vous ajouté avec succès !');
-   
-            return $this->redirectToRoute('backoffice_rendezvous_list');
-        }
-   
-        return $this->render('BackOffice/rendezvous_new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $rendezvous = new Rendezvous();
+    
+    // Choisir un médecin par défaut ou laisser l'utilisateur en choisir un
+    $medecin = $entityManager->getRepository(Medecin::class)->findOneBy([]);
+    
+    if (!$medecin) {
+        throw $this->createNotFoundException('Aucun médecin disponible');
     }
-   
-
-   
+    
+    // Assigner l'objet médecin à l'objet rendez-vous
+    $rendezvous->setMedecin($medecin);
+    
+    // Créer et gérer le formulaire
+    $form = $this->createForm(RendezVousType::class, $rendezvous);
+    $form->handleRequest($request);
+    
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Sauvegarder le rendez-vous dans la base de données
+        $entityManager->persist($rendezvous);
+        $entityManager->flush();
+        $this->addFlash('success', 'Rendez-Vous ajouté avec succès !');
+    
+        // Rediriger vers la liste des rendez-vous
+        return $this->redirectToRoute('backoffice_rendezvous_list');
+    }
+    
+    // Rendre le formulaire
+    return $this->render('BackOffice/rendezvous_new.html.twig', [
+        'form' => $form->createView(),
+    ]);
 }
 
+    
 
+    
+}

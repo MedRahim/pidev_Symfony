@@ -16,8 +16,8 @@ class BlogPostRepository extends ServiceEntityRepository
         parent::__construct($registry, BlogPost::class);
     }
     // Update this method in your BlogPostRepository class
-public function findBySearchTermAndCategory(?string $searchTerm, ?string $category): array
-{
+    public function findBySearchTermAndCategory(?string $searchTerm, ?string $category): array
+    {
     $queryBuilder = $this->createQueryBuilder('b');
     
     // If we have a search term, search only in the title

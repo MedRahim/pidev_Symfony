@@ -56,3 +56,14 @@ app_check_email:
     controller: App\Controller\UserController::checkEmail
 
 
+
+
+    # config/routes.yaml
+api_seat_configuration:
+    path: /api/seat-configuration/{tripId}
+    controller: App\Controller\ReservationsController::getSeatConfiguration
+    methods: GET
+apply_reward:
+  path: /api/apply-reward
+  controller: App\Controller\RewardApiController::apply
+  methods: [POST]

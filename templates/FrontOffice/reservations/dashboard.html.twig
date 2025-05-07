@@ -1,0 +1,357 @@
+{# templates/FrontOffice/reservations/dashboard.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de Bord Écologique Animé{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3a0ca3;
+      --grass: #52b788;
+      --earth: #2d6a4f;
+      --sky-light: #bde0fe;
+      --sun-color: #ffde22;
+    }
+    
+    body {
+      overflow-x: hidden;
+      background: linear-gradient(to bottom, #bde0fe 0%, #f8f9fa 100%);
+    }
+    
+    /* Animation du ciel */
+    .sky-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    /* Soleil animé */
+    .sun {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, var(--sun-color) 30%, #ff914d 100%);
+      border-radius: 50%;
+      box-shadow: 0 0 80px var(--sun-color);
+      top: 15%;
+      left: -50px;
+      z-index: 0;
+      animation: sunMotion 40s linear infinite;
+    }
+    
+    @keyframes sunMotion {
+      0% { transform: translateX(-100px) translateY(0); opacity: 0.8; }
+      50% { transform: translateX(100vw) translateY(100px); opacity: 1; }
+      100% { transform: translateX(200vw) translateY(0); opacity: 0.8; }
+    }
+    
+    /* Nuages animés */
+    .cloud {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      filter: blur(5px);
+      z-index: 0;
+      animation: floatCloud linear infinite;
+    }
+    
+    @keyframes floatCloud {
+      0% { transform: translateX(-100vw); }
+      100% { transform: translateX(100vw); }
+    }
+    
+    /* Feuilles flottantes */
+    .floating-leaf {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      z-index: 1;
+      opacity: 0;
+      animation: floatLeaf linear infinite;
+    }
+    
+    @keyframes floatLeaf {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.8; }
+      100% { transform: translate(100px, -100vh) rotate(360deg); opacity: 0; }
+    }
+    
+    /* Conteneur principal */
+    .dashboard-container {
+      min-height: 100vh;
+      padding: 3rem 0;
+      position: relative;
+    }
+    
+    /* Jardin écologique */
+    .garden-section {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 20px;
+      padding: 2rem;
+      margin: 2rem 0;
+      min-height: 400px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      backdrop-filter: blur(5px);
+    }
+    
+    .garden-ground {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(to top, var(--earth) 0%, var(--grass) 100%);
+      z-index: 1;
+    }
+    
+    .plants-container {
+      position: relative;
+      z-index: 2;
+      height: 280px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    
+    .plant {
+      height: {{ 80 + random(60) }}px;
+      transition: all 0.5s ease;
+      transform-origin: bottom center;
+      animation: growPlant 2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      animation-delay: calc(var(--delay) * 0.2s);
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+      z-index: 2;
+    }
+    
+    @keyframes growPlant {
+      from { transform: scaleY(0) rotate(-10deg); opacity: 0; }
+      to { transform: scaleY(1) rotate(0deg); opacity: 1; }
+    }
+    
+    .plant:hover {
+      transform: scale(1.1) rotate(5deg);
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));
+    }
+    
+    /* Carte améliorée */
+    #trip-map {
+      height: 500px;
+      border-radius: 20px;
+      margin: 2rem 0;
+      z-index: 10;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      border: 2px solid white;
+      background: white;
+    }
+    
+    /* Papillons */
+    .butterfly {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      z-index: 5;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+    
+    /* Cartes de stats */
+    .stat-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      height: 100%;
+      border-left: 4px solid var(--primary);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(5px);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 12px 28px rgba(67, 97, 238, 0.2);
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+<div class="sky-container">
+  <div class="sun"></div>
+  <div class="cloud" style="width: 150px; height: 60px; top: 20%; left: 10%; animation-duration: 80s;"></div>
+  <div class="cloud" style="width: 200px; height: 80px; top: 30%; left: 30%; animation-duration: 100s; animation-delay: -20s;"></div>
+  <div class="floating-leaf" style="background-image: url('{{ asset('images/nature/leaf1.svg') }}'); left: 5%; animation-duration: 25s;"></div>
+  <div class="floating-leaf" style="background-image: url('{{ asset('images/nature/leaf2.svg') }}'); left: 15%; animation-duration: 30s; animation-delay: -10s;"></div>
+</div>
+
+<div id="butterflies-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2;"></div>
+
+<div class="dashboard-container">
+  <div class="container">
+    <div class="text-center mb-5 position-relative">
+      <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeIn" style="text-shadow: 0 2px 10px rgba(255,222,34,0.4);">
+        🌍 Mon Éco-Dashboard Animé
+      </h1>
+      <p class="lead animate__animated animate__fadeIn animate__delay-1s">Vos actions prennent vie</p>
+    </div>
+
+    <div class="row g-4 mb-4">
+      {% for stat in [
+        { icon: 'speedometer2', title: 'Kilomètres', value: stats.totalKm, unit: 'km' },
+        { icon: 'cloud-snow', title: 'CO₂ économisé', value: stats.co2Saved, unit: 'kg' },
+        { icon: 'journals', title: 'Trajets', value: stats.tripsCount, unit: '' },
+        { icon: 'bus-front', title: 'Modes', value: stats.modesUsed|length, unit: '' }
+      ] %}
+        <div class="col-md-3">
+          <div class="stat-card h-100 animate__animated animate__fadeInUp" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+            <h5><i class="bi bi-{{ stat.icon }} me-2"></i>{{ stat.title }}</h5>
+            <div class="stat-value">{{ stat.value }}{% if stat.unit %} {{ stat.unit }}{% endif %}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="garden-section animate__animated animate__fadeIn">
+      <h2 class="text-center mb-4"><i class="bi bi-tree"></i> Mon Jardin Animé</h2>
+      <div class="garden-ground"></div>
+      <div class="plants-container">
+        {% if garden is not empty %}
+          {% for plant in garden %}
+            <img src="{{ asset('images/garden/' ~ plant ~ '.svg') }}" 
+                 class="plant" 
+                 style="--delay: {{ loop.index }}"
+                 alt="{{ plant }}">
+          {% endfor %}
+        {% else %}
+          <div class="text-center w-100 py-4">
+            <i class="bi bi-tree text-muted" style="font-size: 3rem;"></i>
+            <p class="mt-3">Vos trajets feront pousser ce jardin magique</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="garden-section animate__animated animate__fadeIn">
+      <h2 class="text-center mb-4"><i class="bi bi-geo-alt"></i> Mes Trajets sur la Carte</h2>
+      <div id="trip-map"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Animation des papillons
+      function createButterfly() {
+        const colors = ['#ff9a00', '#ff6b6b', '#4ecdc4'];
+        const butterfly = document.createElement('div');
+        butterfly.className = 'butterfly';
+        butterfly.innerHTML = `
+          <svg viewBox="0 0 512 512" width="40" height="40">
+            <path fill="${colors[Math.floor(Math.random() * colors.length)]}" d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"/>
+          </svg>
+        `;
+        document.getElementById('butterflies-container').appendChild(butterfly);
+        
+        gsap.to(butterfly, {
+          x: `${(Math.random() - 0.5) * 400}px`,
+          y: `${(Math.random() - 0.5) * 200}px`,
+          rotation: Math.random() * 360,
+          duration: 15 + Math.random() * 10,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut"
+        });
+      }
+
+      for (let i = 0; i < 5; i++) createButterfly();
+
+      // 2. Initialisation de la carte
+      const map = L.map('trip-map').setView([46.2276, 2.3522], 5);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+      }).addTo(map);
+
+      // 3. Conversion des données Twig en JS
+      const tripsData = {{ tripsData|json_encode|raw }};
+      
+      // 4. Ajout des trajets
+      if (tripsData && tripsData.length > 0) {
+        const markers = [];
+        const bounds = L.latLngBounds();
+        
+        tripsData.forEach(trip => {
+          if (trip.departureCoords && trip.destinationCoords) {
+            const start = [trip.departureCoords.lat, trip.departureCoords.lng];
+            const end = [trip.destinationCoords.lat, trip.destinationCoords.lng];
+            
+            // Marqueurs
+            const startMarker = L.marker(start).addTo(map)
+              .bindPopup(`<b>Départ:</b> ${trip.departure}<br><b>Vers:</b> ${trip.destination}`);
+            
+            const endMarker = L.marker(end).addTo(map)
+              .bindPopup(`<b>Arrivée:</b> ${trip.destination}<br><b>Depuis:</b> ${trip.departure}`);
+            
+            // Ligne
+            L.polyline([start, end], {color: '#4361ee'}).addTo(map);
+            
+            // Pour le zoom automatique
+            bounds.extend(start);
+            bounds.extend(end);
+            
+            markers.push(startMarker, endMarker);
+          }
+        });
+        
+        // Ajustement de la vue
+        if (markers.length > 0) {
+          map.fitBounds(bounds.pad(0.2));
+        }
+      } else {
+        console.warn("Aucune donnée de trajet disponible");
+      }
+
+      // 5. Animation des plantes
+      gsap.utils.toArray(".plant").forEach((plant, i) => {
+        gsap.from(plant, {
+          scaleY: 0,
+          opacity: 0,
+          duration: 1.5,
+          delay: i * 0.2,
+          ease: "elastic.out(1, 0.5)",
+          transformOrigin: "bottom center"
+        });
+        
+        plant.addEventListener('mouseenter', () => {
+          gsap.to(plant, {
+            scale: 1.1,
+            rotation: 5,
+            duration: 0.3,
+            yoyo: true,
+            repeat: 1
+          });
+        });
+      });
+    });
+  </script>
+{% endblock %}

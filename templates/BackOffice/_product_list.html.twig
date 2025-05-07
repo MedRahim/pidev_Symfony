@@ -1,0 +1,43 @@
+<tbody>
+  {% if products is defined and products is not empty %}
+    {% for product in products %}
+      <tr id="product-row-{{ product.id }}">
+        <td class="d-flex align-items-center">
+          <img src="{{ product.imagePath ? asset(product.imagePath) : asset('BackOffice/assets/img/default-product.jpg') }}" alt="{{ product.name }}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; margin-right: 12px;">
+          <span>{{ product.name }}</span>
+        </td>
+        <td>${{ product.price }}</td>
+        <td>
+          {% if product.stock == 0 %}
+            <span class="badge bg-danger">0 IN STOCK</span>
+          {% elseif product.stock > 0 and product.stock <= 20 %}
+            <span class="badge bg-warning text-dark">{{ product.stock }} IN STOCK</span>
+          {% else %}
+            <span class="badge bg-success">{{ product.stock }} IN STOCK</span>
+          {% endif %}
+        </td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-primary edit-product-btn"
+            data-bs-toggle="modal"
+            data-bs-target="#editProductModal"
+            data-edit-url="{{ path('app_product_edit_modal', { id: product.id }) }}"
+          >
+            Edit
+          </button>
+          <button type="button" 
+                  class="btn btn-danger" 
+                  data-bs-toggle="modal" 
+                  data-bs-target="#deleteModal"
+                  data-delete-url="{{ path('app_product_delete', {'id': product.id}) }}"
+                  data-csrf-token="{{ csrf_token('delete' ~ product.id) }}">
+            Delete
+          </button>
+        </td>
+      </tr>
+    {% endfor %}
+  {% else %}
+    <tr><td colspan="4" class="text-center">No products available.</td></tr>
+  {% endif %}
+</tbody>
