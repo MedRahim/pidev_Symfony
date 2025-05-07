@@ -126,7 +126,7 @@ final class UserController extends AbstractController
         $user->setIsVerified(true);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('app_user_login');
     }
 
     #[Route('/check-email', name: 'app_check_email')]
@@ -291,7 +291,7 @@ final class UserController extends AbstractController
 
         if (!$userId) {
             $this->addFlash('error', 'Session expired. Please login again.');
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_user_login');
         }
 
         /** @var User $user */
@@ -423,7 +423,7 @@ final class UserController extends AbstractController
 
                 // Redirect based on role or your logic
                 if (in_array('ROLE_ADMIN', $user->getRoles())) {
-                    return $this->redirectToRoute('admin');
+                    return $this->redirectToRoute('backoffice_dashboard');
                 }
 
                 return $this->redirectToRoute('app_user_index');

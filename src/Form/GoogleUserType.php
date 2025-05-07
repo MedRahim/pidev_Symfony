@@ -23,9 +23,7 @@ class GoogleUserType extends AbstractType
             ->add('CIN', null, [
                 'label' => 'CIN/National ID'
             ])
-            ->add('Name', null, [
-                'label' => 'Full Name'
-            ])
+
             // Usually, email is set and should not be changed, so you can remove it or set it as disabled
             // ->add('Email', EmailType::class, ['disabled' => true])
             ->add('Password', PasswordType::class, [
@@ -49,6 +47,9 @@ class GoogleUserType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id'   => 'google_user_form', // must match in both render and validation
         ]);
     }
 }

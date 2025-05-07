@@ -72,6 +72,7 @@ services:
         autoconfigure: true
         public: true
 
+
     App\Twig\AppExtension:
             arguments: [ '@App\Service\CurrentUserService' ]
             tags: [ 'twig.extension' ]
