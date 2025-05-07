@@ -132,6 +132,7 @@
           <!-- /Search -->
 
           <ul class="navbar-nav flex-row align-items-center ms-auto">
+            {% if app.session.get('user_id') %}
             <!-- Place this tag where you want the button to render. -->
             <li class="nav-item lh-1 me-3">
               <a
@@ -141,8 +142,9 @@
                       data-size="large"
                       data-show-count="true"
                       aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-              >Star</a>
+              >{{ current_user_service.getUser().name }}</a>
             </li>
+            {% endif %}
 
             {% include 'BackOffice/partials/user_dropdown.html.twig' %}
 

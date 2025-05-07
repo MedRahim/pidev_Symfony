@@ -18,6 +18,12 @@
         <div>Tableau de bord</div>
       </a>
     </li>
+    <li class="menu-item {% if app.request.attributes.get('_route') starts with 'app_admin_Listusers' %}active{% endif %}">
+      <a href="{{ path('app_admin_Listusers') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-user"></i>
+        <div>Users</div>
+      </a>
+    </li>
     <li class="menu-item">
       <a  class="menu-link">
         <i class="menu-icon tf-icons bx bx-cog"></i>
@@ -25,7 +31,7 @@
       </a>
     </li>
     <li class="menu-item">
-      <a href="{{ path('app_logout') }}" class="menu-link">
+      <a href="{{ path('app_logoutuser') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-power-off"></i>
         <div>Déconnexion</div>
       </a>

@@ -126,8 +126,7 @@ final class UserController extends AbstractController
         $user->setIsVerified(true);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Email verified! You can now log in.');
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('app_user_login');
     }
 
     #[Route('/check-email', name: 'app_check_email')]
@@ -292,7 +291,7 @@ final class UserController extends AbstractController
 
         if (!$userId) {
             $this->addFlash('error', 'Session expired. Please login again.');
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_user_login');
         }
 
         /** @var User $user */
@@ -384,7 +383,7 @@ final class UserController extends AbstractController
             $this->addFlash('success', 'Login successful!');
 
             if (in_array('ROLE_ADMIN', $user->getRoles())) {
-                return $this->redirectToRoute('admin');
+                return $this->redirectToRoute('app_admin_dashboard');
             }
 
             return $this->redirectToRoute('app_user_index'); // Go to home after login
@@ -424,7 +423,7 @@ final class UserController extends AbstractController
 
                 // Redirect based on role or your logic
                 if (in_array('ROLE_ADMIN', $user->getRoles())) {
-                    return $this->redirectToRoute('admin');
+                    return $this->redirectToRoute('backoffice_dashboard');
                 }
 
                 return $this->redirectToRoute('app_user_index');
@@ -451,7 +450,7 @@ final class UserController extends AbstractController
         $this->addFlash('success', 'You have been logged out.');
 
         // Redirect to the home page or any other page after logout
-        return $this->redirectToRoute('app_user_index');
+        return $this->redirectToRoute('app_user_login');
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]

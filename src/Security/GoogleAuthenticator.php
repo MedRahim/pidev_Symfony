@@ -131,7 +131,11 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             );
         }
 
-        // ✅ Default success redirect
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            return new RedirectResponse(
+                $this->router->generate('app_admin_dashboard')
+            );
+        }
         return new RedirectResponse(
             $this->router->generate('app_user_index')
         );

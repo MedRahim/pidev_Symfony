@@ -9,14 +9,29 @@ parameters:
         10:  'medium_discount'
         15:  'big_discount'
 
-    
+
+framework:
+    router:
+        default_uri: '%env(resolve:APP_URL)%'
+
 services:
+    # Default configuration for services in the `src/` directory
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+
+
+
 
     Symfony\Component\Finder\Finder: ~
     # Définition du service annotation_reader
     annotation_reader:
         class: Doctrine\Common\Annotations\AnnotationReader
         public: false
+
+    # Configuration par défaut pour les services dans ce fichier
     _defaults:
         autowire: true
         autoconfigure: true
@@ -56,6 +71,7 @@ services:
         autowire: true
         autoconfigure: true
         public: true
+
 
     App\Twig\AppExtension:
             arguments: [ '@App\Service\CurrentUserService' ]
@@ -143,5 +159,6 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
-
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
     # Ajoute ici d'autres définitions de services si nécessaire.

@@ -23,7 +23,10 @@
         <link rel="stylesheet"  href="{{ asset('FrontOffice/assets/css/style.css') }}">
     </head>
     <body>
-        {% include 'FrontOffice/partials/header.html.twig' %}
+    {% if hide_header is not defined or not hide_header %}
+
+            {% include 'FrontOffice/partials/header.html.twig' %}
+    {% endif %}
 
         <main style="padding-top: 100px;">
             {% block body %}{% endblock %}
