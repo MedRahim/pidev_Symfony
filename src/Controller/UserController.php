@@ -73,6 +73,13 @@ final class UserController extends AbstractController
 
         ksort($ageCounts); // Sort by age
 
+        // Get user statistics
+        $totalUsers = $userRepository->countTotalUsers();
+        $activeUsers = $userRepository->countActiveUsers();
+        $verifiedUsers = $userRepository->countVerifiedUsers();
+        $inactiveUsers = $totalUsers - $activeUsers;
+        $unverifiedUsers = $totalUsers - $verifiedUsers;
+
         return $this->render('BackOffice/amine/users.html.twig', [
             'users' => $users,
             'current_filters' => $filters,
@@ -80,8 +87,14 @@ final class UserController extends AbstractController
             'current_direction' => $direction,
             'chart_labels' => array_keys($ageCounts),
             'chart_data' => array_values($ageCounts),
+            'total_users' => $totalUsers,
+            'active_users' => $activeUsers,
+            'verified_users' => $verifiedUsers,
+            'inactive_users' => $inactiveUsers,
+            'unverified_users' => $unverifiedUsers,
         ]);
     }
+
 
 
 //    #[Route('/admin/users',name: 'app_admin_Listusers', methods: ['GET'])]
@@ -359,10 +372,12 @@ final class UserController extends AbstractController
     ): Response {
         $form = $this->createForm(LoginFormType::class);
         $form->handleRequest($request);
+        dump($request->request->all());
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $user = $userRepository->findByEmail($data['email']);
+            dump($request->request->all());
 
             if (!$user) {
                 $this->addFlash('error', 'Invalid credentials.');

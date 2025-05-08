@@ -32,34 +32,35 @@
                         </div>
 
                         {{ form_start(form) }}
-                        <div class="row">
-                            <div class="col-md-6">
-                                {{ form_row(form.CIN) }}
-                            </div>
-                            <div class="col-md-6">
-                                {{ form_row(form.Phone) }}
-                            </div>
-                        </div>
-
-                        {{ form_row(form.Address) }}
 
                         <div class="row">
                             <div class="col-md-6">
-                                {{ form_row(form.birthday) }}
+                                {{ form_row(form.CIN, {'value': ''}) }}
                             </div>
                             <div class="col-md-6">
-                                {{ form_row(form.Password) }}
+                                {{ form_row(form.Phone, {'value': ''}) }}
                             </div>
                         </div>
 
-                        {{ form_row(form.bio) }}
+                        {{ form_row(form.Address, {'value': ''}) }}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.birthday, {'value': ''}) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.Password, {'value': ''}) }}
+                            </div>
+                        </div>
+
+                        {{ form_row(form.bio, {'value': ''}) }}
 
                         <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary">
-                                Complete Profile
-                            </button>
+                            <button type="submit" class="btn btn-primary">Complete Profile</button>
                         </div>
+
                         {{ form_end(form) }}
+
                     </div>
                 </div>
             </div>

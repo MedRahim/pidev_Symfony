@@ -93,6 +93,10 @@
         {% for message in app.flashes('error') %}
             <div class="alert alert-danger">{{ message }}</div>
         {% endfor %}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
         {{ form_start(form) }}
             <div class="mb-3">
                 {{ form_row(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}

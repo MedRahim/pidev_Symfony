@@ -31,15 +31,17 @@ security:
 
 
         main:
+#            anonymous: true
             pattern: ^/
             lazy: true
             provider: app_user_provider
             context: main
-            entry_point: form_login
-            form_login:
-                login_path: app_login
-                check_path: app_login
-                enable_csrf: true
+#            form_login:
+#                login_path: app_user_login
+#                check_path: app_user_login
+#                enable_csrf: true
+#                username_parameter: email  # Use 'email' instead of '_username'
+#                password_parameter: password
 
             # Two-factor authentication
             two_factor:
@@ -68,7 +70,7 @@ security:
         - { path: ^/connect/google, roles: PUBLIC_ACCESS }
         - { path: ^/connect/google/check, roles: PUBLIC_ACCESS }
         - { path: ^/login$, roles: PUBLIC_ACCESS }
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: PUBLIC_ACCESS }
         - { path: ^/verify/email, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
