@@ -27,7 +27,7 @@ class TripsController extends AbstractController
         $this->slugger = $slugger;
     }
 
-    private function getFixedUser(EntityManagerInterface $em): Users
+    private function getFixedUser(EntityManagerInterface $em): User
     {
         $user = $em->getRepository(User::class)->find(self::FIXED_USER_ID);
         if (!$user) {
