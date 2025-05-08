@@ -29,9 +29,9 @@ class Payments
     )]
     private \DateTimeInterface $paymentDate;
 
-    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    private ?Users $user = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(targetEntity: Reservations::class)]
     #[ORM\JoinColumn(name: 'reservation_id', referencedColumnName: 'id')]
@@ -75,12 +75,12 @@ class Payments
         return $this;
     }
 
-    public function getUser(): ?Users
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?Users $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
         return $this;
