@@ -184,4 +184,20 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+
+
+    
+
+    // Exemple de méthode personnalisée pour trouver un utilisateur par email
+    public function findOneByEmail(string $email): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.Email = :email')
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    // Ajoutez ici d'autres méthodes de requête personnalisées si besoin
 }
