@@ -5,6 +5,7 @@ parameters:
         5:   'small_discount'
         10:  'medium_discount'
         15:  'big_discount'
+    openweathermap_api_key: '%env(OPENWEATHERMAP_API_KEY)%'
 
 services:
     _defaults:
@@ -28,3 +29,6 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\Service\WeatherService:
+        arguments:
+            $apiKey: '%openweathermap_api_key%'

@@ -231,6 +231,8 @@
                                 <div class="card-footer">
                                     <a href="{{ path('app_trips_show', {'id': trip.id}) }}" class="btn btn-sm btn-primary">Détails</a>
                                     <a href="{{ path('app_trips_reserve', {'id': trip.id}) }}" class="btn btn-sm btn-success">Réserver</a>
+                                    {# Nouveau bouton Météo pointant vers la météo de la destination #}
+                                    <a href="{{ path('app_weather_details', {'city': trip.destination}) }}" class="btn btn-sm btn-info">Météo</a>
                                 </div>
                             </div>
                         </div>

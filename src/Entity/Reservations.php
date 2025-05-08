@@ -21,7 +21,6 @@ class Reservations
     public const PAYMENT_FAILED   = 'failed';
     public const PAYMENT_REFUNDED = 'refunded';
 
-
     public const SEAT_STANDARD   = 'Standard';
     public const SEAT_PREMIUM    = 'Premium';
     public const SEAT_ECONOMIQUE = 'Économique';
@@ -68,6 +67,9 @@ class Reservations
     #[ORM\ManyToOne(targetEntity: Users::class)]
     #[ORM\JoinColumn(nullable: true, name: 'user_id', referencedColumnName: 'id')]
     private ?Users $user = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $transportId = null;
 
     public function getId(): ?int
     {
@@ -158,6 +160,18 @@ class Reservations
         return $this;
     }
 
+    public function getTransportId(): ?int
+    {
+        return $this->transportId;
+    }
+
+    public function setTransportId(?int $transportId): static
+    {
+        $this->transportId = $transportId;
+
+        return $this;
+    }
+
     #[Assert\Callback]
     public function validateSeatNumber(ExecutionContextInterface $context): void
     {
@@ -185,6 +199,7 @@ class Reservations
             'seat_type'         => $this->getSeatType(),
             'status'            => $this->getStatus(),
             'reservation_time'  => $this->getReservationTime()?->format('Y-m-d H:i:s'),
+            'transport_id'      => $this->getTransportId(),
         ]);
     }
 }

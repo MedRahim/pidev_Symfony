@@ -1,121 +1,239 @@
 {# templates/base.html.twig #}
-<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Agence de Voyage{% endblock %}</title>
+<!doctype html>
+<html class="no-js" lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}VoyagePro{% endblock %}</title>
+        <meta name="description" content="">
+        <link rel="manifest" href="{{ asset('FrontOffice/site.webmanifest') }}">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
 
-    {# CSS et JS dans le head #}
-    {{ encore_entry_link_tags('app') }}
-    {{ encore_entry_script_tags('app') }}
+        {# CSS de l'équipe - Conservé l'ordre exact pour éviter les conflits de style #}
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/owl.carousel.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slicknav.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/flaticon.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/animate.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/magnific-popup.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/fontawesome-all.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/themify-icons.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
+        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+        
+        {% block stylesheets %}{% endblock %}
+    </head>
 
-    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
-    {% block stylesheets %}{% endblock %}
-  </head>
-  <body>
-    <!-- Header/Navbar -->
-    <header class="sticky-top">
-      <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-        <div class="container">
-          <a class="navbar-brand d-flex align-items-center" href="{{ path('home') }}">
-            <img src="{{ asset('FrontOffice/assets/img/logo.png') }}"
-                 alt="Logo Agence" height="40" class="me-2">
-            <span class="fw-bold">VoyagePro</span>
-          </a>
-          <button class="navbar-toggler" type="button"
-                  data-bs-toggle="collapse" data-bs-target="#navbarMain">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarMain">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item"><a class="nav-link" href="{{ path('home') }}">Accueil</a></li>
-              <li class="nav-item"><a class="nav-link" href="{{ path('category') }}">Destinations</a></li>
-              <li class="nav-item"><a class="nav-link" href="{{ path('about') }}">À propos</a></li>
-              <li class="nav-item"><a class="nav-link" href="{{ path('blog') }}">Blog</a></li>
-              <li class="nav-item"><a class="nav-link" href="{{ path('contact') }}">Contact</a></li>
-            </ul>
-            <div class="d-flex">
-              {% if app.user %}
-                <div class="dropdown">
-                  <a class="btn btn-light dropdown-toggle" href="#"
-                     id="userDropdown" data-bs-toggle="dropdown">
-                    <i class="fas fa-user-circle me-1"></i> Mon compte
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#">Profil</a></li>
-                    <li><a class="dropdown-item" href="#">Mes réservations</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                      <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
-                        Déconnexion
-                      </a>
-                    </li>
-                  </ul>
+    <body>
+        <!-- Preloader Start -->
+        <div id="preloader-active">
+            <div class="preloader d-flex align-items-center justify-content-center">
+                <div class="preloader-inner position-relative">
+                    <div class="preloader-circle"></div>
+                    <div class="preloader-img pere-text">
+                        <img src="{{ asset('FrontOffice/assets/img/logo/loder.jpg') }}" alt="">
+                    </div>
                 </div>
-              {% else %}
-                <a href="{{ path('app_login') }}" class="btn btn-light me-2">
-                  <i class="fas fa-sign-in-alt me-1"></i> Connexion
-                </a>
-                <a href="{{ path('app_register') }}" class="btn btn-outline-light">
-                  <i class="fas fa-user-plus me-1"></i> Inscription
-                </a>
-              {% endif %}
             </div>
-          </div>
         </div>
-      </nav>
-    </header>
+        <!-- Preloader End -->
+        
+        <header>
+            <!-- Header Start -->
+            <div class="header-area header-transparent">
+                <div class="main-header">
+                    <div class="header-bottom header-sticky">
+                        <div class="container-fluid">
+                            <div class="row align-items-center">
+                                <!-- Logo -->
+                                <div class="col-xl-2 col-lg-2 col-md-1">
+                                    <div class="logo">
+                                        <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt="VoyagePro"></a>
+                                    </div>
+                                </div>
+                                <div class="col-xl-10 col-lg-10 col-md-8">
+                                    <!-- Main-menu -->
+                                    <div class="main-menu f-right d-none d-lg-block">
+                                        <nav>
+                                            <ul id="navigation">
+                                                <li><a href="{{ path('home') }}">Accueil</a></li>
+                                                <li><a href="{{ path('category') }}">Destinations</a></li>
+                                                <li><a href="{{ path('about') }}">À propos</a></li>
+                                                <li><a href="{{ path('blog') }}">Blog</a></li>
+                                                <li><a href="{{ path('contact') }}">Contact</a></li>
+                                                
+                                                {% if app.user %}
+                                                    <li class="add-list">
+                                                        <a href="#"><i class="fas fa-user-circle"></i> Mon compte</a>
+                                                        <ul class="submenu">
+                                                            <li><a href="#">Profil</a></li>
+                                                            <li><a href="#">Mes réservations</a></li>
+                                                            <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+                                                        </ul>
+                                                    </li>
+                                                {% else %}
+                                                    <li class="login"><a href="{{ path('app_login') }}"><i class="ti-user"></i> Connexion</a></li>
+                                                    <li class="register"><a href="{{ path('app_register') }}"><i class="ti-pencil"></i> Inscription</a></li>
+                                                {% endif %}
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                                <!-- Mobile Menu -->
+                                <div class="col-12">
+                                    <div class="mobile_menu d-block d-lg-none"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Header End -->
+        </header>
 
-    {# Flash messages #}
-    <div class="container mt-3">
-      {% for type, messages in app.flashes %}
-        {% for message in messages %}
-          <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          </div>
-        {% endfor %}
-      {% endfor %}
-    </div>
-
-    {# Contenu principal #}
-    {% block body %}{% endblock %}
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4 mt-5">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4 mb-4">
-            <h5>VoyagePro</h5>
-            <p>Votre agence de voyage préférée pour des trajets exceptionnels.</p>
-          </div>
-          <div class="col-md-2 mb-4">
-            <h5>Liens</h5>
-            <ul class="list-unstyled">
-              <li><a href="{{ path('home') }}" class="text-white">Accueil</a></li>
-              <li><a href="{{ path('about') }}" class="text-white">À propos</a></li>
-              <li><a href="{{ path('contact') }}" class="text-white">Contact</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-4">
-            <h5>Contact</h5>
-            <ul class="list-unstyled">
-              <li><i class="fas fa-map-marker-alt me-2"></i> 123 Rue des Voyages, Paris</li>
-              <li><i class="fas fa-phone me-2"></i> +33 1 23 45 67 89</li>
-              <li><i class="fas fa-envelope me-2"></i> contact@voyagepro.com</li>
-            </ul>
-          </div>
+        {# Flash messages #}
+        <div class="container mt-3">
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
         </div>
-        <hr class="my-4 bg-light">
-        <div class="text-center">
-          <p>&copy; {{ "now"|date("Y") }} VoyagePro. Tous droits réservés.</p>
-        </div>
-      </div>
-    </footer>
 
-    {#  Scripts bundlés par Encore (Stimulus, Bootstrap JS, Seatchart…) #}
-    {% block javascripts %}
-    {% endblock %}
-  </body>
+        {# Contenu principal #}
+        <main>
+            {% block body %}{% endblock %}
+        </main>
+
+        <footer>
+            <!-- Footer Start-->
+            <div class="footer-area">
+                <div class="container">
+                    <div class="footer-top footer-padding">
+                        <div class="row justify-content-between">
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="footer-logo">
+                                        <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo2_footer.png') }}" alt=""></a>
+                                    </div>
+                                    <p>Votre agence de voyage préférée pour des trajets exceptionnels.</p>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="footer-tittle">
+                                        <h4>Liens rapides</h4>
+                                        <ul>
+                                            <li><a href="{{ path('home') }}">Accueil</a></li>
+                                            <li><a href="{{ path('category') }}">Destinations</a></li>
+                                            <li><a href="{{ path('about') }}">À propos</a></li>
+                                            <li><a href="{{ path('contact') }}">Contact</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="footer-tittle">
+                                        <h4>Contact</h4>
+                                        <ul>
+                                            <li><i class="fas fa-map-marker-alt me-2"></i> 123 Rue des Voyages, Paris</li>
+                                            <li><i class="fas fa-phone me-2"></i> +33 1 23 45 67 89</li>
+                                            <li><i class="fas fa-envelope me-2"></i> contact@voyagepro.com</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="footer-tittle">
+                                        <h4>Réseaux sociaux</h4>
+                                        <div class="footer-social">
+                                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                            <a href="#"><i class="fab fa-twitter"></i></a>
+                                            <a href="#"><i class="fas fa-globe"></i></a>
+                                            <a href="#"><i class="fab fa-instagram"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-bottom">
+                        <div class="row d-flex justify-content-between align-items-center">
+                            <div class="col-xl-9 col-lg-8">
+                                <div class="footer-copy-right">
+                                    <p>&copy; {{ "now"|date("Y") }} VoyagePro. Tous droits réservés.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer End-->
+        </footer>
+
+        <!-- Scroll Up -->
+        <div id="back-top">
+            <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+        </div>
+
+        <!-- JS here - Assurez-vous de charger les scripts dans le bon ordre -->
+        <!-- jQuery en premier -->
+        <script src="{{ asset('FrontOffice/assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/popper.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/bootstrap.min.js') }}"></script>
+        
+        <!-- Plugins -->
+        <script src="{{ asset('FrontOffice/assets/js/jquery.slicknav.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/owl.carousel.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/slick.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/wow.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/animated.headline.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/jquery.magnific-popup.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/jquery.nice-select.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/jquery.sticky.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/contact.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/jquery.form.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/jquery.validate.min.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/mail-script.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/jquery.ajaxchimp.min.js') }}"></script>
+        
+        <!-- Main JS -->
+        <script src="{{ asset('FrontOffice/assets/js/plugins.js') }}"></script>
+        <script src="{{ asset('FrontOffice/assets/js/main.js') }}"></script>
+        
+        <!-- Script préloader corrigé -->
+        <script>
+          // Fonction de fermeture du préloader
+          function hidePreloader() {
+            $('#preloader-active').fadeOut('slow', function() {
+              $('body').css('overflow', 'visible');
+            });
+          }
+
+          // Dès que le DOM est prêt
+          $(document).ready(function(){
+            hidePreloader();
+          });
+
+          // Fallback au bout de 5 secondes
+          setTimeout(hidePreloader, 5000);
+
+          // Réafficher le loader uniquement pour les vraies navigations internes
+          // <–– Notez l’usage de double-quotes JS et single-quotes Twig pour éviter les backslashes !
+          $(document).on('click', "a[href^='{{ path('home') }}'], a[href^='/']", function(){
+            $('#preloader-active').fadeIn('fast');
+          });
+        </script>
+
+        {# Encore entry et éventuels scripts additionnels #}
+        {{ encore_entry_script_tags('app') }}
+        {% block javascripts %}{% endblock %}
+    </body>
 </html>

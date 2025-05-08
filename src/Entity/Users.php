@@ -2,98 +2,155 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
-#[ORM\Table(name: 'users', uniqueConstraints: [
-    new ORM\UniqueConstraint(name: 'email', columns: ['email'])
-])]
-#[ORM\Entity]
-class Users
+
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+class Users implements UserInterface,PasswordAuthenticatedUserInterface, TwoFactorInterface
 {
-    #[ORM\Column(name: 'id', type: 'integer')]
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'username', type: 'string', length: 255, nullable: false)]
-    private string $username;
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'CIN cannot be blank.')]
+    #[Assert\Length(
+        min: 8,
+        max: 8,
+        exactMessage: 'CIN must be exactly {{ limit }} characters long.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[0-9]*$/',
+        message: 'CIN must contain only numbers.'
+    )]
+    private ?string $CIN = null;
 
-    #[ORM\Column(name: 'email', type: 'string', length: 255, nullable: false)]
-    private string $email;
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Name cannot be blank.')]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'Name must be at least {{ limit }} characters long.',
+        maxMessage: 'Name cannot be longer than {{ limit }} characters.'
+    )]
+    private ?string $Name = null;
 
-    #[ORM\Column(name: 'password', type: 'string', length: 255, nullable: false)]
-    private string $password;
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Email cannot be blank.')]
+    #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
+    private ?string $Email = null;
 
-    #[ORM\Column(name: 'eco_km', type: 'integer', options: ['default' => 0])]
-    private int $ecoKm = 0;
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Password cannot be blank.')]
+    #[Assert\Length(
+        min: 8,
+        max: 32,
+        minMessage: 'Password must be at least {{ limit }} characters long.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/',
+        message: 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.'
+    )]
+    private ?string $Password = null;
 
-    #[ORM\Column(name: 'modes_used', type: 'json', options: ['default' => '[]'])]
-    private array $modesUsed = [];
+    #[ORM\Column(type: 'json', nullable: false, options: ['default' => '["ROLE_USER"]'])]
+    private array $roles = ['ROLE_USER'];
 
-    #[ORM\Column(name: 'trips_count', type: 'integer', options: ['default' => 0])]
-    private int $tripsCount = 0;
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Phone number cannot be blank.')]
+    #[Assert\Length(
+        min: 8,
+        max: 15,
+        minMessage: 'Phone number must be at least {{ limit }} characters long.',
+        maxMessage: 'Phone number cannot be longer than {{ limit }} characters.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[0-9+]*$/',
+        message: 'Phone number must contain only numbers and +.'
+    )]
+    private ?string $Phone = null;
 
-    #[ORM\Column(name: 'co2_saved', type: 'integer', options: ['default' => 0])]
-    private int $co2Saved = 0;
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Address cannot be blank.')]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Address cannot be longer than {{ limit }} characters.'
+    )]
+    private ?string $Address = null;
 
-    #[ORM\Column(name: 'garden', type: 'json', options: ['default' => '[]'])]
-    private array $garden = [];
+    #[ORM\Column]
+    private ?bool $isActive = null;
 
-    // Getters/Setters...
+    #[ORM\Column(length: 255)]
+    private ?string $pathtopic = null;
 
-    public function getEcoKm(): int
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: 'Birthday cannot be blank.')]
+    #[Assert\LessThan(
+        value: '-18 years',
+        message: 'You must be at least 18 years old.'
+    )]
+    private ?\DateTimeInterface $birthday = null;
+
+    #[ORM\Column]
+    private ?bool $isVerified = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $accountCreationDate = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $lastLoginDate = null;
+
+    #[ORM\Column]
+    private ?int $failedLoginAttempts = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Length(max: 1000)]
+    private ?string $bio = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $updatedAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $googleId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $avatar = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $googleAuthenticatorSecret = null;
+
+    #[ORM\Column]
+    private ?bool $isGoogleAuthenticatorEnabled = false;
+
+    public function __construct()
     {
-        return $this->ecoKm;
+        // Set default values directly in constructor
+        $this->isActive = false;
+        $this->isVerified = false;
+        $this->failedLoginAttempts = 0;
+        $this->roles = ['ROLE_USER'];
+        $this->createdAt = new \DateTimeImmutable();
+        $this->accountCreationDate = new \DateTimeImmutable();
+        $this->lastLoginDate = new \DateTimeImmutable();
+        $this->pathtopic = "  ";
     }
 
-    public function setEcoKm(int $ecoKm): self
+    #[ORM\PrePersist]
+    public function setAutoFields(): void
     {
-        $this->ecoKm = $ecoKm;
-        return $this;
-    }
-
-    public function getModesUsed(): array
-    {
-        return $this->modesUsed;
-    }
-
-    public function setModesUsed(array $modesUsed): self
-    {
-        $this->modesUsed = $modesUsed;
-        return $this;
-    }
-
-    public function getTripsCount(): int
-    {
-        return $this->tripsCount;
-    }
-
-    public function setTripsCount(int $tripsCount): self
-    {
-        $this->tripsCount = $tripsCount;
-        return $this;
-    }
-
-    public function getCo2Saved(): int
-    {
-        return $this->co2Saved;
-    }
-
-    public function setCo2Saved(int $co2Saved): self
-    {
-        $this->co2Saved = $co2Saved;
-        return $this;
-    }
-
-    public function getGarden(): array
-    {
-        return $this->garden;
-    }
-
-    public function setGarden(array $garden): self
-    {
-        $this->garden = $garden;
-        return $this;
+        // Only set fields that need to be updated at persist time
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -101,42 +158,264 @@ class Users
         return $this->id;
     }
 
-    public function getUsername(): ?string
+    public function getCIN(): ?string
     {
-        return $this->username;
+        return $this->CIN;
     }
 
-    public function setUsername(string $username): static
+    public function setCIN(string $CIN): static
     {
-        $this->username = $username;
+        $this->CIN = $CIN;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->Name;
+    }
+
+    public function setName(string $Name): static
+    {
+        $this->Name = $Name;
+
         return $this;
     }
 
     public function getEmail(): ?string
     {
-        return $this->email;
+        return $this->Email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $Email): static
     {
-        $this->email = $email;
+        $this->Email = $Email;
+
         return $this;
     }
 
     public function getPassword(): ?string
     {
-        return $this->password;
+        return $this->Password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $Password): static
     {
-        $this->password = $password;
+        $this->Password = $Password;
+
         return $this;
     }
-    public function __toString(): string
+
+    public function eraseCredentials(): void
     {
-        // Ce qui s’affiche dans les choix “Utilisateur”
-        return $this->username;
+        $this->Password = null;
     }
-    
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles ?: ['ROLE_USER'];
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->Phone;
+    }
+
+    public function setPhone(string $Phone): static
+    {
+        $this->Phone = $Phone;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->Address;
+    }
+
+    public function setAddress(string $Address): static
+    {
+        $this->Address = $Address;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getPathtopic(): ?string
+    {
+        return $this->pathtopic;
+    }
+
+    public function setPathtopic(string $pathtopic): static
+    {
+        $this->pathtopic = $pathtopic;
+
+        return $this;
+    }
+
+    public function getBirthday(): ?\DateTimeInterface
+    {
+        return $this->birthday;
+    }
+
+    public function setBirthday(\DateTimeInterface $birthday): static
+    {
+        $this->birthday = $birthday;
+
+        return $this;
+    }
+
+    public function isVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getAccountCreationDate(): ?\DateTimeInterface
+    {
+        return $this->accountCreationDate;
+    }
+
+    public function setAccountCreationDate(\DateTimeInterface $accountCreationDate): static
+    {
+        $this->accountCreationDate = $accountCreationDate;
+
+        return $this;
+    }
+
+    public function getLastLoginDate(): ?\DateTimeInterface
+    {
+        return $this->lastLoginDate;
+    }
+
+    public function setLastLoginDate(\DateTimeInterface $lastLoginDate): static
+    {
+        $this->lastLoginDate = $lastLoginDate;
+
+        return $this;
+    }
+
+    public function getFailedLoginAttempts(): ?int
+    {
+        return $this->failedLoginAttempts;
+    }
+
+    public function setFailedLoginAttempts(int $failedLoginAttempts): static
+    {
+        $this->failedLoginAttempts = $failedLoginAttempts;
+
+        return $this;
+    }
+
+    public function getBio(): ?string
+    {
+        return $this->bio;
+    }
+
+    public function setBio(?string $bio): static
+    {
+        $this->bio = $bio;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+
+
+
+    public function getUserIdentifier(): string
+    {
+        return $this->Email;
+    }
+
+    public function getGoogleId(): ?string
+    {
+        return $this->googleId;
+    }
+
+    public function setGoogleId(?string $googleId): static
+    {
+        $this->googleId = $googleId;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): static
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function isGoogleAuthenticatorEnabled(): bool
+    {
+        return $this->isGoogleAuthenticatorEnabled;
+    }
+
+    public function getGoogleAuthenticatorSecret(): ?string
+    {
+        return $this->googleAuthenticatorSecret;
+    }
+
+    public function setGoogleAuthenticatorSecret(?string $googleAuthenticatorSecret): void
+    {
+        $this->googleAuthenticatorSecret = $googleAuthenticatorSecret;
+    }
+
+    public function setIsGoogleAuthenticatorEnabled(bool $isGoogleAuthenticatorEnabled): void
+    {
+        $this->isGoogleAuthenticatorEnabled = $isGoogleAuthenticatorEnabled;
+    }
+
+    public function getGoogleAuthenticatorUsername(): string
+    {
+        return $this->getUserIdentifier(); // Returns the email
+    }
 }
