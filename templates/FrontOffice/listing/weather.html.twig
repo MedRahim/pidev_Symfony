@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Météo à {{ city }} - TransportX{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .weather-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .weather-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .weather-icon-lg {
+            width: 100px;
+            height: 100px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+
+        .temperature-display {
+            font-size: 4rem;
+            font-weight: 300;
+            line-height: 1;
+        }
+
+        .weather-detail-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .weather-detail-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .uv-index {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <section class="weather-header text-center">
+        <div class="container">
+            <h1 class="display-4 mb-3">Météo à {{ city }}</h1>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center justify-content-center gap-4">
+                        <img src="https://openweathermap.org/img/wn/{{ weather.icon }}@4x.png" 
+                             class="weather-icon-lg"
+                             alt="Conditions actuelles">
+                        <div class="text-start">
+                            <div class="temperature-display">{{ weather.temp|round }}°C</div>
+                            <div class="h3 text-capitalize">{{ weather.description }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="row g-4">
+            <!-- Carte Principale -->
+            <div class="col-lg-8">
+                <div class="weather-card">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="weather-detail-box">
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="fas fa-temperature-low fa-2x text-primary"></i>
+                                    <div>
+                                        <div class="text-muted small">Ressenti</div>
+                                        <div class="h4 mb-0">{{ weather.feels_like|round }}°C</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="weather-detail-box">
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="fas fa-tint fa-2x text-info"></i>
+                                    <div>
+                                        <div class="text-muted small">Humidité</div>
+                                        <div class="h4 mb-0">{{ weather.humidity }}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="weather-detail-box">
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="fas fa-wind fa-2x text-warning"></i>
+                                    <div>
+                                        <div class="text-muted small">Vent</div>
+                                        <div class="h4 mb-0">{{ weather.wind_speed|round }} km/h</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="weather-detail-box">
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="fas fa-sun fa-2x text-danger"></i>
+                                    <div>
+                                        <div class="text-muted small">UV</div>
+                                        <div class="h4 mb-0">{{ weather.uvi|default('N/A') }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="weather-card">
+                    <h5 class="mb-4"><i class="fas fa-info-circle me-2"></i>Détails complémentaires</h5>
+                    
+                    <div class="weather-detail-box mb-3">
+                        <div class="text-muted small">Pression atmosphérique</div>
+                        <div class="h5">{{ weather.pressure }} hPa</div>
+                    </div>
+
+                    <div class="weather-detail-box mb-3">
+                        <div class="text-muted small">Visibilité</div>
+                        <div class="h5">{{ (weather.visibility/1000)|round(1) }} km</div>
+                    </div>
+
+                    <div class="weather-detail-box mb-3">
+                        <div class="text-muted small">Lever du soleil</div>
+                        <div class="h5">{{ weather.sunrise|date('H:i') }}</div>
+                    </div>
+
+                    <div class="weather-detail-box">
+                        <div class="text-muted small">Coucher du soleil</div>
+                        <div class="h5">{{ weather.sunset|date('H:i') }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

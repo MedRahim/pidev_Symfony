@@ -8,6 +8,7 @@ parameters:
         5:   'small_discount'
         10:  'medium_discount'
         15:  'big_discount'
+    openweathermap_api_key: '%env(OPENWEATHERMAP_API_KEY)%'
 
 
 framework:
@@ -162,3 +163,6 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     # Ajoute ici d'autres définitions de services si nécessaire.
+    App\Service\WeatherService:
+        arguments:
+            $apiKey: '%openweathermap_api_key%'

@@ -14,9 +14,9 @@ class MysteryReward
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Users $user = null;
+    private ?User $user = null;
 
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $grantedAt = null;
@@ -34,7 +34,7 @@ class MysteryReward
     }
     // Getters et setters...
     public function getId(): ?int { return $this->id; }
-    public function getUser(): ?Users { return $this->user; }
+    public function getUser(): ?User { return $this->user; }
     public function setUser(?Users $user): self { $this->user = $user; return $this; }
     public function getGrantedAt(): ?\DateTimeInterface { return $this->grantedAt; }
     public function setGrantedAt(\DateTimeInterface $grantedAt): self { $this->grantedAt = $grantedAt; return $this; }

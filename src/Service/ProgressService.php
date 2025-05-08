@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\MysteryReward;
 use App\Entity\Reservations;
-use App\Entity\Users;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -19,7 +19,7 @@ class ProgressService
     /**
      * Enregistre un trajet et crée une récompense si un palier est atteint.
      */
-    public function recordTrip(Users $user, string $transportName, float $distance, int $co2Saved): void
+    public function recordTrip(User $user, string $transportName, float $distance, int $co2Saved): void
     {
         // 1) Stocke les stats du dernier trajet en session
         $this->requestStack->getSession()->set('last_trip_stats', [

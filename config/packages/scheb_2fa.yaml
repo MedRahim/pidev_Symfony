@@ -6,4 +6,7 @@ scheb_two_factor:
         template: security/2fa_form.html.twig
     security_tokens:
         - Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken
-        - Symfony\Component\Security\Http\Authenticator\Token\RememberMeToken
+        - Symfony\Component\Security\Http\Authenticator\Token\RememberMeToken# See the configuration reference at https://symfony.com/bundles/SchebTwoFactorBundle/6.x/configuration.html
+
+        - Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken
+        - Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken

@@ -177,7 +177,6 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-
     public function countUsersByRole(): array
     {
         return $this->createQueryBuilder('u')
@@ -186,6 +185,22 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+
+
+
+
+    // Exemple de méthode personnalisée pour trouver un utilisateur par email
+    public function findOneByEmail(string $email): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.Email = :email')
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    // Ajoutez ici d'autres méthodes de requête personnalisées si besoin
     public function countTotalUsers(): int
     {
         return (int) $this->createQueryBuilder('u')

@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Entity\Trips;
-use App\Entity\Users;
+use App\Entity\User;
 use App\Form\TripsType;
 use App\Repository\TripsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,9 +27,9 @@ class TripsController extends AbstractController
         $this->slugger = $slugger;
     }
 
-    private function getFixedUser(EntityManagerInterface $em): Users
+    private function getFixedUser(EntityManagerInterface $em): User
     {
-        $user = $em->getRepository(Users::class)->find(self::FIXED_USER_ID);
+        $user = $em->getRepository(User::class)->find(self::FIXED_USER_ID);
         if (!$user) {
             throw new \Exception('Fixed user not found. Check that user ID 7 exists.');
         }

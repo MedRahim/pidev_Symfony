@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Reservations;
-use App\Entity\Users;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +18,7 @@ class DashboardController extends AbstractController
     #[Route('/dashboard', name: 'app_dashboard')]
     public function index(): Response
     {
-        $user = $this->em->getRepository(Users::class)->find(7);
+        $user = $this->em->getRepository(User::class)->find(7);
 
         if (!$user) {
             throw $this->createNotFoundException('Utilisateur non trouvé.');

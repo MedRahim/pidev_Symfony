@@ -398,10 +398,13 @@ final class UserController extends AbstractController
             $this->addFlash('success', 'Login successful!');
 
             if (in_array('ROLE_ADMIN', $user->getRoles())) {
-                return $this->redirectToRoute('app_admin_dashboard');
+                return $this->redirectToRoute('backoffice_dashboard'); // Redirect admin to /backoffice
             }
-
-            return $this->redirectToRoute('app_user_index'); // Go to home after login
+            if (in_array('ROLE_USER', $user->getRoles())) {
+                return $this->redirectToRoute('app_user_index'); // Redirect user to home
+            }
+            // Default fallback
+            return $this->redirectToRoute('app_user_index');
         }
 
         return $this->render('user/login.html.twig', [
