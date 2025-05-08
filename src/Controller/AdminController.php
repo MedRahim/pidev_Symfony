@@ -27,22 +27,7 @@ class AdminController extends AbstractController
         ChartBuilderInterface $chartBuilder
     ): Response {
         // Get data from repository
-        $registrationData = $userRepository->getRegistrationTimeline();
         $rolesData = $userRepository->countUsersByRole();
-
-        // Registration Timeline Chart
-        $registrationChart = $chartBuilder->createChart(Chart::TYPE_LINE);
-        $registrationChart->setData([
-            'labels' => array_map(fn($d) => date('M Y', strtotime($d['month'].'-01')), $registrationData),
-            'datasets' => [
-                [
-                    'label' => 'Registrations',
-                    'backgroundColor' => 'rgb(78, 115, 223)',
-                    'borderColor' => 'rgb(78, 115, 223)',
-                    'data' => array_column($registrationData, 'count'),
-                ],
-            ],
-        ]);
 
         // User Roles Chart
         $rolesChart = $chartBuilder->createChart(Chart::TYPE_DOUGHNUT);
@@ -58,7 +43,6 @@ class AdminController extends AbstractController
         ]);
 
         return $this->render('admin/dashboard.html.twig', [
-            'registrationChart' => $registrationChart,
             'rolesChart' => $rolesChart,
             'stats' => [
                 'total_users' => $userRepository->countTotalUsers(),
@@ -67,6 +51,7 @@ class AdminController extends AbstractController
             ]
         ]);
     }
+
 
     // src/Controller/AdminController.php
     private function formatRoleName(string $role): string
@@ -79,4 +64,5 @@ class AdminController extends AbstractController
             'ROLE_USER' => 'Standard User',
             default => ucfirst(strtolower(str_replace('ROLE_', '', $role)) . ' User')};
     }
+
 }

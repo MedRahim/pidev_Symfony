@@ -169,12 +169,14 @@ class UserRepository extends ServiceEntityRepository
     public function getRegistrationTimeline(): array
     {
         return $this->createQueryBuilder('u')
-            ->select("DATE_FORMAT(u.createdAt, '%Y-%m') as month, COUNT(u.id) as count")
-            ->groupBy('month')
-            ->orderBy('month', 'ASC')
+            ->select("EXTRACT(YEAR FROM u.createdAt) AS year, EXTRACT(MONTH FROM u.createdAt) AS month, COUNT(u.id) AS count")
+            ->groupBy('year, month')
+            ->orderBy('year', 'ASC')
+            ->addOrderBy('month', 'ASC')
             ->getQuery()
             ->getResult();
     }
+
 
     public function countUsersByRole(): array
     {
@@ -184,4 +186,32 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function countTotalUsers(): int
+    {
+        return (int) $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countActiveUsers(): int
+    {
+        return (int) $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.isActive = :active')
+            ->setParameter('active', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countVerifiedUsers(): int
+    {
+        return (int) $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.isVerified = :verified')
+            ->setParameter('verified', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
 }
