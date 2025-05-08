@@ -1,9 +1,12 @@
 easy_admin:
     site_name: 'Admin Transport'
+    dashboard:
+        route: 'app_admin_dashboard2' # Doit MATCHER exactement l'annotation de route
+        controller: App\Controller\Admin\AdminDashboardController::index
     design:
         brand_color: '#0d6efd'
         form_theme:
             - '@EasyAdmin/form/bootstrap_5_layout.html.twig'
-            - 'admin/form_theme.html.twig' # Ajout de la quote manquante ici
+            - 'admin/form_theme.html.twig'
     formats:
         datetime: 'd/m/Y H:i'

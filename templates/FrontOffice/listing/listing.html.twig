@@ -8,7 +8,7 @@
         /* ========= HERO SECTION ========= */
         .hero {
             position: relative;
-            background: url("{{ asset('FrontOffice/assets/img/hero/hero-bg.jpg') }}") center center/cover no-repeat;
+            background: url("{{ asset('FrontOffice/assets/img/hero/hero2.jpg') }}") center center/cover no-repeat;
             height: 500px;
             display: flex;
             align-items: center;
@@ -18,7 +18,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.3);
         }
         .hero-content {
             position: relative;
@@ -28,6 +28,8 @@
             padding: 0 20px;
         }
         .hero-content h1 {
+                        color: #fff !important;
+
             font-size: 3rem;
             font-weight: 700;
             margin-bottom: 20px;
@@ -168,7 +170,7 @@
         <div class="hero-content">
             <h1>Recherchez votre trajet</h1>
             <form method="get" action="{{ path('app_trips_index') }}" class="search-bar input-group mt-4">
-                <input type="text" class="form-control" placeholder="Exemple: Paris - Lyon" name="q" value="{{ app.request.get('q') }}">
+                <input type="text" class="form-control" placeholder="Exemple: Tunis_ Ariana" name="q" value="{{ app.request.get('q') }}">
                 <button class="btn btn-primary" type="submit">Rechercher</button>
             </form>
         </div>

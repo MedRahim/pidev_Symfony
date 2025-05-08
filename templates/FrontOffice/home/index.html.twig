@@ -21,6 +21,34 @@
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+   <style>
+    /* 1. Fond de la zone Hero */
+    .slider-area.hero-overly {
+      position: relative !important;
+      background-image: url("{{ asset('FrontOffice/assets/img/hero/h1_hero.jpg') }}") !important;
+      background-size: cover !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+      min-height: 500px !important;
+      z-index: 1 !important;
+    }
+
+    /* 2. Supprimez toute superposition grise venant des pseudo-éléments */
+    .slider-area.hero-overly::before,
+    .slider-area.hero-overly::after,
+    .single-slider.hero-overly::before,
+    .single-slider.hero-overly::after {
+      content: none !important;
+      background: none !important;
+    }
+
+    /* 3. Le contenu au-dessus */
+    .slider-area.hero-overly .hero__caption,
+    .slider-area.hero-overly .search-box {
+      position: relative !important;
+      z-index: 2 !important;
+    }
+  </style>
    </head>
 
    <body>
@@ -120,8 +148,10 @@
         </div>
 
         <!-- Fonctionnement -->
-        <div class="services-area pt-150 pb-150 section-bg" data-background="{{ asset('FrontOffice/assets/img/gallery/section_bg02.jpg') }}">
-            <div class="container">
+    <div class="slider-area hero-overly"
+     style="background-image: url('{{ asset('FrontOffice/assets/img/hero/h1_hero.jpg') }}'); background-size: cover; background-position: center;">
+    <div class="single-slider slider-height d-flex align-items-center">
+        <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="section-tittle section-tittle2 text-center mb-80">
@@ -239,7 +269,7 @@
         </div>
 
         <!-- Newsletter -->
-        <div class="subscribe-area section-bg pt-150 pb-150" data-background="{{ asset('FrontOffice/assets/img/gallery/section_bg04.jpg') }}">
+        <div class="subscribe-area section-bg pt-150 pb-150" data-background="{{ asset('FrontOffice/assets/img/hero/h1_hero.jpg') }}">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-xl-6 col-lg-8">
@@ -334,7 +364,7 @@
                                 <div class="footer-tittle">
                                     <h4>Coordonnées</h4>
                                     <ul class="contact-info">
-                                        <li><i class="ti-location-pin"></i> 123 Rue des Voyages, Paris</li>
+                                        <li><i class="ti-location-pin"></i> 123 Rue des Voyages, Tunis</li>
                                         <li><i class="ti-email"></i> contact@agencevoyage.com</li>
                                         <li><i class="ti-mobile"></i> +33 1 23 45 67 89</li>
                                     </ul>
