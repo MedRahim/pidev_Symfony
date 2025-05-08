@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Trips;
 use App\Entity\Reservations;
-use App\Entity\Users; // Supposant que vous avez cette entité
+use App\Entity\User; // Supposant que vous avez cette entité
 use App\Controller\Admin\ReservationsCrudController;
 use App\Repository\ReservationsRepository;
 use Doctrine\ORM\EntityManagerInterface; // Ajouté pour l'export
@@ -257,7 +257,7 @@ public function configureMenuItems(): iterable
         ->setLinkTarget('_blank');
 
     yield MenuItem::section('Administration');
-    yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', Users::class);
+    yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class);
 }
 
      public function configureActions(): Actions // Pas besoin de la redéfinir si pas de changement

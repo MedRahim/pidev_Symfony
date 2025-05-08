@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Users;
+use App\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Endroid\QrCode\Builder\BuilderInterface;
@@ -42,9 +42,9 @@ class ReservationsController extends AbstractController
         $this->progressService = $progressService;
     }
 
-    private function getFixedUser(EntityManagerInterface $em): Users
+    private function getFixedUser(EntityManagerInterface $em): User
     {
-        $user = $em->getRepository(Users::class)->find(self::FIXED_USER_ID);
+        $user = $em->getRepository(User::class)->find(self::FIXED_USER_ID);
         if (!$user) {
             throw new \Exception('Fixed user not found. Check that user ID 7 exists.');
         }

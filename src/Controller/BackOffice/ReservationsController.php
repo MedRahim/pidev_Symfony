@@ -2,7 +2,7 @@
 // src/Controller/BackOffice/ReservationsController.php
 
 namespace App\Controller\BackOffice;
-use App\Entity\Users;                      // ← Import corrigé : votre entité s'appelle Users
+use App\Entity\User;                      // ← Import corrigé : votre entité s'appelle Users
 
 use App\Entity\Reservations;
 use App\Form\ReservationsType;
@@ -52,7 +52,7 @@ class ReservationsController extends AbstractController
                 $reservation->setTransportId($trip->getTransportId());
     
                 // 3. Forcer l'utilisateur à celui dont l'ID = 9
-                $userRef = $em->getReference(Users::class, 9);
+                $userRef = $em->getReference(User::class, 9);
                 $reservation->setUser($userRef);
     
                 // 4. Persister et flush

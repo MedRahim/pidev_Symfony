@@ -64,9 +64,9 @@ class Reservations
     #[ORM\JoinColumn(nullable: false, name: 'trip_id', referencedColumnName: 'id')]
     private ?Trips $trip = null;
 
-    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, name: 'user_id', referencedColumnName: 'id')]
-    private ?Users $user = null;
+    private ?User $user = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $transportId = null;
@@ -143,12 +143,12 @@ class Reservations
         return $this;
     }
 
-    public function getUser(): ?Users
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?Users $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
         return $this;

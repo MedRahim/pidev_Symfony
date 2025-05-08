@@ -15,7 +15,7 @@ class UserProgress
 
     #[ORM\OneToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private Users $user;
+    private User $user;
 
     #[ORM\Column]
     private int $progress = 0;
@@ -25,12 +25,12 @@ class UserProgress
         return $this->id;
     }
 
-    public function getUser(): Users
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(Users $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
         return $this;
