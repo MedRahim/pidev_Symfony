@@ -87,6 +87,46 @@
                       <i class="bx bx-plus"></i> Ajouter un produit
                     </button>
                   </div>
+                  <!-- Product Statistics Cards (Styled like Reclamations) -->
+                  <div class="row mb-4">
+                    <div class="col-md-3">
+                      <div class="card shadow-lg border-0 stat-card-blue">
+                        <div class="card-body">
+                          <h5 class="card-title stat-card-title">Total Produits</h5>
+                          <h2 class="mb-0 stat-card-value">{{ total_products }}</h2>
+                          <p class="card-text stat-card-text"><small>Dans le catalogue</small></p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card shadow-lg border-0 stat-card-green">
+                        <div class="card-body">
+                          <h5 class="card-title stat-card-title">En Stock</h5>
+                          <h2 class="mb-0 stat-card-value">{{ in_stock_products }}</h2>
+                          <p class="card-text stat-card-text"><small>Disponibles</small></p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card shadow-lg border-0 stat-card-yellow">
+                        <div class="card-body">
+                          <h5 class="card-title stat-card-title">Stock Faible</h5>
+                          <h2 class="mb-0 stat-card-value">{{ low_stock_products }}</h2>
+                          <p class="card-text stat-card-text"><small>À surveiller</small></p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card shadow-lg border-0 stat-card-cyan">
+                        <div class="card-body">
+                          <h5 class="card-title stat-card-title">Rupture</h5>
+                          <h2 class="mb-0 stat-card-value">{{ out_of_stock_products }}</h2>
+                          <p class="card-text stat-card-text"><small>En rupture</small></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End Product Statistics Cards -->
                   {% for message in app.flashes('success') %}
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                       {{ message }}
