@@ -71,9 +71,20 @@ final class ProductController extends AbstractController
             return $this->redirectToRoute('products_page');
         }
 
+        // Product statistics for dashboard cards
+        $allProducts = $productRepository->findAll();
+        $total_products = count($allProducts);
+        $in_stock_products = count(array_filter($allProducts, fn($p) => $p->getStock() > 0));
+        $low_stock_products = count(array_filter($allProducts, fn($p) => $p->getStock() > 0 && $p->getStock() <= $p->getStockLimit()));
+        $out_of_stock_products = count(array_filter($allProducts, fn($p) => $p->getStock() === 0));
+
         return $this->render('BackOffice/products.html.twig', [
             'pagination' => $pagination,
             'form' => $form->createView(),
+            'total_products' => $total_products,
+            'in_stock_products' => $in_stock_products,
+            'low_stock_products' => $low_stock_products,
+            'out_of_stock_products' => $out_of_stock_products,
         ]);
     }
 
