@@ -23,7 +23,33 @@
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
         
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}  <style>
+      /* 1. Fond de la zone Hero */
+      .slider-area.hero-overly {
+        position: relative !important;
+        background: url("{{ asset('FrontOffice/assets/img/hero/h1_hero.jpg') }}") center/cover no-repeat !important;
+        min-height: 500px !important;
+        z-index: 0 !important;
+      }
+
+      /* 2. Suppression de toute pseudo‑classe grise */
+      .slider-area.hero-overly::before,
+      .slider-area.hero-overly::after,
+      .single-slider.hero-overly::before,
+      .single-slider.hero-overly::after {
+        content: none !important;
+        background: none !important;
+      }
+
+      /* 3. Contenu au‑dessus de l’image */
+      .slider-area.hero-overly .hero__caption,
+      .slider-area.hero-overly .search-box {
+        position: relative !important;
+        z-index: 1 !important;
+      }
+    </style>
+    {% endblock %}
+        
     </head>
 
     <body>
@@ -59,7 +85,6 @@
                                         <nav>
                                             <ul id="navigation">
                                                 <li><a href="{{ path('home') }}">Accueil</a></li>
-                                                <li><a href="{{ path('category') }}">Destinations</a></li>
                                                 <li><a href="{{ path('about') }}">À propos</a></li>
                                                 <li><a href="{{ path('blog') }}">Blog</a></li>
                                                 <li><a href="{{ path('contact') }}">Contact</a></li>
@@ -130,7 +155,6 @@
                                         <h4>Liens rapides</h4>
                                         <ul>
                                             <li><a href="{{ path('home') }}">Accueil</a></li>
-                                            <li><a href="{{ path('category') }}">Destinations</a></li>
                                             <li><a href="{{ path('about') }}">À propos</a></li>
                                             <li><a href="{{ path('contact') }}">Contact</a></li>
                                         </ul>
@@ -142,7 +166,7 @@
                                     <div class="footer-tittle">
                                         <h4>Contact</h4>
                                         <ul>
-                                            <li><i class="fas fa-map-marker-alt me-2"></i> 123 Rue des Voyages, Paris</li>
+                                            <li><i class="fas fa-map-marker-alt me-2"></i> 123 Rue des Voyages, Tunis</li>
                                             <li><i class="fas fa-phone me-2"></i> +33 1 23 45 67 89</li>
                                             <li><i class="fas fa-envelope me-2"></i> contact@voyagepro.com</li>
                                         </ul>

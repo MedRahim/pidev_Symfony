@@ -32,6 +32,9 @@ class AdminDashboardController extends AbstractDashboardController
     public function __construct(
         ManagerRegistry $doctrine,
         AdminUrlGenerator $adminUrlGenerator,
+
+
+
         ReservationsRepository $reservationsRepo,
         ?LoggerInterface $logger = null // Injection optionnelle du logger
     ) {
@@ -41,7 +44,7 @@ class AdminDashboardController extends AbstractDashboardController
         $this->logger = $logger; // Stocker le logger
     }
 
-    #[Route('/admin', name: 'app_admin_dashboard')]
+    #[Route('/admin', name: 'app_admin_dashboard2')]
     public function index(): Response
     {
         $now = new \DateTime();
@@ -276,6 +279,6 @@ public function configureMenuItems(): iterable
          // Mettre ici la vraie logique d'envoi de notification
          $this->addFlash('warning', 'Logique de notification non implémentée.'); // Message d'avertissement
          // Rediriger vers le dashboard ou la page précédente
-         return $this->redirectToRoute('app_admin_dashboard');
+         return $this->redirectToRoute('app_admin_dashboard2');
      }
 }
