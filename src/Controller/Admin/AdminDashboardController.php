@@ -138,16 +138,17 @@ class AdminDashboardController extends AbstractDashboardController
                  $amount = $trip ? ($trip->getPrice() * $r->getSeatNumber()) : 0;
 
                  return [
-                     // Modifier la partie de la génération du titre :
-'title' => 'Réservation #' . $r->getId() . ($client ? ' par ' . $client : ''),
-                     'description' => sprintf(
-                         '%d siège(s) pour %s → %s (%s TND) - Statut: %s',
-                         $r->getSeatNumber(),
-                         $trip ? $trip->getDeparture() : 'N/A', // Gérer le cas où le trajet est null
-                         $trip ? $trip->getDestination() : 'N/A',
-                         number_format((float)$amount, 2, ',', '.'), // S'assurer que le montant est un float
-                         $r->getStatus() ?? 'N/A' // Gérer le statut null
-                     ),
+                    'title' => 'Réservation #' . $r->getId()
+                             // On utilise getName() plutôt que l'objet User
+                             . ($client ? ' par ' . $client->getName() : ''),
+                    'description' => sprintf(
+                        '%d siège(s) pour %s → %s (%s TND) – Statut : %s',
+                        $r->getSeatNumber(),
+                        $trip ? $trip->getDeparture() : 'N/A',
+                        $trip ? $trip->getDestination() : 'N/A',
+                        number_format((float)$amount, 2, ',', '.'),
+                        $r->getStatus() ?? 'N/A'
+                    ),
                      'date' => $r->getReservationTime(),
                      'url' => $this->adminUrlGenerator // Ajouter un lien vers le détail si possible
                         ->setController(ReservationsCrudController::class)
