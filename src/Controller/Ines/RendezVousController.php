@@ -14,7 +14,7 @@ use App\Repository\Ines\RendezvousRepository;
 use App\Entity\Ines\Medecin;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-use App\Entity\Ines\User;
+
 
 #[Route('/rendezvous', name: 'rendezvous_')]
 class RendezVousController extends AbstractController
@@ -26,6 +26,10 @@ class RendezVousController extends AbstractController
         EntityManagerInterface $em,
         MailerInterface $mailer
     ): Response {
+        // Récupérer l'utilisateur connecté
+       
+
+
         // Récupérer le médecin
         $medecin = $em->getRepository(Medecin::class)->find($idMedecin);
         if (!$medecin) {
@@ -35,15 +39,7 @@ class RendezVousController extends AbstractController
         // Créer un nouvel objet rendez-vous
         $rendezvous = new Rendezvous();
         $rendezvous->setMedecin($medecin);
-
-        // Récupérer l'utilisateur avec l'ID 1 (utilisateur par défaut)
-        $user = $em->getRepository(User::class)->find(1);  // Utilisez `Users::class` ici
-        if (!$user) {
-            throw $this->createNotFoundException('Utilisateur non trouvé.');
-        }
-
-        // Associer l'utilisateur au rendez-vous
-        $rendezvous->setUser($user);
+        //$rendezvous->setUser($user); // Associer le rendez-vous à l'utilisateur connecté
 
         // Créer et gérer le formulaire
         $form = $this->createForm(RendezVousType::class, $rendezvous);
@@ -51,37 +47,33 @@ class RendezVousController extends AbstractController
 
         // Si le formulaire est soumis et valide
         if ($form->isSubmitted() && $form->isValid()) {
-            // Persister l'objet rendez-vous en base de données
+            // Enregistrer le rendez-vous dans la base de données
             $em->persist($rendezvous);
             $em->flush();
 
-            // Récupérer l'email de l'utilisateur
-            $userEmail = $user->getEmail();
-
-            // Créer l'email de confirmation
+            // Envoyer un email de confirmation
             $email = (new Email())
-                ->from('ines.rahrah@esprit.tn')  // Remplacer par votre adresse email
-                ->to($userEmail)  // L'email de l'utilisateur par défaut (id=1)
+                ->from('ines.rahrah@esprit.tn') // Remplacez par l'email de l'expéditeur
+                ->to('ines.rahrah@esprit.tn') // email de l'utilisateur connecté
                 ->subject('Confirmation de votre rendez-vous')
-                ->text("Bonjour,\n\nVotre rendez-vous a été confirmé pour le " . 
-                    $rendezvous->getDateRendezVous()->format('d/m/Y') . 
-                    " à " . $rendezvous->getTimeRendezVous()->format('H:i') . 
-                    " au lieu : " . $rendezvous->getLieu() . ".\n\nMerci.");
+                ->html('<p>Bonjour ,</p>
+                        <p>Votre rendez-vous avec le docteur <strong>' . $medecin->getNomM() . '</strong> a bien été enregistré.</p>
+                        <p>Date : <strong>' . $rendezvous->getDateRendezVous()->format('d/m/Y H:i') . '</strong></p>
+                        <p>Merci de votre confiance.</p>');
 
-            // Envoyer l'email
+            // Envoi de l'email
             $mailer->send($email);
 
-            // Rediriger vers une page de succès
+            // Redirection vers une page de succès
             return $this->redirectToRoute('rendezvous_rendezvous_success');
         }
 
-        // Rendre le formulaire
+        // Afficher le formulaire
         return $this->render('FrontOffice/rendezvous_new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
-    // Page de succès après la création du rendez-vous
     #[Route('/success', name: 'rendezvous_success')]
     public function success(): Response
     {

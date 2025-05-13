@@ -33,7 +33,7 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
 
     if ($form->isSubmitted() && $form->isValid()) {
         // Assurez-vous que l'image est bien définie avant de persister
-        $medecin->setImageFile($medecin->getImageFile());
+        
 
         // Persister le médecin et l'image
         $entityManager->persist($medecin);
@@ -55,8 +55,7 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $medecin->setImageFile($medecin->getImageFile());
-
+           
             $entityManager->flush();
             $this->addFlash('success', 'Médecin modifié avec succès.');
             return $this->redirectToRoute('backoffice_medecin_list');
@@ -69,18 +68,15 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
     }
 
     #[Route('/delete/{idMedecin}', name: 'delete', methods: ['POST'])]
-    public function delete(Medecin $medecin, EntityManagerInterface $entityManager): Response
-    {
-        $imagePath = $this->getParameter('kernel.project_dir') . '/public/uploads/medecins/' . $medecin->getImageName();
-        if ($medecin->getImageName() && file_exists($imagePath)) {
-            unlink($imagePath);
-        }
+public function delete(Medecin $medecin, EntityManagerInterface $entityManager): Response
+{
+    // Suppression directe sans traitement d'image
+    $entityManager->remove($medecin);
+    $entityManager->flush();
 
-        $entityManager->remove($medecin);
-        $entityManager->flush();
+    $this->addFlash('success', 'Médecin supprimé avec succès.');
 
-        $this->addFlash('success', 'Médecin supprimé avec succès.');
+    return $this->redirectToRoute('backoffice_medecin_list');
+}
 
-        return $this->redirectToRoute('backoffice_medecin_list');
-    }
 }

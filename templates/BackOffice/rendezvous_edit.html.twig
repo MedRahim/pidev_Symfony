@@ -190,11 +190,6 @@
             {{ form_errors(form.status) }}
         </div>
 
-        <div class="mb-3">
-            {{ form_label(form.idMedecin) }}
-            {{ form_widget(form.idMedecin, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.idMedecin) }}
-        </div>
 
         <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
         <a href="{{ path('backoffice_rendezvous_list') }}" class="btn btn-secondary">Annuler</a>
