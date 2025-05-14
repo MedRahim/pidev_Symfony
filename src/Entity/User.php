@@ -3,23 +3,27 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFactorInterface
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['CIN'], message: 'There is already an account with this CIN')]
+class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 8, unique: true)]
     #[Assert\NotBlank(message: 'CIN cannot be blank.')]
     #[Assert\Length(
         min: 8,
@@ -32,7 +36,7 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     )]
     private ?string $CIN = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'Name cannot be blank.')]
     #[Assert\Length(
         min: 2,
@@ -40,30 +44,21 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
         minMessage: 'Name must be at least {{ limit }} characters long.',
         maxMessage: 'Name cannot be longer than {{ limit }} characters.'
     )]
-    private ?string $Name = null;
+    private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: 'Email',length: 180, unique: true)]
     #[Assert\NotBlank(message: 'Email cannot be blank.')]
     #[Assert\Email(message: 'The email "{{ value }}" is not a valid email.')]
     private ?string $Email = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column]
     #[Assert\NotBlank(message: 'Password cannot be blank.')]
-    #[Assert\Length(
-        min: 8,
-        max: 32,
-        minMessage: 'Password must be at least {{ limit }} characters long.'
-    )]
-    #[Assert\Regex(
-        pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/',
-        message: 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.'
-    )]
-    private ?string $Password = null;
+    private ?string $password = null;
 
-    #[ORM\Column(type: 'json', nullable: false, options: ['default' => '["ROLE_USER"]'])]
-    private array $roles = ['ROLE_USER'];
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 15)]
     #[Assert\NotBlank(message: 'Phone number cannot be blank.')]
     #[Assert\Length(
         min: 8,
@@ -75,7 +70,7 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
         pattern: '/^[0-9+]*$/',
         message: 'Phone number must contain only numbers and +.'
     )]
-    private ?string $Phone = null;
+    private ?string $phone = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Address cannot be blank.')]
@@ -83,13 +78,13 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
         max: 255,
         maxMessage: 'Address cannot be longer than {{ limit }} characters.'
     )]
-    private ?string $Address = null;
+    private ?string $address = null;
 
     #[ORM\Column]
-    private ?bool $isActive = null;
+    private bool $isActive = false;
 
-    #[ORM\Column(length: 255)]
-    private ?string $pathtopic = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profilePicture = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(message: 'Birthday cannot be blank.')]
@@ -100,7 +95,7 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     private ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column]
-    private ?bool $isVerified = null;
+    private bool $isVerified = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $accountCreationDate = null;
@@ -109,7 +104,7 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     private ?\DateTimeInterface $lastLoginDate = null;
 
     #[ORM\Column]
-    private ?int $failedLoginAttempts = null;
+    private int $failedLoginAttempts = 0;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(max: 1000)]
@@ -131,25 +126,23 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     private ?string $googleAuthenticatorSecret = null;
 
     #[ORM\Column]
-    private ?bool $isGoogleAuthenticatorEnabled = false;
+    private bool $isGoogleAuthenticatorEnabled = false;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Trips::class, orphanRemoval: true)]
+    private Collection $trips;
 
     public function __construct()
     {
-        // Set default values directly in constructor
-        $this->isActive = false;
-        $this->isVerified = false;
-        $this->failedLoginAttempts = 0;
-        $this->roles = ['ROLE_USER'];
-        $this->createdAt = new \DateTimeImmutable();
+        $this->trips = new ArrayCollection();
         $this->accountCreationDate = new \DateTimeImmutable();
         $this->lastLoginDate = new \DateTimeImmutable();
-        $this->pathtopic = "  ";
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     #[ORM\PrePersist]
-    public function setAutoFields(): void
+    #[ORM\PreUpdate]
+    public function updateTimestamps(): void
     {
-        // Only set fields that need to be updated at persist time
         $this->updatedAt = new \DateTimeImmutable();
     }
 
@@ -166,19 +159,17 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     public function setCIN(string $CIN): static
     {
         $this->CIN = $CIN;
-
         return $this;
     }
 
     public function getName(): ?string
     {
-        return $this->Name;
+        return $this->name;
     }
 
-    public function setName(string $Name): static
+    public function setName(string $name): static
     {
-        $this->Name = $Name;
-
+        $this->name = $name;
         return $this;
     }
 
@@ -190,30 +181,35 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     public function setEmail(string $Email): static
     {
         $this->Email = $Email;
-
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function getUserIdentifier(): string
     {
-        return $this->Password;
+        return (string) $this->Email;
     }
 
-    public function setPassword(string $Password): static
+    public function getPassword(): string
     {
-        $this->Password = $Password;
+        return $this->password;
+    }
 
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
         return $this;
     }
 
     public function eraseCredentials(): void
     {
-        $this->Password = null;
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
     public function getRoles(): array
     {
         $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -221,35 +217,33 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
 
     public function setRoles(array $roles): static
     {
-        $this->roles = $roles ?: ['ROLE_USER'];
+        $this->roles = $roles;
         return $this;
     }
 
     public function getPhone(): ?string
     {
-        return $this->Phone;
+        return $this->phone;
     }
 
-    public function setPhone(string $Phone): static
+    public function setPhone(string $phone): static
     {
-        $this->Phone = $Phone;
-
+        $this->phone = $phone;
         return $this;
     }
 
     public function getAddress(): ?string
     {
-        return $this->Address;
+        return $this->address;
     }
 
-    public function setAddress(string $Address): static
+    public function setAddress(string $address): static
     {
-        $this->Address = $Address;
-
+        $this->address = $address;
         return $this;
     }
 
-    public function isActive(): ?bool
+    public function isActive(): bool
     {
         return $this->isActive;
     }
@@ -257,19 +251,17 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
-
         return $this;
     }
 
-    public function getPathtopic(): ?string
+    public function getProfilePicture(): ?string
     {
-        return $this->pathtopic;
+        return $this->profilePicture;
     }
 
-    public function setPathtopic(string $pathtopic): static
+    public function setProfilePicture(?string $profilePicture): static
     {
-        $this->pathtopic = $pathtopic;
-
+        $this->profilePicture = $profilePicture;
         return $this;
     }
 
@@ -281,11 +273,10 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     public function setBirthday(\DateTimeInterface $birthday): static
     {
         $this->birthday = $birthday;
-
         return $this;
     }
 
-    public function isVerified(): ?bool
+    public function isVerified(): bool
     {
         return $this->isVerified;
     }
@@ -293,7 +284,6 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
-
         return $this;
     }
 
@@ -305,7 +295,6 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     public function setAccountCreationDate(\DateTimeInterface $accountCreationDate): static
     {
         $this->accountCreationDate = $accountCreationDate;
-
         return $this;
     }
 
@@ -317,11 +306,10 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     public function setLastLoginDate(\DateTimeInterface $lastLoginDate): static
     {
         $this->lastLoginDate = $lastLoginDate;
-
         return $this;
     }
 
-    public function getFailedLoginAttempts(): ?int
+    public function getFailedLoginAttempts(): int
     {
         return $this->failedLoginAttempts;
     }
@@ -329,7 +317,18 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     public function setFailedLoginAttempts(int $failedLoginAttempts): static
     {
         $this->failedLoginAttempts = $failedLoginAttempts;
+        return $this;
+    }
 
+    public function incrementFailedLoginAttempts(): static
+    {
+        $this->failedLoginAttempts++;
+        return $this;
+    }
+
+    public function resetFailedLoginAttempts(): static
+    {
+        $this->failedLoginAttempts = 0;
         return $this;
     }
 
@@ -341,7 +340,6 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     public function setBio(?string $bio): static
     {
         $this->bio = $bio;
-
         return $this;
     }
 
@@ -353,7 +351,6 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
@@ -362,12 +359,10 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
         return $this->updatedAt;
     }
 
-
-
-
-    public function getUserIdentifier(): string
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
     {
-        return $this->Email;
+        $this->updatedAt = $updatedAt;
+        return $this;
     }
 
     public function getGoogleId(): ?string
@@ -378,7 +373,6 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     public function setGoogleId(?string $googleId): static
     {
         $this->googleId = $googleId;
-
         return $this;
     }
 
@@ -390,7 +384,6 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
     public function setAvatar(?string $avatar): static
     {
         $this->avatar = $avatar;
-
         return $this;
     }
 
@@ -416,6 +409,41 @@ class User implements UserInterface,PasswordAuthenticatedUserInterface, TwoFacto
 
     public function getGoogleAuthenticatorUsername(): string
     {
-        return $this->getUserIdentifier(); // Returns the email
+        return $this->getUserIdentifier();
+    }
+
+    /**
+     * @return Collection<int, Trips>
+     */
+    public function getTrips(): Collection
+    {
+        return $this->trips;
+    }
+
+    public function addTrip(Trips $trip): static
+    {
+        if (!$this->trips->contains($trip)) {
+            $this->trips->add($trip);
+            $trip->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrip(Trips $trip): static
+    {
+        if ($this->trips->removeElement($trip)) {
+            // set the owning side to null (unless already changed)
+            if ($trip->getUser() === $this) {
+                $trip->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName() ?? 'User #'.$this->getId();
     }
 }

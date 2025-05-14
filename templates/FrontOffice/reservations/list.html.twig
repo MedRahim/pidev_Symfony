@@ -9,6 +9,7 @@
     /* Palette de couleurs */
     :root {
       --primary: #4361ee;
+      --primary-light: #eef2ff;
       --secondary: #3f37c9;
       --success: #4cc9f0;
       --danger: #f72585;
@@ -16,15 +17,48 @@
       --info: #4895ef;
       --light: #f8f9fa;
       --dark: #212529;
+      --premium: #6a1b9a;
     }
 
     /* Style général */
+    body {
+      background-color: #f8f9fa;
+    }
+    
+    .page-header {
+      background-color: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+      border: none;
+    }
+    
+    .page-title {
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .page-title i {
+      font-size: 1.5rem;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    
     .reservation-card {
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border: 1px solid rgba(0,0,0,0.08);
+      border: none;
+      background-color: white;
     }
     
     .reservation-card:hover {
@@ -53,6 +87,7 @@
     .btn-edit { background-color: var(--warning); color: white; }
     .btn-pay { background-color: var(--success); color: white; }
     .btn-cancel { background-color: var(--danger); color: white; }
+    .btn-qrcode { background-color: var(--premium); color: white; }
     
     /* Badges */
     .status-badge {
@@ -70,8 +105,8 @@
     .cancelled { background-color: rgba(108, 117, 125, 0.1); color: var(--secondary); }
     
     .premium-badge { 
-      background-color: rgba(67, 97, 238, 0.1); 
-      color: var(--primary);
+      background-color: rgba(106, 27, 154, 0.1); 
+      color: var(--premium);
     }
     .standard-badge { 
       background-color: rgba(108, 117, 125, 0.1); 
@@ -86,19 +121,15 @@
     th {
       color: var(--primary);
       font-weight: 600;
-    }
-    
-    /* En-tête */
-    .page-header {
+      background-color: rgba(67, 97, 238, 0.05);
       border-bottom: 2px solid rgba(67, 97, 238, 0.1);
-      padding-bottom: 1rem;
-      margin-bottom: 2rem;
     }
     
-    /* Bouton principal */
+    /* Boutons */
     .btn-primary {
       background-color: var(--primary);
       border-color: var(--primary);
+      font-weight: 500;
     }
     
     .btn-primary:hover {
@@ -106,12 +137,33 @@
       border-color: var(--secondary);
     }
     
+    .btn-info {
+      background-color: var(--info);
+      border-color: var(--info);
+      font-weight: 500;
+    }
+    
     /* Message vide */
     .empty-state {
       color: var(--secondary);
+      padding: 3rem 0;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      opacity: 0.7;
+      color: var(--primary);
     }
     
     /* Filtres */
+    .filter-container {
+      background-color: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+    
     .btn-outline-secondary {
       color: var(--primary);
       border-color: var(--primary);
@@ -135,67 +187,100 @@
     .bs-tooltip-top .tooltip-arrow::before {
       border-top-color: var(--dark);
     }
-    .btn-qrcode { 
-  background-color: #6a1b9a; 
-  color: white; 
-}
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+      
+      .header-actions {
+        width: 100%;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      .header-actions .btn {
+        width: 100%;
+      }
+      
+      .action-buttons {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      
+      .table-responsive {
+        border-radius: 12px;
+        border: 1px solid rgba(0,0,0,0.08);
+      }
+      
+      .filter-container {
+        padding: 1rem;
+      }
+    }
   </style>
 {% endblock %}
 
 {% block body %}
-<div class="container py-5">
-  <div class="page-header d-flex justify-content-between align-items-center mb-4">
-    <h1 class="fw-bold" style="color: var(--primary);">
-      <i class="bi bi-calendar-check me-2"></i>Mes Réservations
+<div class="container py-4">
+  {# En-tête #}
+  <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+    <h1 class="page-title">
+      <i class="bi bi-calendar-check"></i>Mes Réservations
     </h1>
-
-
-href="{{ path('app_trips_index') }}" class="btn btn-primary shadow-sm rounded-pill px-4">
-      <i class="bi bi-plus-lg me-1"></i>Nouvelle réservation
-    </a>
+    
+    <div class="header-actions mt-3 mt-md-0">
+      <a href="{{ path('app_dashboard') }}" class="btn btn-info rounded-pill px-4">
+        <i class="bi bi-bar-chart-line me-1"></i>Dashboard
+      </a>
+      <a href="{{ path('app_trips_index') }}" class="btn btn-primary rounded-pill px-4">
+        <i class="bi bi-plus-lg me-1"></i>Nouvelle réservation
+      </a>
+    </div>
   </div>
 
   {# Filtres #}
-  <div class="row mb-4">
-    <div class="col-md-6 mb-3">
-      <div class="input-group">
-        <span class="input-group-text bg-white"><i class="bi bi-search" style="color: var(--primary);"></i></span>
-        <input id="reservationSearch" type="text" class="form-control" placeholder="Rechercher...">
+  <div class="filter-container">
+    <div class="row">
+      <div class="col-md-6 mb-3 mb-md-0">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-primary"></i></span>
+          <input id="reservationSearch" type="text" class="form-control border-start-0" placeholder="Rechercher une réservation...">
+        </div>
       </div>
-    </div>
-    <div class="col-md-6 text-md-end">
-      <div class="btn-group shadow-sm" role="group">
-        {% set filters = {
-          'all': {'label':'Toutes', 'icon':'bi-list-ul'},
-          'confirmed': {'label':'Confirmées', 'icon':'bi-check-circle'}, 
-          'pending': {'label':'En attente', 'icon':'bi-hourglass'},
-          'cancelled': {'label':'Annulées', 'icon':'bi-x-circle'}
-        } %}
-        {% for key, filter in filters %}
-          <button type="button"
-                  class="btn btn-outline-secondary rounded-pill me-2 {{ loop.first ? 'active' : '' }}"
-                  data-filter="{{ key }}"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="{{ filter.label }}">
-            <i class="bi {{ filter.icon }}"></i>
-            <span class="d-none d-md-inline ms-1">{{ filter.label }}</span>
-          </button>
-        {% endfor %}
+      <div class="col-md-6">
+        <div class="btn-group w-100" role="group">
+          {% set filters = {
+            'all': {'label':'Toutes', 'icon':'bi-list-ul'},
+            'confirmed': {'label':'Confirmées', 'icon':'bi-check-circle'}, 
+            'pending': {'label':'En attente', 'icon':'bi-hourglass'},
+            'cancelled': {'label':'Annulées', 'icon':'bi-x-circle'}
+          } %}
+          {% for key, filter in filters %}
+            <button type="button"
+                    class="btn btn-outline-secondary rounded-pill {{ loop.first ? 'active' : '' }}"
+                    data-filter="{{ key }}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="{{ filter.label }}">
+              <i class="bi {{ filter.icon }}"></i>
+              <span class="d-none d-md-inline ms-1">{{ filter.label }}</span>
+            </button>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
-<a href="{{ path('app_dashboard') }}" class="btn btn-info shadow-sm rounded-pill px-4 ms-3">
-  <i class="bi bi-bar-chart-line me-1"></i>Mon Dashboard
-</a> 
-    <a 
+
   {# Liste des réservations #}
-  <div class="card reservation-card border-0">
+  <div class="card reservation-card">
     <div class="card-body p-0">
       {% if reservations is not empty %}
         <div class="table-responsive">
           <table id="reservationsTable" class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+            <thead>
               <tr>
                 <th>#</th>
                 <th>Trajet</th>
@@ -236,7 +321,7 @@ href="{{ path('app_trips_index') }}" class="btn btn-primary shadow-sm rounded-pi
                     {{ ((reservation.trip.price + (reservation.seatType == 'Premium' ? 10 : 0)) * reservation.seatNumber)|number_format(2, ',', ' ') }} TND
                   </td>
                   <td>
-                    <div class="d-flex justify-content-end gap-2">
+                    <div class="d-flex justify-content-end gap-2 action-buttons">
                       {# Bouton Détails #}
                       <a href="{{ path('app_reservations_details', {'id': reservation.id}) }}"
                          class="action-btn btn-details"
@@ -247,22 +332,26 @@ href="{{ path('app_trips_index') }}" class="btn btn-primary shadow-sm rounded-pi
                       </a>
                       
                       {# Bouton Modifier #}
-                      <a href="{{ path('app_reservations_edit', {'id': reservation.id}) }}"
-                         class="action-btn btn-edit"
+                      {% if reservation.status != 'cancelled' %}
+                        <a href="{{ path('app_reservations_edit', {'id': reservation.id}) }}"
+                           class="action-btn btn-edit"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="top"
+                           title="Modifier">
+                          <i class="bi bi-pencil-fill"></i>
+                        </a>
+                      {% endif %}
+                      
+                      {# Bouton QR Code #}
+                      <a href="{{ path('app_reservations_qrcode', {'id': reservation.id}) }}"
+                         class="action-btn btn-qrcode"
                          data-bs-toggle="tooltip"
                          data-bs-placement="top"
-                         title="Modifier">
-                        <i class="bi bi-pencil-fill"></i>
+                         title="QR Code"
+                         target="_blank">
+                        <i class="bi bi-qr-code"></i>
                       </a>
-                     {# Bouton QR Code dans la colonne Actions #}
-<a href="{{ path('app_reservations_qrcode', {'id': reservation.id}) }}"
-   class="action-btn btn-qrcode"
-   data-bs-toggle="tooltip"
-   data-bs-placement="top"
-   title="QR Code"
-   target="_blank">
-  <i class="bi bi-qr-code"></i>
-</a>
+
                       {# Bouton Payer (si en attente) #}
                       {% if reservation.status == 'pending' %}
                         <a href="{{ path('app_reservations_pay_pending', {'id': reservation.id}) }}"
@@ -297,8 +386,8 @@ href="{{ path('app_trips_index') }}" class="btn btn-primary shadow-sm rounded-pi
           </table>
         </div>
       {% else %}
-        <div class="text-center py-5 empty-state">
-          <i class="bi bi-calendar-x" style="font-size: 3rem;"></i>
+        <div class="text-center empty-state">
+          <i class="bi bi-calendar-x"></i>
           <h5 class="mt-3 fw-medium">Aucune réservation trouvée</h5>
           <p class="mb-4">Vous n'avez effectué aucune réservation pour le moment.</p>
           <a href="{{ path('app_trips_index') }}" class="btn btn-primary rounded-pill px-4">
@@ -327,8 +416,12 @@ href="{{ path('app_trips_index') }}" class="btn btn-primary shadow-sm rounded-pi
       
       search.addEventListener('input', () => {
         const term = search.value.toLowerCase();
+        const activeFilter = document.querySelector('[data-filter].active')?.dataset.filter || 'all';
+        
         rows.forEach(r => {
-          r.style.display = r.textContent.toLowerCase().includes(term) ? '' : 'none';
+          const matchesSearch = r.textContent.toLowerCase().includes(term);
+          const matchesFilter = activeFilter === 'all' || r.dataset.status === activeFilter;
+          r.style.display = matchesSearch && matchesFilter ? '' : 'none';
         });
       });
 
@@ -339,8 +432,12 @@ href="{{ path('app_trips_index') }}" class="btn btn-primary shadow-sm rounded-pi
           btn.classList.add('active');
           
           const filter = btn.dataset.filter;
+          const searchTerm = search.value.toLowerCase();
+          
           rows.forEach(r => {
-            r.style.display = (filter === 'all' || r.dataset.status === filter) ? '' : 'none';
+            const matchesFilter = filter === 'all' || r.dataset.status === filter;
+            const matchesSearch = r.textContent.toLowerCase().includes(searchTerm);
+            r.style.display = matchesFilter && matchesSearch ? '' : 'none';
           });
         });
       });
