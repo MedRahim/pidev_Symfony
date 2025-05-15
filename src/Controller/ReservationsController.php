@@ -242,28 +242,32 @@ public function paymentConfirmation(int $id, EntityManagerInterface $em): Respon
         'paidAmount' => $paid,
     ]);
 }
-    #[Route('/pay/{id}', name: 'app_reservations_pay_pending', methods: ['GET','POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function payPending(Request $request, Reservations $reservation, EntityManagerInterface $em): Response
-    {
-        // remplacer comparaison à getUser() par FIXED_USER_ID
-        if ($reservation->getUser()->getId() !== self::FIXED_USER_ID) {
-            $this->addFlash('error', 'Accès non autorisé.');
-            return $this->redirectToRoute('app_reservations_list');
-        }
+#[Route('/pay/{id}', name: 'app_reservations_pay_pending', methods: ['GET','POST'])]
+#[IsGranted('ROLE_USER')]
+public function payPending(Request $request, Reservations $reservation, EntityManagerInterface $em): Response
+{
+    // On récupère l'utilisateur courant via le service
+    $currentUser = $this->currentUserService->getUser();
+    if ($reservation->getUser() !== $currentUser) {
+        $this->addFlash('error', 'Accès non autorisé.');
+        return $this->redirectToRoute('app_reservations_list');
+    }
 
-        if ($request->isMethod('POST')) {
-            $reservation->setPaymentStatus(Reservations::PAYMENT_PAID);
-            $reservation->setStatus(Reservations::STATUS_CONFIRMED);
-            $em->flush();
-            $this->addFlash('success', 'Paiement effectué.');
-            return $this->redirectToRoute('app_reservations_payment_confirmation', ['id' => $reservation->getId()]);
-        }
-        return $this->render('FrontOffice/reservations/pay_pending.html.twig', [
-            'reservation' => $reservation,
-            'price'       => $this->calculateReservationPrice($reservation, $reservation->getTrip()),
+    if ($request->isMethod('POST')) {
+        $reservation->setPaymentStatus(Reservations::PAYMENT_PAID);
+        $reservation->setStatus(Reservations::STATUS_CONFIRMED);
+        $em->flush();
+        $this->addFlash('success', 'Paiement effectué.');
+        return $this->redirectToRoute('app_reservations_payment_confirmation', [
+            'id' => $reservation->getId(),
         ]);
     }
+
+    return $this->render('FrontOffice/reservations/pay_pending.html.twig', [
+        'reservation' => $reservation,
+        'price'       => $this->calculateReservationPrice($reservation, $reservation->getTrip()),
+    ]);
+}
 
     #[Route('/reserve', name: 'app_reservations_reserve', methods: ['POST'])]
     public function reserveWithoutPay(Request $request, EntityManagerInterface $em, TripsRepository $tripsRepository): Response
@@ -313,18 +317,19 @@ public function paymentConfirmation(int $id, EntityManagerInterface $em): Respon
     #[IsGranted('ROLE_USER')]
     public function reserveConfirmation(int $id, EntityManagerInterface $em): Response
     {
+        $currentUser = $this->currentUserService->getUser();
         $reservation = $em->getRepository(Reservations::class)->find($id);
-
-        if (!$reservation || $reservation->getUser()->getId() !== self::FIXED_USER_ID) {
+    
+        if (!$reservation || $reservation->getUser() !== $currentUser) {
             $this->addFlash('error', 'Réservation non trouvée ou accès non autorisé');
             return $this->redirectToRoute('app_reservations_list');
         }
-
+    
         return $this->render('FrontOffice/reservations/reserve_without_pay.html.twig', [
             'reservation' => $reservation,
         ]);
     }
-
+    
     #[Route('/details/{id}', name: 'app_reservations_details', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function details(int $id, EntityManagerInterface $em): Response

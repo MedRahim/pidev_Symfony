@@ -1,5 +1,7 @@
 {# templates/base.html.twig #}
+
 <!doctype html>
+
 <html class="no-js" lang="fr">
     <head>
         <meta charset="UTF-8">
@@ -10,254 +12,142 @@
         <link rel="manifest" href="{{ asset('FrontOffice/site.webmanifest') }}">
         <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
 
-        {# CSS de l'équipe - Conservé l'ordre exact pour éviter les conflits de style #}
-        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/owl.carousel.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slicknav.css') }}">
-        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/flaticon.css') }}">
-        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/animate.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/magnific-popup.css') }}">
-        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/fontawesome-all.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/themify-icons.css') }}">
-        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
-        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
-        <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
-        
-        {% block stylesheets %}  <style>
-      /* 1. Fond de la zone Hero */
-      .slider-area.hero-overly {
-        position: relative !important;
-        background: url("{{ asset('FrontOffice/assets/img/hero/h1_hero.jpg') }}") center/cover no-repeat !important;
-        min-height: 500px !important;
-        z-index: 0 !important;
-      }
-
-      /* 2. Suppression de toute pseudo‑classe grise */
-      .slider-area.hero-overly::before,
-      .slider-area.hero-overly::after,
-      .single-slider.hero-overly::before,
-      .single-slider.hero-overly::after {
-        content: none !important;
-        background: none !important;
-      }
-
-      /* 3. Contenu au‑dessus de l’image */
-      .slider-area.hero-overly .hero__caption,
-      .slider-area.hero-overly .search-box {
-        position: relative !important;
-        z-index: 1 !important;
-      }
-    </style>
-    {% endblock %}
-        
-    </head>
-
-    <body>
-        <!-- Preloader Start -->
-        <div id="preloader-active">
-            <div class="preloader d-flex align-items-center justify-content-center">
-                <div class="preloader-inner position-relative">
-                    <div class="preloader-circle"></div>
-                    <div class="preloader-img pere-text">
-                        <img src="{{ asset('FrontOffice/assets/img/logo/loder.jpg') }}" alt="">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Preloader End -->
-        
-        <header>
-            <!-- Header Start -->
-            <div class="header-area header-transparent">
-                <div class="main-header">
-                    <div class="header-bottom header-sticky">
-                        <div class="container-fluid">
-                            <div class="row align-items-center">
-                                <!-- Logo -->
-                                <div class="col-xl-2 col-lg-2 col-md-1">
-                                    <div class="logo">
-                                        <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt="VoyagePro"></a>
-                                    </div>
-                                </div>
-                                <div class="col-xl-10 col-lg-10 col-md-8">
-                                    <!-- Main-menu -->
-                                    <div class="main-menu f-right d-none d-lg-block">
-                                        <nav>
-                                            <ul id="navigation">
-                                                <li><a href="{{ path('home') }}">Accueil</a></li>
-                                                <li><a href="{{ path('about') }}">À propos</a></li>
-                                                <li><a href="{{ path('blog') }}">Blog</a></li>
-                                                <li><a href="{{ path('contact') }}">Contact</a></li>
-                                                
-                                                {% if app.user %}
-                                                    <li class="add-list">
-                                                        <a href="#"><i class="fas fa-user-circle"></i> Mon compte</a>
-                                                        <ul class="submenu">
-                                                            <li><a href="#">Profil</a></li>
-                                                            <li><a href="#">Mes réservations</a></li>
-                                                            <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
-                                                        </ul>
-                                                    </li>
-                                                {% else %}
-                                                    <li class="login"><a href="{{ path('app_login') }}"><i class="ti-user"></i> Connexion</a></li>
-                                                    <li class="register"><a href="{{ path('app_register') }}"><i class="ti-pencil"></i> Inscription</a></li>
-                                                {% endif %}
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                </div>
-                                <!-- Mobile Menu -->
-                                <div class="col-12">
-                                    <div class="mobile_menu d-block d-lg-none"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Header End -->
-        </header>
-
-        {# Flash messages #}
-        <div class="container mt-3">
-            {% for type, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
-            {% endfor %}
-        </div>
-
-        {# Contenu principal #}
-        <main>
-            {% block body %}{% endblock %}
-        </main>
-
-        <footer>
-            <!-- Footer Start-->
-            <div class="footer-area">
-                <div class="container">
-                    <div class="footer-top footer-padding">
-                        <div class="row justify-content-between">
-                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
-                                <div class="single-footer-caption mb-50">
-                                    <div class="footer-logo">
-                                        <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo2_footer.png') }}" alt=""></a>
-                                    </div>
-                                    <p>Votre agence de voyage préférée pour des trajets exceptionnels.</p>
-                                </div>
-                            </div>
-                            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
-                                <div class="single-footer-caption mb-50">
-                                    <div class="footer-tittle">
-                                        <h4>Liens rapides</h4>
-                                        <ul>
-                                            <li><a href="{{ path('home') }}">Accueil</a></li>
-                                            <li><a href="{{ path('about') }}">À propos</a></li>
-                                            <li><a href="{{ path('contact') }}">Contact</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                                <div class="single-footer-caption mb-50">
-                                    <div class="footer-tittle">
-                                        <h4>Contact</h4>
-                                        <ul>
-                                            <li><i class="fas fa-map-marker-alt me-2"></i> 123 Rue des Voyages, Tunis</li>
-                                            <li><i class="fas fa-phone me-2"></i> +33 1 23 45 67 89</li>
-                                            <li><i class="fas fa-envelope me-2"></i> contact@voyagepro.com</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                                <div class="single-footer-caption mb-50">
-                                    <div class="footer-tittle">
-                                        <h4>Réseaux sociaux</h4>
-                                        <div class="footer-social">
-                                            <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                            <a href="#"><i class="fab fa-twitter"></i></a>
-                                            <a href="#"><i class="fas fa-globe"></i></a>
-                                            <a href="#"><i class="fab fa-instagram"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="footer-bottom">
-                        <div class="row d-flex justify-content-between align-items-center">
-                            <div class="col-xl-9 col-lg-8">
-                                <div class="footer-copy-right">
-                                    <p>&copy; {{ "now"|date("Y") }} VoyagePro. Tous droits réservés.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Footer End-->
-        </footer>
-
-        <!-- Scroll Up -->
-        <div id="back-top">
-            <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
-        </div>
-
-        <!-- JS here - Assurez-vous de charger les scripts dans le bon ordre -->
-        <!-- jQuery en premier -->
-        <script src="{{ asset('FrontOffice/assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/popper.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/bootstrap.min.js') }}"></script>
-        
-        <!-- Plugins -->
-        <script src="{{ asset('FrontOffice/assets/js/jquery.slicknav.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/owl.carousel.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/slick.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/wow.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/animated.headline.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/jquery.magnific-popup.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/jquery.nice-select.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/jquery.sticky.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/contact.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/jquery.form.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/jquery.validate.min.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/mail-script.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/jquery.ajaxchimp.min.js') }}"></script>
-        
-        <!-- Main JS -->
-        <script src="{{ asset('FrontOffice/assets/js/plugins.js') }}"></script>
-        <script src="{{ asset('FrontOffice/assets/js/main.js') }}"></script>
-        
-        <!-- Script préloader corrigé -->
-        <script>
-          // Fonction de fermeture du préloader
-          function hidePreloader() {
-            $('#preloader-active').fadeOut('slow', function() {
-              $('body').css('overflow', 'visible');
-            });
+```
+    {# CSS de l'équipe - Conservé l'ordre exact pour éviter les conflits de style #}
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slicknav.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/flaticon.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/animate.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/magnific-popup.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/fontawesome-all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
+    <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+    
+    {% block stylesheets %}
+        <style>
+          /* 1. Fond de la zone Hero */
+          .slider-area.hero-overly {
+            position: relative !important;
+            background: url("{{ asset('FrontOffice/assets/img/hero/h1_hero.jpg') }}") center/cover no-repeat !important;
+            min-height: 500px !important;
+            z-index: 0 !important;
           }
 
-          // Dès que le DOM est prêt
-          $(document).ready(function(){
-            hidePreloader();
-          });
+          /* 2. Suppression de toute pseudo‑classe grise */
+          .slider-area.hero-overly::before,
+          .slider-area.hero-overly::after,
+          .single-slider.hero-overly::before,
+          .single-slider.hero-overly::after {
+            content: none !important;
+            background: none !important;
+          }
 
-          // Fallback au bout de 5 secondes
-          setTimeout(hidePreloader, 5000);
+          /* 3. Contenu au‑dessus de l’image */
+          .slider-area.hero-overly .hero__caption,
+          .slider-area.hero-overly .search-box {
+            position: relative !important;
+            z-index: 1 !important;
+          }
+        </style>
+    {% endblock %}
+</head>
 
-          // Réafficher le loader uniquement pour les vraies navigations internes
-          // <–– Notez l’usage de double-quotes JS et single-quotes Twig pour éviter les backslashes !
-          $(document).on('click', "a[href^='{{ path('home') }}'], a[href^='/']", function(){
-            $('#preloader-active').fadeIn('fast');
-          });
-        </script>
+<body>
+    <!-- Preloader Start -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                <div class="preloader-img pere-text">
+                    <img src="{{ asset('FrontOffice/assets/img/logo/loder.jpg') }}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Preloader End -->
+    
+    {# Include header partial #}
+    {% include 'FrontOffice/partials/header.html.twig' %}
 
-        {# Encore entry et éventuels scripts additionnels #}
-        {{ encore_entry_script_tags('app') }}
-        {% block javascripts %}{% endblock %}
-    </body>
+    {# Flash messages #}
+    <div class="container mt-3">
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    {# Contenu principal #}
+    <main>
+        {% block body %}{% endblock %}
+    </main>
+
+    {# Include footer partial #}
+    {% include 'FrontOffice/partials/footer.html.twig' %}
+
+    <!-- Scroll Up -->
+    <div id="back-top">
+        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+    <!-- JS here - Assurez-vous de charger les scripts dans le bon ordre -->
+    <!-- jQuery en premier -->
+    <script src="{{ asset('FrontOffice/assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/popper.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/bootstrap.min.js') }}"></script>
+    
+    <!-- Plugins -->
+    <script src="{{ asset('FrontOffice/assets/js/jquery.slicknav.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/slick.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/wow.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/animated.headline.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.magnific-popup.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.nice-select.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.sticky.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/contact.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.form.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/mail-script.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/jquery.ajaxchimp.min.js') }}"></script>
+    
+    <!-- Main JS -->
+    <script src="{{ asset('FrontOffice/assets/js/plugins.js') }}"></script>
+    <script src="{{ asset('FrontOffice/assets/js/main.js') }}"></script>
+    
+    <!-- Script préloader corrigé -->
+    <script>
+      // Fonction de fermeture du préloader
+      function hidePreloader() {
+        $('#preloader-active').fadeOut('slow', function() {
+          $('body').css('overflow', 'visible');
+        });
+      }
+
+      // Dès que le DOM est prêt
+      $(document).ready(function(){
+        hidePreloader();
+      });
+
+      // Fallback au bout de 5 secondes
+      setTimeout(hidePreloader, 5000);
+
+      // Réafficher le loader uniquement pour les vraies navigations internes
+      $(document).on('click', "a[href^='{{ path('home') }}'], a[href^='/']", function(){
+        $('#preloader-active').fadeIn('fast');
+      });
+    </script>
+
+    {{ encore_entry_script_tags('app') }}
+    {% block javascripts %}{% endblock %}
+</body>
+```
+
 </html>

@@ -5,9 +5,7 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>Liste des Trajets - TransportX</title>
         <meta name="description" content="Trouvez et réservez votre trajet parfait">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="manifest" href="{{ asset('FrontOffice/site.webmanifest') }}">
-        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('FrontOffice/assets/img/favicon.ico') }}">
 
         <!-- CSS here -->
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/bootstrap.min.css') }}">
@@ -21,290 +19,430 @@
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/slick.css') }}">
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/nice-select.css') }}">
         <link rel="stylesheet" href="{{ asset('FrontOffice/assets/css/style.css') }}">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
         <style>
+            /* === Général === */
+            body {
+                background-color: #f4f7fc;
+                color: #4a4a4a;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            .btn-custom {
+                border-radius: 50px;
+                padding: 10px 25px;
+                font-weight: 600;
+                box-shadow: 0 5px 15px rgba(67,97,238,0.3);
+                transition: all .3s ease;
+                border: none;
+            }
+            .btn-custom:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(67,97,238,0.4);
+            }
+            .btn-outline-custom {
+                border: 2px solid #4361ee;
+                color: #4361ee;
+                background: transparent;
+            }
+            .btn-outline-custom:hover {
+                background: #4361ee;
+                color: white;
+            }
+
             /* Styles spécifiques pour la page des trajets */
             .trip-card {
                 border: none;
-                border-radius: 10px;
+                border-radius: 15px;
                 overflow: hidden;
-                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+                box-shadow: 0 12px 24px rgba(0,0,0,0.08);
                 transition: all 0.3s ease;
                 margin-bottom: 30px;
+                background: white;
             }
-            
             .trip-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+                transform: translateY(-8px);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
             }
-            
             .trip-card .card-img-top {
                 height: 200px;
                 object-fit: cover;
                 width: 100%;
             }
-            
             .trip-card .card-body {
-                padding: 20px;
+                padding: 25px;
             }
-            
             .trip-card .card-title {
-                font-size: 1.2rem;
-                font-weight: 600;
-                margin-bottom: 10px;
+                font-size: 1.3rem;
+                font-weight: 700;
+                margin-bottom: 12px;
+                color: #2b2d42;
             }
-            
-            .trip-card .card-text {
-                color: #666;
-                font-size: 0.9rem;
+            .trip-card .card-text i {
+                color: #4361ee;
+                width: 20px;
+                text-align: center;
+                margin-right: 8px;
             }
-            
             .trip-card .card-footer {
-                background: #f8f9fa;
-                padding: 15px;
-                border-top: none;
+                background: #fff;
+                padding: 20px;
+                border-top: 1px solid rgba(0,0,0,0.05);
             }
-            
-            .trip-card .btn {
+            .trip-card .btn-sm {
                 border-radius: 50px;
                 font-weight: 500;
-                padding: 8px 20px;
-                font-size: 0.85rem;
+                padding: 8px 22px;
+                font-size: 0.9rem;
+                margin: 0 5px;
             }
-            
-            /* Style pour le champ de recherche */
+
+            /* Search & Filters */
             #searchTrip {
                 padding: 15px 25px;
                 border-radius: 50px;
-                border: 1px solid #e5e5e5;
+                border: 1px solid #e0e0e0;
                 width: 100%;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                transition: all 0.3s;
             }
-            
-            /* Style pour les filtres */
+            #searchTrip:focus {
+                border-color: #4361ee;
+                box-shadow: 0 5px 15px rgba(67,97,238,0.2);
+            }
             .filter-card {
                 background: #fff;
-                border-radius: 10px;
-                padding: 25px;
-                box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+                border-radius: 15px;
+                padding: 30px;
+                box-shadow: 0 12px 24px rgba(0,0,0,0.05);
                 margin-bottom: 30px;
+                position: sticky;
+                top: 20px;
             }
-            
             .filter-card .form-control, 
             .filter-card .form-select {
                 border-radius: 50px;
-                padding: 10px 20px;
-                margin-bottom: 15px;
+                padding: 12px 20px;
+                margin-bottom: 18px;
+                border: 1px solid #e0e0e0;
+            }
+            .filter-card .form-control:focus, 
+            .filter-card .form-select:focus {
+                border-color: #4361ee;
+                box-shadow: 0 0 0 0.25rem rgba(67,97,238,0.25);
+            }
+            
+            /* Active filters */
+            .active-filters {
+                background: white;
+                border-radius: 15px;
+                padding: 20px;
+                margin-bottom: 20px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            }
+            .filter-badge {
+                display: inline-flex;
+                align-items: center;
+                background: #f0f4ff;
+                color: #4361ee;
+                padding: 8px 15px;
+                border-radius: 50px;
+                margin-right: 10px;
+                margin-bottom: 10px;
+                font-size: 0.9rem;
+            }
+            .filter-badge .close {
+                margin-left: 8px;
+                font-size: 1rem;
+                cursor: pointer;
+            }
+            
+            /* Date picker */
+            .flatpickr-input {
+                background-color: white !important;
             }
             
             /* Pagination */
             .pagination .page-link {
                 border-radius: 50%;
-                width: 40px;
-                height: 40px;
+                width: 44px;
+                height: 44px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin: 0 5px;
+                margin: 0 6px;
                 border: none;
-                color: #333;
+                color: #4a4a4a;
+                font-weight: 600;
             }
-            
             .pagination .page-item.active .page-link {
                 background: #4361ee;
-                color: white;
+                color: #fff;
+            }
+            .pagination .page-link:hover {
+                background: #f0f4ff;
+                color: #4361ee;
+            }
+            
+            /* Responsive adjustments */
+            @media (max-width: 992px) {
+                .filter-card {
+                    position: static;
+                    margin-bottom: 30px;
+                }
+            }
+            
+            /* Loading spinner */
+            .loading-spinner {
+                display: none;
+                text-align: center;
+                padding: 30px;
+            }
+            .spinner-border {
+                width: 3rem;
+                height: 3rem;
+                color: #4361ee;
+            }
+            
+            /* No results */
+            .no-results {
+                text-align: center;
+                padding: 50px;
+                background: white;
+                border-radius: 15px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            }
+            .no-results i {
+                font-size: 3rem;
+                color: #4361ee;
+                margin-bottom: 20px;
             }
         </style>
     </head>
 
     <body>
         {% include 'FrontOffice/partials/header.html.twig' %}
-        
-        <main>
+
+          <main>
             <!-- Hero Start-->
             <div class="hero-area2 slider-height2 hero-overly2 d-flex align-items-center" style="background-image: url('{{ asset('FrontOffice/assets/img/hero/hero2.jpg') }}')">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="hero-cap text-center pt-50">
-                                <h2>Recherchez votre trajet</h2>
-                            </div>
-                        </div>
-                    </div>
+                <div class="container text-center">
+                    <h2 class="text-white mb-4">Recherchez votre trajet</h2>
+                    <a href="{{ path('app_reservations_list') }}" class="btn btn-custom btn-secondary mb-3">Mes Réservations</a>
                 </div>
             </div>
-            <!-- Hero End -->
 
             <!-- Categories Area Start -->
             <div class="categories-area section-padding30">
                 <div class="container">
                     <!-- Section Title -->
-                    <div class="row justify-content-center mb-4">
+                    <div class="row justify-content-center mb-5">
                         <div class="col-md-8 text-center">
                             <span class="text-muted">Trouvez le trajet parfait</span>
-                            <h2>Nos trajets disponibles</h2>
+                            <h2 class="fw-bold">Nos trajets disponibles</h2>
                         </div>
                     </div>
 
                     <!-- Champ de recherche -->
-                    <div class="row justify-content-center mb-5">
-                        <div class="col-md-6">
-                            <form method="get" action="{{ path('app_trips_index') }}" class="input-group">
-                                <input type="text" id="searchTrip" class="form-control" placeholder="🔍 Exemple: Tunis - Ariana" name="q" value="{{ app.request.get('q') }}">
-                                <button class="btn btn-primary" type="submit">Rechercher</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Flash messages -->
-                    <div class="row justify-content-center">
-                        <div class="col-md-8">
-                            {% for label, messages in app.flashes %}
-                                {% for message in messages %}
-                                    <div class="alert alert-{{ label }} alert-dismissible fade show shadow-sm mt-4 text-center" role="alert">
-                                        <strong>
-                                            {% if label == 'success' %}
-                                                ✅ Succès :
-                                            {% elseif label == 'danger' %}
-                                                ❌ Erreur :
-                                            {% endif %}
-                                        </strong>
-                                        {{ message }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
-                                    </div>
-                                {% endfor %}
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <!-- FILTRES -->
-                        <div class="col-lg-4 mb-4">
-                            <div class="filter-card">
-                                <h4 class="mb-4"><i class="fas fa-filter me-2"></i>Filtres Avancés</h4>
-                                <form method="get" action="{{ path('app_trips_index') }}">
-                                    <div class="mb-3">
-                                        <input type="text" name="departure" class="form-control" placeholder="Départ" value="{{ app.request.get('departure') }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <input type="text" name="destination" class="form-control" placeholder="Destination" value="{{ app.request.get('destination') }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="priceRange">Prix maximum (<span id="priceLabel">{{ app.request.get('maxPrice')|default(500) }}</span> TND)</label>
-                                        <input type="range" name="maxPrice" class="form-range" id="priceRange" min="0" max="1000" step="10" value="{{ app.request.get('maxPrice')|default(500) }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <button type="submit" class="btn btn-primary w-100">Filtrer</button>
-                                    </div>
-                                </form>
+                    <form method="get" action="{{ path('app_trips_index') }}" id="filterForm">
+                        <div class="row justify-content-center mb-5">
+                            <div class="col-lg-8 d-flex">
+                                <div class="input-group shadow-sm">
+                                    <input type="text" id="searchTrip" class="form-control" 
+                                           placeholder="🔍 Rechercher par ville, transport, conducteur..." 
+                                           name="q" value="{{ app.request.get('q') }}">
+                                    <button class="btn btn-primary btn-custom" type="submit">Rechercher</button>
+                                    {% if app.request.get('q') %}
+                                        <a href="{{ path('app_trips_index', app.request.query.all|merge({'q': ''})) }}" 
+                                           class="btn btn-outline-secondary ms-2">Effacer</a>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                        
-                        <!-- LISTE DES TRAJETS -->
-                        <div class="col-lg-8">
-                            <div class="row" id="tripsContainer">
-                                {% for trip in trips %}
-                                <div class="col-md-6 mb-4">
-                                    <div class="card trip-card">
-                                        {# Construction du nom de l'image selon la destination #}
-                                        {% set imageName = trip.destination|lower|replace({' ': '-', "'": ''}) ~ '.png' %}
-                                        <img src="{{ asset('FrontOffice/assets/img/' ~ imageName) }}" 
-                                             class="card-img-top" 
-                                             alt="{{ trip.destination }}"
-                                             onerror="this.onerror=null;this.src='{{ asset('FrontOffice/assets/img/default.png') }}';">
-                                        
-                                        <div class="card-body">
-                                            <h5 class="card-title">
-                                                <a href="{{ path('app_trips_show', {'id': trip.id}) }}">
-                                                    {{ trip.departure }} → {{ trip.destination }}
-                                                </a>
-                                            </h5>
-                                            <p class="card-text">
-                                                <i class="fas fa-calendar-alt me-2"></i> {{ trip.departureTime|date('d/m/Y H:i') }}<br>
-                                                <i class="fas fa-bus me-2"></i> {{ trip.transportName }}<br>
-                                                <i class="fas fa-road me-2"></i> {{ trip.distance }} km<br>
-                                                <i class="fas fa-tag me-2"></i> <strong>{{ trip.price }} TND</strong>
-                                            </p>
-                                        </div>
-                                        <div class="card-footer text-center">
-                                            <a href="{{ path('app_trips_show', {'id': trip.id}) }}" class="btn btn-primary btn-sm">Détails</a>
-                                            <a href="{{ path('app_trips_reserve', {'id': trip.id}) }}" class="btn btn-success btn-sm">Réserver</a>
-                                            <a href="{{ path('app_weather_details', {'city': trip.destination}) }}" class="btn btn-info btn-sm">Météo</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% else %}
+
+                        <!-- Active filters -->
+                        {% if app.request.query.count > 0 %}
+                            <div class="row mb-4">
                                 <div class="col-12">
-                                    <div class="alert alert-info text-center">
-                                        Aucun trajet trouvé.
+                                    <div class="active-filters">
+                                        <h5 class="mb-3"><i class="fas fa-filter me-2"></i>Filtres actifs :</h5>
+                                        {% for param, value in app.request.query.all %}
+                                            {% if param not in ['page', '_'] and value != '' %}
+                                                <div class="filter-badge">
+                                                    {{ param|replace({'_': ' '})|title }}: {{ value }}
+                                                    <a href="{{ path('app_trips_index', app.request.query.all|merge({(param): ''})) }}" 
+                                                       class="close">&times;</a>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <a href="{{ path('app_trips_index') }}" 
+                                           class="btn btn-outline-danger btn-sm mt-2">Réinitialiser tous les filtres</a>
                                     </div>
                                 </div>
-                                {% endfor %}
                             </div>
-                            
-                            {# Pagination #}
-                            {% if totalPages > 1 %}
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination justify-content-center">
-                                    {% for page in 1..totalPages %}
-                                    <li class="page-item {% if page == currentPage %}active{% endif %}">
-                                        <a class="page-link" href="{{ path('app_trips_index', app.request.query.all|merge({'page': page})) }}">{{ page }}</a>
-                                    </li>
+                        {% endif %}
+
+                        <div class="row">
+                            <!-- FILTRES -->
+                            <div class="col-lg-4 mb-4">
+                                <div class="filter-card">
+                                    <h4 class="mb-4"><i class="fas fa-filter me-2"></i>Filtres Avancés</h4>
+                                    <div class="mb-3">
+                                        <label class="form-label">Ville de départ</label>
+                                        <input type="text" name="departure" class="form-control" 
+                                               placeholder="Ex: Tunis" value="{{ app.request.get('departure') }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Ville d'arrivée</label>
+                                        <input type="text" name="destination" class="form-control" 
+                                               placeholder="Ex: Sousse" value="{{ app.request.get('destination') }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Date de départ</label>
+                                        <input type="text" name="departure_date" class="form-control flatpickr" 
+                                               placeholder="Choisir une date" value="{{ app.request.get('departure_date') }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="priceRange">Prix maximum (<span id="priceLabel">{{ app.request.get('maxPrice')|default(100) }}</span> TND)</label>
+                                        <input type="range" name="maxPrice" class="form-range" id="priceRange" 
+                                               min="0" max="100" step="5" value="{{ app.request.get('maxPrice')|default(100) }}">
+                                        <div class="d-flex justify-content-between">
+                                            <small>0 TND</small>
+                                            <small>100 TND</small>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Type de transport</label>
+                                        <select name="transport_type" class="form-select">
+                                            <option value="">Tous les types</option>
+                                            <option value="bus" {{ app.request.get('transport_type') == 'bus' ? 'selected' }}>Bus</option>
+                                            <option value="train" {{ app.request.get('transport_type') == 'train' ? 'selected' }}>Train</option>
+                                            <option value="avion" {{ app.request.get('transport_type') == 'avion' ? 'selected' }}>Avion</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Tri par</label>
+                                        <select name="sort" class="form-select">
+                                            <option value="">Par défaut</option>
+                                            <option value="price_asc" {{ app.request.get('sort') == 'price_asc' ? 'selected' }}>Prix croissant</option>
+                                            <option value="price_desc" {{ app.request.get('sort') == 'price_desc' ? 'selected' }}>Prix décroissant</option>
+                                            <option value="date_asc" {{ app.request.get('sort') == 'date_asc' ? 'selected' }}>Date la plus proche</option>
+                                            <option value="date_desc" {{ app.request.get('sort') == 'date_desc' ? 'selected' }}>Date la plus lointaine</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-primary btn-custom">Appliquer les filtres</button>
+                                        <a href="{{ path('app_trips_index') }}" class="btn btn-outline-secondary">Réinitialiser</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- LISTE DES TRAJETS -->
+                            <div class="col-lg-8">
+                                <div class="row">
+                                    {% for trip in trips %}
+                                        <div class="col-md-6 mb-4">
+                                            <div class="card trip-card">
+                                                {% set imageName = trip.destination|lower|replace({' ': '-', "'": ''}) ~ '.png' %}
+                                                <img src="{{ asset('FrontOffice/assets/img/' ~ imageName) }}" 
+                                                     class="card-img-top" alt="{{ trip.destination }}"
+                                                     onerror="this.onerror=null;this.src='{{ asset('FrontOffice/assets/img/default.png') }}';">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">
+                                                        <a href="{{ path('app_trips_show', {'id': trip.id}) }}">
+                                                            {{ trip.departure }} → {{ trip.destination }}
+                                                        </a>
+                                                    </h5>
+                                                    <p class="card-text">
+                                                        <i class="fas fa-calendar-alt"></i> {{ trip.departureTime|date('d/m/Y H:i') }}<br>
+                                                        <i class="fas fa-bus"></i> {{ trip.transportName }}<br>
+                                                        <i class="fas fa-road"></i> {{ trip.distance }} km<br>
+                                                        <i class="fas fa-tag"></i> <strong>{{ trip.price }} TND</strong>
+                                                    </p>
+                                                </div>
+                                                <div class="card-footer text-center">
+                                                    <a href="{{ path('app_trips_show', {'id': trip.id}) }}" 
+                                                       class="btn btn-outline-primary btn-sm btn-custom">Détails</a>
+                                                    <a href="{{ path('app_trips_reserve', {'id': trip.id}) }}" 
+                                                       class="btn btn-success btn-sm btn-custom">Réserver</a>
+                                                    <a href="{{ path('app_weather_details', {'city': trip.destination}) }}" 
+                                                       class="btn btn-info btn-sm btn-custom">Météo</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-12">
+                                            <div class="no-results">
+                                                <i class="fas fa-search"></i>
+                                                <h4>Aucun trajet trouvé</h4>
+                                                <p class="text-muted">Essayez de modifier vos critères de recherche</p>
+                                                <a href="{{ path('app_trips_index') }}" 
+                                                   class="btn btn-primary btn-custom mt-3">Réinitialiser les filtres</a>
+                                            </div>
+                                        </div>
                                     {% endfor %}
-                                </ul>
-                            </nav>
-                            {% endif %}
+                                </div>
+
+                                <!-- Pagination -->
+                                {% if totalPages > 1 %}
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination justify-content-center mt-4">
+                                            <li class="page-item {% if currentPage == 1 %}disabled{% endif %}">
+                                                <a class="page-link" 
+                                                   href="{{ path('app_trips_index', allParams|merge({'page': currentPage-1})) }}">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                            {% for page in 1..totalPages %}
+                                                <li class="page-item {% if page == currentPage %}active{% endif %}">
+                                                    <a class="page-link" 
+                                                       href="{{ path('app_trips_index', allParams|merge({'page': page})) }}">
+                                                        {{ page }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                            <li class="page-item {% if currentPage == totalPages %}disabled{% endif %}">
+                                                <a class="page-link" 
+                                                   href="{{ path('app_trips_index', allParams|merge({'page': currentPage+1})) }}">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
             <!-- Categories Area End -->
 
             <!-- Services Area Start -->
-            <div class="services-area pt-150 pb-150 section-bg" data-background="{{ asset('FrontOffice/assets/img/gallery/section_bg02.jpg') }}">
+            <div class="services-area pt-150 pb-150 section-bg text-center" data-background="{{ asset('FrontOffice/assets/img/gallery/section_bg02.jpg') }}">
                 <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <!-- Section Tittle -->
-                            <div class="section-tittle section-tittle2 text-center mb-80">
-                                <span>Simple et efficace</span>
-                                <h2>Comment ça marche</h2>
-                            </div>
-                        </div>
+                    <div class="section-tittle mb-80">
+                        <span class="text-secondary">Simple et efficace</span>
+                        <h2 class="fw-bold">Comment ça marche</h2>
                     </div>
-                    <div class="row justify-content-between">
-                        <div class="col-lg-3 col-md-6">
-                            <div class="single-services text-center mb-50">
-                                <div class="services-icon">
-                                    <span class="flaticon-search"></span>
-                                </div>
-                                <div class="services-cap">
-                                    <h5><a href="#">1. Trouvez votre trajet</a></h5>
-                                    <p>Recherchez parmi nos nombreux trajets disponibles</p>
-                                </div>
-                                <!-- Shpape -->
-                                <img class="shape1 d-none d-lg-block" src="{{ asset('FrontOffice/assets/img/icon/serices1.png')}}">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="single-services p-4 card shadow-sm rounded-2xl">
+                                <div class="services-icon mb-3"><span class="flaticon-search fs-2 text-primary"></span></div>
+                                <h5 class="mb-2">1. Trouvez votre trajet</h5>
+                                <p>Recherchez parmi nos nombreux trajets disponibles</p>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-6">
-                            <div class="single-services text-center mb-50">
-                                <div class="services-icon">
-                                    <span class="flaticon-calendar"></span>
-                                </div>
-                                <div class="services-cap">
-                                    <h5><a href="#">2. Réservez & Payez</a></h5>
-                                    <p>Effectuez votre réservation en quelques clics</p>
-                                </div>
-                                <img class="shape2 d-none d-lg-block" src="{{ asset('FrontOffice/assets/img/icon/serices2.png')}}">
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="single-services p-4 card shadow-sm rounded-2xl">
+                                <div class="services-icon mb-3"><span class="flaticon-calendar fs-2 text-primary"></span></div>
+                                <h5 class="mb-2">2. Réservez & Payez</h5>
+                                <p>Effectuez votre réservation en quelques clics</p>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-6">
-                            <div class="single-services text-center mb-50">
-                                <div class="services-icon">
-                                    <span class="flaticon-airplane"></span>
-                                </div>
-                                <div class="services-cap">
-                                    <h5><a href="#">3. Voyagez serein</a></h5>
-                                    <p>Profitez d'un trajet confortable et sécurisé</p>
-                                </div>
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="single-services p-4 card shadow-sm rounded-2xl">
+                                <div class="services-icon mb-3"><span class="flaticon-airplane fs-2 text-primary"></span></div>
+                                <h5 class="mb-2">3. Voyagez serein</h5>
+                                <p>Profitez d'un trajet confortable et sécurisé</p>
                             </div>
                         </div>
                     </div>
@@ -313,88 +451,10 @@
             <!-- Services Area End -->
         </main>
 
-        <!-- Footer -->
-        <footer>
-            <div class="footer-area">
-                <div class="container">
-                   <div class="footer-top footer-padding">
-                        <div class="row justify-content-between">
-                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
-                                <div class="single-footer-caption mb-50">
-                                    <div class="single-footer-caption mb-30">
-                                        <div class="footer-logo">
-                                          <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo2_footer.png') }}" alt=""></a>
-                                        </div>
-                                        <div class="footer-about">
-                                            <p>TransportX - Votre partenaire de voyage fiable et sécurisé.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
-                                <div class="single-footer-caption mb-50">
-                                    <div class="footer-tittle">
-                                        <h4>Liens rapides</h4>
-                                        <ul>
-                                            <li><a href="{{ path('home') }}">Accueil</a></li>
-                                            <li><a href="{{ path('app_trips_index') }}">Trajets</a></li>
-                                            <li><a href="{{ path('about') }}">À propos</a></li>
-                                            <li><a href="{{ path('contact') }}">Contact</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                                <div class="single-footer-caption mb-50">
-                                    <div class="footer-tittle">
-                                        <h4>Support</h4>
-                                        <ul>
-                                            <li><a href="#">FAQ</a></li>
-                                            <li><a href="#">Conditions</a></li>
-                                            <li><a href="#">Confidentialité</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                                <div class="single-footer-caption mb-50">
-                                    <div class="footer-tittle">
-                                        <h4>Coordonnées</h4>
-                                        <ul class="contact-info">
-                                            <li><i class="ti-location-pin"></i> 123 Avenue des Voyages, Tunis</li>
-                                            <li><i class="ti-email"></i> contact@transportx.com</li>
-                                            <li><i class="ti-mobile"></i> +216 12 345 678</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                   </div>
-                    <div class="footer-bottom">
-                        <div class="row d-flex justify-content-between align-items-center">
-                            <div class="col-xl-9 col-lg-8">
-                                <div class="footer-copy-right">
-                                    <p>&copy; {{ "now"|date("Y") }} TransportX. Tous droits réservés.</p>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-lg-4">
-                                <div class="footer-social f-right">
-                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="#"><i class="fab fa-twitter"></i></a>
-                                    <a href="#"><i class="fab fa-instagram"></i></a>
-                                    <a href="#"><i class="fab fa-youtube"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                   </div>
-                </div>
-            </div>
-        </footer>
+        {% include 'FrontOffice/partials/footer.html.twig' %}
 
         <!-- Scroll Up -->
-        <div id="back-top">
-            <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
-        </div>
+        <div id="back-top"><a title="Go to Top" href="#"><i class="fas fa-level-up-alt"></i></a></div>
 
         <!-- JS here -->
         <script src="{{ asset('FrontOffice/assets/js/vendor/modernizr-3.5.0.min.js') }}"></script>
@@ -416,28 +476,123 @@
         <script src="{{ asset('FrontOffice/assets/js/jquery.ajaxchimp.min.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/plugins.js') }}"></script>
         <script src="{{ asset('FrontOffice/assets/js/main.js') }}"></script>
-        
-        <!-- Script pour la recherche AJAX -->
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+
+        <!-- Script recherche AJAX -->
         <script>
-            $(document).ready(function() {
-                // Mise à jour du label du prix
+            $(function() {
+                // Initialisation du date picker
+                flatpickr(".flatpickr", {
+                    dateFormat: "d/m/Y",
+                    locale: "fr",
+                    minDate: "today"
+                });
+
+                // Mise à jour dynamique du label de prix
                 $('#priceRange').on('input', function() {
                     $('#priceLabel').text($(this).val());
                 });
+
+                // Soumission automatique du formulaire
+                $('#filterForm').find('input, select').on('change', function() {
+                    $('#filterForm').submit();
+                });
+
+                // Réinitialisation des filtres
+                $('#resetFilters').on('click', function() {
+                    window.location.href = "{{ path('app_trips_index') }}";
+                });
+            });
                 
-                // Recherche AJAX optionnelle
+                // Effacer la recherche
+                $('#clearSearch').on('click', function() {
+                    $('#searchTrip').val('');
+                    $('#searchForm').submit();
+                });
+                
+                // Recherche AJAX avec délai
+                let searchTimer;
                 $('#searchTrip').on('keyup', function() {
-                    let searchTerm = $(this).val();
-                    if(searchTerm.length > 2) {
-                        $.ajax({
-                            url: "{{ path('app_trips_search') }}",
-                            type: "GET",
-                            data: { q: searchTerm },
-                            success: function(data) {
+                    clearTimeout(searchTimer);
+                    let val = $(this).val();
+                    
+                    if(val.length === 0) {
+                        // Si le champ est vide, soumettre le formulaire immédiatement
+                        $('#searchForm').submit();
+                    } else if(val.length > 2) {
+                        // Afficher le spinner de chargement
+                        $('.loading-spinner').show();
+                        $('#tripsContainer').hide();
+                        
+                        searchTimer = setTimeout(function() {
+                            $.get("{{ path('app_trips_search') }}", { 
+                                q: val,
+                                departure: "{{ app.request.get('departure') }}",
+                                destination: "{{ app.request.get('destination') }}",
+                                maxPrice: "{{ app.request.get('maxPrice') }}",
+                                transport_type: "{{ app.request.get('transport_type') }}",
+                                sort: "{{ app.request.get('sort') }}",
+                                departure_date: "{{ app.request.get('departure_date') }}"
+                            })
+                            .done(data => {
                                 $('#tripsContainer').html(data);
-                            }
-                        });
+                                $('#tripsContainer').show();
+                                $('.loading-spinner').hide();
+                            })
+                            .fail(() => {
+                                $('#tripsContainer').html('<div class="col-12"><div class="alert alert-danger">Une erreur est survenue lors de la recherche</div></div>');
+                                $('#tripsContainer').show();
+                                $('.loading-spinner').hide();
+                            });
+                        }, 500); // Délai de 500ms après la dernière frappe
                     }
+                });
+                
+                // Filtrage AJAX pour les autres champs
+                $('#filterForm').on('submit', function(e) {
+                    e.preventDefault();
+                    
+                    $('.loading-spinner').show();
+                    $('#tripsContainer').hide();
+                    
+                    const formData = $(this).serialize();
+                    
+                    $.get("{{ path('app_trips_search') }}", formData)
+                     .done(data => {
+                         $('#tripsContainer').html(data);
+                         $('#tripsContainer').show();
+                         $('.loading-spinner').hide();
+                         
+                         // Mettre à jour l'URL sans recharger la page
+                         const queryString = formData.replace(/\+/g, '%20');
+                         history.pushState(null, null, "{{ path('app_trips_index') }}?" + queryString);
+                     })
+                     .fail(() => {
+                         $('#tripsContainer').html('<div class="col-12"><div class="alert alert-danger">Une erreur est survenue lors du filtrage</div></div>');
+                         $('#tripsContainer').show();
+                         $('.loading-spinner').hide();
+                     });
+                });
+                
+                // Gestion des changements de page avec AJAX
+                $(document).on('click', '.pagination a', function(e) {
+                    e.preventDefault();
+                    const url = $(this).attr('href');
+                    
+                    $('.loading-spinner').show();
+                    $('#tripsContainer').hide();
+                    
+                    $.get(url, function(data) {
+                        $('#tripsContainer').html(data);
+                        $('#tripsContainer').show();
+                        $('.loading-spinner').hide();
+                        
+                        // Faire défiler vers le haut
+                        $('html, body').animate({
+                            scrollTop: $('#tripsContainer').offset().top - 100
+                        }, 500);
+                    });
                 });
             });
         </script>

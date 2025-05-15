@@ -5,74 +5,117 @@ namespace App\Repository;
 use App\Entity\Trips;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\QueryBuilder;
 
 class TripsRepository extends ServiceEntityRepository
 {
+    public const PER_PAGE = 9;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Trips::class);
     }
 
-    public function findByCriteria(array $criteria, int $limit, int $offset): array
-    {
+    public function search(
+        ?string $query,
+        ?string $departure,
+        ?string $destination,
+        ?float $maxPrice,
+        ?string $transportType,
+        ?string $departureDate,
+        ?string $sort,
+        int $page
+    ): array {
         $qb = $this->createQueryBuilder('t')
             ->where('t.capacity > 0');
 
-        if (!empty($criteria['departure'])) {
+        // Filtre de recherche globale
+        if ($query) {
+            $qb->andWhere('t.departure LIKE :query OR t.destination LIKE :query')
+               ->setParameter('query', '%'.$query.'%');
+        }
+
+        // Filtres individuels
+        $this->applyFilters($qb, [
+            'departure' => $departure,
+            'destination' => $destination,
+            'maxPrice' => $maxPrice,
+            'transport_type' => $transportType,
+            'departure_date' => $departureDate
+        ]);
+
+        // Tri
+        $this->applySorting($qb, $sort);
+
+        // Pagination
+        return $qb->setFirstResult(($page - 1) * self::PER_PAGE)
+            ->setMaxResults(self::PER_PAGE)
+            ->getQuery()
+            ->getResult();
+    }
+
+    private function applyFilters(QueryBuilder $qb, array $filters): void
+    {
+        if (!empty($filters['departure'])) {
             $qb->andWhere('t.departure LIKE :departure')
-               ->setParameter('departure', '%'.$criteria['departure'].'%');
+               ->setParameter('departure', '%'.$filters['departure'].'%');
         }
 
-        if (!empty($criteria['destination'])) {
+        if (!empty($filters['destination'])) {
             $qb->andWhere('t.destination LIKE :destination')
-               ->setParameter('destination', '%'.$criteria['destination'].'%');
+               ->setParameter('destination', '%'.$filters['destination'].'%');
         }
 
-        if (!empty($criteria['minPrice'])) {
-            $qb->andWhere('t.price >= :minPrice')
-               ->setParameter('minPrice', $criteria['minPrice']);
-        }
-
-        if (!empty($criteria['maxPrice'])) {
+        if (!empty($filters['maxPrice'])) {
             $qb->andWhere('t.price <= :maxPrice')
-               ->setParameter('maxPrice', $criteria['maxPrice']);
+               ->setParameter('maxPrice', $filters['maxPrice']);
         }
 
-        if (!empty($criteria['departureDate'])) {
-            $qb->andWhere('DATE(t.departureTime) = :departureDate')
-               ->setParameter('departureDate', $criteria['departureDate']);
+        if (!empty($filters['transport_type'])) {
+            $qb->andWhere('t.transportName = :transportType')
+               ->setParameter('transportType', $filters['transport_type']);
         }
 
-        if (!empty($criteria['transport'])) {
-            $qb->andWhere('t.transportName = :transport')
-               ->setParameter('transport', $criteria['transport']);
+        if (!empty($filters['departure_date'])) {
+            $date = \DateTime::createFromFormat('d/m/Y', $filters['departure_date']);
+            if ($date) {
+                $start = $date->format('Y-m-d 00:00:00');
+                $end = $date->format('Y-m-d 23:59:59');
+                $qb->andWhere('t.departureTime BETWEEN :start AND :end')
+                   ->setParameter('start', $start)
+                   ->setParameter('end', $end);
+            }
         }
+    }
 
-        switch ($criteria['sort'] ?? 'departureTime') {
-            case 'price':
+    private function applySorting(QueryBuilder $qb, ?string $sort): void
+    {
+        switch ($sort) {
+            case 'price_asc':
                 $qb->orderBy('t.price', 'ASC');
                 break;
-            case 'distance':
-                $qb->orderBy('t.distance', 'DESC');
+            case 'price_desc':
+                $qb->orderBy('t.price', 'DESC');
+                break;
+            case 'date_asc':
+                $qb->orderBy('t.departureTime', 'ASC');
+                break;
+            case 'date_desc':
+                $qb->orderBy('t.departureTime', 'DESC');
                 break;
             default:
                 $qb->orderBy('t.departureTime', 'ASC');
         }
-
-        return $qb->setMaxResults($limit)
-                 ->setFirstResult($offset)
-                 ->getQuery()
-                 ->getResult();
     }
 
-    public function countByCriteria(array $criteria): int
+    public function countByFilters(array $filters): int
     {
         $qb = $this->createQueryBuilder('t')
-                   ->select('COUNT(t.id)')
-                   ->where('t.capacity > 0');
+            ->select('COUNT(t.id)')
+            ->where('t.capacity > 0');
 
-        // Les mêmes conditions que findByCriteria...
+        $this->applyFilters($qb, $filters);
 
-        return $qb->getQuery()->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 }
