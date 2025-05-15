@@ -84,7 +84,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private bool $isActive = false;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $profilePicture = null;
+    private ?string $pathtopic = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(message: 'Birthday cannot be blank.')]
@@ -229,6 +229,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setPhone(string $phone): static
     {
         $this->phone = $phone;
+        return $this;
+    }
+    public function getPathtopic(): ?string
+    {
+        return $this->pathtopic;
+    }
+    public function setPathtopic(string $pathtopic): static
+    {
+        $this->pathtopic = $pathtopic;
         return $this;
     }
 
