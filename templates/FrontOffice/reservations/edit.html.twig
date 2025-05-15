@@ -2,136 +2,148 @@
 
 {% block title %}Modifier Réservation #{{ reservation.id }}{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .seat-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+            gap: 8px;
+        }
+        .seat {
+            position: relative;
+            width: 100%;
+            padding-top: 100%;
+            background-color: #f8f9fa;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            text-align: center;
+        }
+        .seat span {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+        }
+        .seat.selected { background-color: #007bff; border-color: #0056b3; color: #fff; }
+        .seat.reserved { background-color: #dee2e6; border-color: #adb5bd; cursor: not-allowed; }
+        .alert-flash { margin-bottom: 1rem; }
+    </style>
+{% endblock %}
+
 {% block body %}
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
+            {% for label, messages in app.flashes %}
+                {% for msg in messages %}
+                    <div class="alert alert-{{ label }} alert-flash">
+                        {{ msg }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
             <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0 text-center">
-                        <i class="fas fa-edit me-2"></i>Modifier Réservation #{{ reservation.id }}
-                    </h2>
+                <div class="card-header bg-primary text-white text-center">
+                    <h2><i class="fas fa-edit me-2"></i>Modifier Réservation #{{ reservation.id }}</h2>
                 </div>
-                
                 <div class="card-body">
+                    <div class="mb-4">
+                        <div id="seat-map" class="seat-map mb-2"></div>
+                        <small class="text-muted">Cliquez pour sélectionner ou désélectionner</small>
+                    </div>
+
                     {{ form_start(form) }}
-                        <div class="mb-3">
-                            {{ form_label(form.seatNumber) }}
-                            {{ form_widget(form.seatNumber, {
-                                'attr': {
-                                    'class': 'form-control' ~ (form.seatNumber.vars.errors|length ? ' is-invalid' : ''),
-                                    'data-price-calculator': 'true'
-                                }
-                            }) }}
-                            {{ form_errors(form.seatNumber) }}
-                        </div>
-                        
-                        <div class="mb-3">
-                            {{ form_label(form.seatType) }}
-                            {{ form_widget(form.seatType, {
-                                'attr': {
-                                    'class': 'form-select' ~ (form.seatType.vars.errors|length ? ' is-invalid' : ''),
-                                    'data-price-calculator': 'true'
-                                }
-                            }) }}
-                            {{ form_errors(form.seatType) }}
-                        </div>
-                        
-                        <div class="alert alert-info">
-                            <h5 class="alert-heading">Détails de la réservation</h5>
-                            <ul class="mb-0">
-                                <li>Trajet: {{ reservation.trip.departure }} → {{ reservation.trip.destination }}</li>
-                                <li>Date: {{ reservation.trip.departureTime|date('d/m/Y H:i') }}</li>
-                                <li>Statut: 
-                                    <span class="badge bg-{{ reservation.status == 'confirmed' ? 'success' : 'warning' }}">
-                                        {{ reservation.status == 'confirmed' ? 'Confirmé' : 'En attente' }}
-                                    </span>
-                                </li>
-                                <li>Prix actuel: {{ originalPrice }} TND</li>
-                            </ul>
-                        </div>
-                        
-                        <div id="price-preview" class="alert alert-secondary d-none">
-                            <strong>Nouveau prix estimé:</strong> <span id="new-price">0</span> TND
-                            <div id="price-difference-container" class="mt-2"></div>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ path('app_reservations_details', {'id': reservation.id}) }}" 
-                               class="btn btn-outline-secondary">
-                               <i class="fas fa-arrow-left me-2"></i>Annuler
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Enregistrer les modifications
-                            </button>
-                        </div>
+
+                    {{ form_widget(form.seatNumber, { 'attr': { 'class': 'd-none' } }) }}
+                    {{ form_widget(form.seatType,   { 'attr': { 'class': 'd-none' } }) }}
+
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading">Détails de la réservation</h5>
+                        <ul class="mb-0">
+                            <li>Trajet: {{ reservation.trip.departure }} → {{ reservation.trip.destination }}</li>
+                            <li>Date: {{ reservation.trip.departureTime|date('d/m/Y H:i') }}</li>
+                            <li>Statut:
+                                <span class="badge bg-{{ reservation.status == 'confirmed' ? 'success' : 'warning' }}">
+                                    {{ reservation.status == 'confirmed' ? 'Confirmé' : 'En attente' }}
+                                </span>
+                            </li>
+                            <li>Prix actuel: {{ originalPrice }} TND</li>
+                        </ul>
+                    </div>
+
+                    <div id="price-preview" class="alert alert-secondary d-none">
+                        <strong>Nouveau prix:</strong> <span id="new-price">0.00</span> TND
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ path('app_reservations_details', {id: reservation.id}) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Retour
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>Enregistrer
+                        </button>
+                    </div>
+
                     {{ form_end(form) }}
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const priceCalculators = document.querySelectorAll('[data-price-calculator]');
-    const pricePreview = document.getElementById('price-preview');
-    const newPriceSpan = document.getElementById('new-price');
-    const priceDiffContainer = document.getElementById('price-difference-container');
-    
-    const basePrice = {{ reservation.trip.price }};
-    
-    function calculateNewPrice() {
-        const seatNumber = parseInt(document.getElementById('{{ form.seatNumber.vars.id }}').value) || 0;
-        const seatType = document.getElementById('{{ form.seatType.vars.id }}').value;
-        
-        let newPrice = basePrice * seatNumber;
-        if (seatType === 'premium') {
-            newPrice += (10 * seatNumber);
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const seatMap = document.getElementById('seat-map');
+        const hiddenSeatNum = document.getElementById('{{ form.seatNumber.vars.id }}');
+        const hiddenSeatType= document.getElementById('{{ form.seatType.vars.id }}');
+        let reserved = [], selected = hiddenSeatNum.value ? hiddenSeatNum.value.split(',').map(Number) : [];
+
+        function buildMap(total) {
+            seatMap.innerHTML = '';
+            for (let i = 1; i <= total; i++) {
+                const div = document.createElement('div');
+                div.className = 'seat';
+                if (reserved.includes(i)) div.classList.add('reserved');
+                if (selected.includes(i)) div.classList.add('selected');
+                div.innerHTML = '<span>'+i+'</span>';
+                div.addEventListener('click', () => toggle(i));
+                seatMap.append(div);
+            }
         }
-        
-        return newPrice;
-    }
-    
-    function updatePricePreview() {
-        const newPrice = calculateNewPrice();
-        const originalPrice = {{ originalPrice }};
-        const difference = newPrice - originalPrice;
-        
-        newPriceSpan.textContent = newPrice;
-        pricePreview.classList.remove('d-none');
-        
-        priceDiffContainer.innerHTML = '';
-        if (difference > 0) {
-            priceDiffContainer.innerHTML = `
-                <div class="alert alert-warning p-2 mb-0">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    Supplément à payer: ${difference} TND
-                </div>
-            `;
-        } else if (difference < 0) {
-            priceDiffContainer.innerHTML = `
-                <div class="alert alert-success p-2 mb-0">
-                    <i class="fas fa-coins me-2"></i>
-                    Remboursement: ${-difference} TND
-                </div>
-            `;
-        } else {
-            priceDiffContainer.innerHTML = `
-                <div class="alert alert-info p-2 mb-0">
-                    <i class="fas fa-info-circle me-2"></i>
-                    Pas de changement de prix
-                </div>
-            `;
+        function toggle(num) {
+            if (reserved.includes(num)) return;
+            const idx = selected.indexOf(num);
+            if (idx < 0) selected.push(num);
+            else selected.splice(idx,1);
+            hiddenSeatNum.value = selected.length;
+            // Default seat type mapping
+            hiddenSeatType.value = selected.map(() => 'Standard').join(',');
+            updatePrice(); render();
         }
-    }
-    
-    priceCalculators.forEach(element => {
-        element.addEventListener('change', updatePricePreview);
+        function render() {
+            document.querySelectorAll('.seat').forEach(el => {
+                const num = +el.textContent;
+                el.classList.toggle('selected', selected.includes(num));
+            });
+        }
+        function updatePrice() {
+            const priceEl = document.getElementById('new-price');
+            const base = {{ reservation.trip.price }};
+            const total = (selected.length * base);
+            priceEl.textContent = total.toFixed(2);
+            document.getElementById('price-preview').classList.remove('d-none');
+        }
+        fetch('/api/seat-configuration/{{ reservation.trip.id }}')
+            .then(r=>r.json()).then(data=>{
+                reserved = data.reservedSeats.map(Number);
+                buildMap(data.totalSeats);
+            });
     });
-    
-    // Initial calculation if values are already changed
-    updatePricePreview();
-});
-</script>
+    </script>
 {% endblock %}
