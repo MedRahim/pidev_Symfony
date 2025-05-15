@@ -184,7 +184,6 @@
                   <th>Prénom</th>
                   <th>Spécialité</th>
                   <th>Contact</th>
-                  <th>Photo</th> <!-- Ajout de la colonne Image -->
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -195,10 +194,6 @@
                     <td>{{ medecin.prenomM }}</td>
                     <td>{{ medecin.specialite }}</td>
                     <td class="text-center">{{ medecin.contact }}</td>
-                    <td class="text-center">
-                      <!-- Affichage de l'image du médecin -->
-                      <img src="{{ asset('uploads/medecins/' ~ medecin.imageName) }}" alt="Image de {{ medecin.nomM }}" class="img-fluid rounded-circle" style="width: 50px; height: 50px;">
-                    </td>
                     <td class="text-center">
                       <a href="{{ path('backoffice_medecin_edit', {idMedecin: medecin.idMedecin}) }}"
                          class="btn btn-sm btn-warning rounded-pill me-2">

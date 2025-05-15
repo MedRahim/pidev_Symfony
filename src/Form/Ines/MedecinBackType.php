@@ -26,13 +26,8 @@ class MedecinBackType extends AbstractType
                 'class' => ServiceHospitalier::class,
                 'choice_label' => 'nomService',
                 'label' => 'Service hospitalier'
-            ])
-            ->add('imageFile', VichImageType::class, [
-                'label' => 'Photo du médecin',
-                'required' => false,
-                'allow_delete' => false,
-                'download_uri' => false,
             ]);
+           
     }
 
     public function configureOptions(OptionsResolver $resolver)

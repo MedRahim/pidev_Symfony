@@ -1,5 +1,3 @@
-import { startStimulusApp } from '@symfony/stimulus-bundle';
-
 // assets/bootstrap.js
 
 // 1. Vos styles globaux
@@ -14,13 +12,13 @@ import './controllers/countup_controller.js';
 import './controllers/flash_controller.js';
 
 // 3. Démarrage de Stimulus via le bridge Symfony UX
-import { startStimulusApp } from '@symfony/stimulus-bridge';
+import { startStimulusApp } from '@symfony/stimulus-bridge'; // Conserver uniquement cette ligne
 
 const app = startStimulusApp(
   require.context(
     '@symfony/stimulus-bridge/lazy-controller-loader!./controllers',
     true,
-    /\.(j|t)sx?$/
+    /\.(j|t)sx?$/ // pour charger les fichiers .js, .jsx, .ts, .tsx
   )
 );
 
