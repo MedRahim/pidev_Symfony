@@ -116,65 +116,8 @@
     </head>
 
     <body>
-        <!-- Preloader Start -->
-        <div id="preloader-active">
-            <div class="preloader d-flex align-items-center justify-content-center">
-                <div class="preloader-inner position-relative">
-                    <div class="preloader-circle"></div>
-                    <div class="preloader-img pere-text">
-                        <img src="{{ asset('FrontOffice/assets/img/logo/loder.jpg') }}" alt="">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Preloader End -->
+        {% include 'FrontOffice/partials/header.html.twig' %}
         
-        <!-- Header -->
-        <header>
-            <div class="header-area header-transparent">
-                <div class="main-header">
-                   <div class="header-bottom header-sticky">
-                        <div class="container-fluid">
-                            <div class="row align-items-center">
-                                <!-- Logo -->
-                                <div class="col-xl-2 col-lg-2 col-md-1">
-                                    <div class="logo">
-                                       <a href="{{ path('home') }}"><img src="{{ asset('FrontOffice/assets/img/logo/logo.png') }}" alt="TransportX"></a>
-                                    </div>
-                                </div>
-                                <div class="col-xl-10 col-lg-10 col-md-8">
-                                    <!-- Menu principal -->
-                                    <div class="main-menu f-right d-none d-lg-block">
-                                        <nav>
-                                            <ul id="navigation">
-                                                <li><a href="{{ path('home') }}">Accueil</a></li>
-                                                <li><a href="{{ path('app_trips_index') }}">Trajets</a></li>
-                                                <li><a href="{{ path('about') }}">À propos</a></li>
-                                                <li><a href="{{ path('app_reservations_list') }}">Mes Réservations</a></li>
-                                                <li><a href="{{ path('contact') }}">Contact</a></li>
-                                                {% if is_granted('ROLE_USER') %}
-                                                    <li class="add-list"><a href="{{ path('trips_new') }}"><i class="ti-plus"></i> Ajouter un trajet</a></li>
-                                                    <li class="login"><a href="#"><i class="ti-user"></i> Profil</a></li>
-                                                    <li class="register"><a href="{{ path('app_logout') }}"><i class="ti-power-off"></i> Déconnexion</a></li>
-                                                {% else %}
-                                                    <li class="login"><a href="{{ path('app_login') }}"><i class="ti-user"></i> Connexion</a></li>
-                                                    <li class="register"><a href="{{ path('app_register') }}"><i class="ti-pencil"></i> Inscription</a></li>
-                                                {% endif %}
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                </div>
-                                <!-- Menu Mobile -->
-                                <div class="col-12">
-                                    <div class="mobile_menu d-block d-lg-none"></div>
-                                </div>
-                            </div>
-                        </div>
-                   </div>
-                </div>
-           </div>
-        </header>
-
         <main>
             <!-- Hero Start-->
             <div class="hero-area2 slider-height2 hero-overly2 d-flex align-items-center" style="background-image: url('{{ asset('FrontOffice/assets/img/hero/hero2.jpg') }}')">

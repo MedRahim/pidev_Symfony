@@ -58,6 +58,8 @@
 {% endblock %}
 
 {% block body %}
+    {% include 'FrontOffice/partials/header.html.twig' %}
+    
     <section class="weather-header text-center">
         <div class="container">
             <h1 class="display-4 mb-3">Météo à {{ city }}</h1>
