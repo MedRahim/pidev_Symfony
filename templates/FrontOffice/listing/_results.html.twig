@@ -1,0 +1,125 @@
+{# templates/FrontOffice/listing/_results.html.twig #}
+
+{% if trips|length > 0 %}
+    <div class="row g-4">
+        {% for trip in trips %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card trip-card h-100 shadow-sm">
+                    {# Section Image avec fallback amélioré #}
+                    <div class="position-relative">
+                        {% set imageName = trip.destination|lower|replace({' ': '-', "'": '', ",": ''}) %}
+                        <img src="{{ asset('FrontOffice/assets/img/' ~ imageName ~ '.jpg') }}" 
+                             class="card-img-top" 
+                             alt="Trajet {{ trip.departure }} - {{ trip.destination }}"
+                             loading="lazy"
+                             style="height: 200px; object-fit: cover;"
+                             onerror="this.onerror=null; this.src='{{ asset('FrontOffice/assets/img/default.jpg') }}'">
+
+                        {# Badge de prix utilisant transportName #}
+                        <div class="price-badge bg-white text-primary rounded-pill px-3 py-2 shadow-sm">
+                            <i class="fas fa-tag me-1"></i>
+                            {{ trip.price|number_format(2, ',', ' ') }} TND
+                            <small class="text-muted d-block mt-1">
+                                {{ trip.transportName ?? trip.transport.name }}
+                            </small>
+                        </div>
+                    </div>
+
+                    {# Corps de la carte adapté #}
+                    <div class="card-body">
+                        <h5 class="card-title mb-3 fw-bold text-primary">
+                            {{ trip.departure }} → {{ trip.destination }}
+                        </h5>
+                        
+                        <div class="trip-details">
+                            <div class="mb-2">
+                                <i class="fas fa-calendar-alt text-secondary me-2"></i>
+                                {{ trip.departureTime|date('d/m/Y H:i') }}
+                            </div>
+                            
+                            {# Section transport modifiée #}
+                            <div class="mb-2">
+{% set transportType = (trip.transportName ?? trip.transport.name)|lower %}
+                                <i class="fas 
+                                    {% if 'bus' in transportType %}fa-bus
+                                    {% elseif 'train' in transportType %}fa-train
+                                    {% elseif 'avion' in transportType %}fa-plane
+                                    {% else %}fa-car
+                                    {% endif %} 
+                                    text-secondary me-2"></i>
+                                {{ trip.transportName ?? trip.transport.name }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <i class="fas fa-road text-secondary me-2"></i>
+                                {{ trip.distance|number_format(0, ',', ' ') }} km
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Actions inchangées #}
+                    <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center">
+                        <a href="{{ path('app_trips_show', {'id': trip.id}) }}" 
+                           class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                            <i class="fas fa-info-circle me-1"></i> Détails
+                        </a>
+                        
+                        <a href="{{ path('app_trips_reserve', {'id': trip.id}) }}" 
+                           class="btn btn-primary btn-sm rounded-pill px-4">
+                            <i class="fas fa-ticket-alt me-1"></i> Réserver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {# Pagination inchangée #}
+    {% if totalPages > 1 %}
+        <nav class="mt-5" aria-label="Pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {{ currentPage == 1 ? 'disabled' }}">
+                    <a class="page-link rounded-pill mx-1" 
+                       href="{{ path('app_trips_index', app.request.query.all|merge({'page': currentPage - 1})) }}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+
+                {% for page in 1..totalPages %}
+                    <li class="page-item {{ page == currentPage ? 'active' }}">
+                        <a class="page-link rounded-circle mx-1" 
+                           href="{{ path('app_trips_index', app.request.query.all|merge({'page': page})) }}">
+                            {{ page }}
+                        </a>
+                    </li>
+                {% endfor %}
+
+                <li class="page-item {{ currentPage == totalPages ? 'disabled' }}">
+                    <a class="page-link rounded-pill mx-1" 
+                       href="{{ path('app_trips_index', app.request.query.all|merge({'page': currentPage + 1})) }}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    {% endif %}
+
+{% else %}
+    {# État vide inchangé #}
+    <div class="col-12">
+        <div class="text-center py-5 px-3 bg-white rounded-3 shadow-sm">
+            <div class="empty-state-icon mb-4">
+                <i class="fas fa-search fa-4x text-muted"></i>
+            </div>
+            <h3 class="mb-3 text-secondary">Aucun trajet trouvé</h3>
+            <p class="text-muted mb-4">
+                Aucun résultat ne correspond à vos critères de recherche.<br>
+                Essayez de modifier vos filtres ou élargissez votre recherche.
+            </p>
+            <a href="{{ path('app_trips_index') }}" 
+               class="btn btn-primary rounded-pill px-4">
+                <i class="fas fa-redo me-2"></i>Réinitialiser les filtres
+            </a>
+        </div>
+    </div>
+{% endif %}
