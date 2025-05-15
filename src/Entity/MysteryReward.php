@@ -1,7 +1,7 @@
 <?php
 // src/Entity/MysteryReward.php
 namespace App\Entity;
-
+use App\Entity\User;
 use App\Repository\MysteryRewardRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,7 +35,7 @@ class MysteryReward
     // Getters et setters...
     public function getId(): ?int { return $this->id; }
     public function getUser(): ?User { return $this->user; }
-    public function setUser(?Users $user): self { $this->user = $user; return $this; }
+    public function setUser(?User $user): self { $this->user = $user; return $this; }
     public function getGrantedAt(): ?\DateTimeInterface { return $this->grantedAt; }
     public function setGrantedAt(\DateTimeInterface $grantedAt): self { $this->grantedAt = $grantedAt; return $this; }
     public function getType(): ?string { return $this->type; }
