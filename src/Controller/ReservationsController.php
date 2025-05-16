@@ -355,55 +355,35 @@ public function payPending(Request $request, Reservations $reservation, EntityMa
             $this->addFlash('error', 'Accès non autorisé.');
             return $this->redirectToRoute('app_reservations_list');
         }
-    if ($reservation->getStatus() === 'cancelled') {
-        $this->addFlash('warning', 'Les réservations annulées ne peuvent pas être modifiées');
-        return $this->redirectToRoute('app_reservations_details', ['id' => $reservation->getId()]);
-    }
-
-    // Sauvegarde des valeurs originales
-    $originalData = [
-        'seatNumber' => $reservation->getSeatNumber(),
-        'seatType'   => $reservation->getSeatType(),
-        'price'      => $this->calculateReservationPrice($reservation, $reservation->getTrip()),
-    ];
-
-    // *** Passage de l’option 'trip' ici aussi
-    $form = $this->createForm(FrontReservationType::class, $reservation, [
-        'trip' => $reservation->getTrip(),
-    ]);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        $newPrice = $this->calculateReservationPrice($reservation, $reservation->getTrip());
-
-        if ($reservation->getSeatNumber() == $originalData['seatNumber'] &&
-            $reservation->getSeatType() == $originalData['seatType']) {
-            $this->addFlash('info', 'Aucune modification apportée à la réservation');
-            return $this->redirectToRoute('app_reservations_details', ['id' => $reservation->getId()]);
-        }
-
-        $request->getSession()->set('reservation_data', [
-            'trip_id'         => $reservation->getTrip()->getId(),
-            'seat_number'     => $reservation->getSeatNumber(),
-            'seat_type'       => $reservation->getSeatType(),
-            'price'           => $newPrice,
-            'transport_id'    => $reservation->getTransportId(),
-            'is_edit'         => true,
-            'reservation_id'  => $reservation->getId(),
-            'original_price'  => $originalData['price'],
-            'price_difference'=> $newPrice - $originalData['price'],
+    
+        $originalData = [
+            'seatNumber' => $reservation->getSeatNumber(),
+            'seatType' => $reservation->getSeatType(),
+            'price' => $this->calculateReservationPrice($reservation, $reservation->getTrip()),
+        ];
+    
+        $form = $this->createForm(FrontReservationType::class, $reservation, [
+            'trip' => $reservation->getTrip(),
         ]);
-
-        return $this->redirectToRoute('app_reservations_edit_confirmation', ['id' => $reservation->getId()]);
+    
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $em->flush();
+                $this->addFlash('success', 'Modification effectuée avec succès !');
+                return $this->redirectToRoute('app_reservations_details', ['id' => $reservation->getId()]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur lors de la modification : ' . $e->getMessage());
+            }
+        }
+    
+        return $this->render('FrontOffice/reservations/edit.html.twig', [
+            'form' => $form->createView(),
+            'reservation' => $reservation,
+            'originalPrice' => $originalData['price'],
+        ]);
     }
-
-    return $this->render('FrontOffice/reservations/edit.html.twig', [
-        'form'          => $form->createView(),
-        'reservation'   => $reservation,
-        'originalPrice' => $originalData['price'],
-        'newPrice'      => $this->calculateReservationPrice($reservation, $reservation->getTrip()),
-    ]);
-}
 
 
     #[Route('/cancel/{id}', name: 'app_reservations_cancel', methods: ['POST'])]

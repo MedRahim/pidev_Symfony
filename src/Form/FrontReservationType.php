@@ -1,16 +1,15 @@
 <?php
 // src/Form/FrontReservationType.php
-
-// src/Form/FrontReservationType.php
 namespace App\Form;
 
 use App\Entity\Reservations;
 use App\Entity\Trips;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormEvent;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,30 +17,55 @@ class FrontReservationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // On injecte l'entité Trip avant le handleRequest()
+        // Hidden fields mapped to entity storage
+        $builder->add('seatNumber', HiddenType::class, [
+            'constraints' => [new Assert\NotBlank(message: 'Vous devez sélectionner au moins un siège.')],
+        ])
+        ->add('seatType', HiddenType::class, [
+            'constraints' => [new Assert\NotBlank(message: 'Le type de siège est requis.')],
+        ]);
+
+        // Add selectors for edit mode
         if ($options['trip'] instanceof Trips) {
-            $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
-                $reservation = $event->getForm()->getData();
-                if ($reservation) {
-                    $reservation->setTrip($options['trip']);
+            $capacity = $options['trip']->getCapacity();
+            $seatChoices = [];
+            for ($i = 1; $i <= $capacity; $i++) {
+                $seatChoices[$i] = (string)$i;
+            }
+
+            $builder
+                ->add('seatNumbersList', ChoiceType::class, [
+                    'choices'  => $seatChoices,
+                    'multiple' => true,
+                    'expanded' => true,
+                    'mapped'   => false,
+                ])
+                ->add('seatTypesList', ChoiceType::class, [
+                    'choices'  => [
+                        'Standard'    => Reservations::SEAT_STANDARD,
+                        'Premium'     => Reservations::SEAT_PREMIUM,
+                        'Économique'  => Reservations::SEAT_ECONOMIQUE,
+                    ],
+                    'multiple' => true,
+                    'expanded' => true,
+                    'mapped'   => false,
+                ]);
+
+            // Use SUBMIT event to merge unmapped into entity
+            $builder->addEventListener(FormEvents::SUBMIT, function(FormEvent $event) {
+                /** @var Reservations $reservation */
+                $reservation = $event->getData();
+                $form = $event->getForm();
+
+                $numbers = $form->get('seatNumbersList')->getData();
+                $types   = $form->get('seatTypesList')->getData();
+                if (is_array($numbers) && is_array($types)) {
+                    $reservation->setSeatNumber(count($numbers));
+                    $reservation->setSeatType(implode(',', $types));
                 }
+                $event->setData($reservation);
             });
         }
-
-        $builder
-            // Champ caché pour récupérer la liste des numéros de siège (ex: "1,4,6")
-            ->add('seatNumber', HiddenType::class, [
-                'constraints' => [
-                    new Assert\NotBlank(message: 'Vous devez sélectionner au moins un siège.'),
-                ],
-            ])
-            // Champ caché pour récupérer le type de chaque siège (ex: "Standard,Premium,Standard")
-            ->add('seatType', HiddenType::class, [
-                'constraints' => [
-                    new Assert\NotBlank(message: 'Le type de siège est requis.'),
-                ],
-            ])
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
