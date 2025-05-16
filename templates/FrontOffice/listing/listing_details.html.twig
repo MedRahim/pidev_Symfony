@@ -74,12 +74,10 @@
                                 <th>Transport</th>
                                 <td>{{ trip.transportName ? trip.transportName : 'Non spécifié' }}</td>
                             </tr>
-                            {% if trip.date %}
                             <tr>
                                 <th>Date</th>
-                                <td>{{ trip.date|date('d/m/Y') }}</td>
+                                <td>{{ trip.departureTime|date('d/m/Y') }}</td>
                             </tr>
-                            {% endif %}
                         </tbody>
                     </table>
                 </div>
